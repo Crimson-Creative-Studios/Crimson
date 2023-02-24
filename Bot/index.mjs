@@ -64,37 +64,50 @@ var tagCommands = [{
 var tagCommandsOrigins = ["Crimson"]
 var tagDescriptions = []
 var noTags = []
+var disabled = []
 
 const extensions = fs.readdirSync("../Extensions/")
 extensions.forEach(extension => {
-	var metadata = require(`../Extensions/${extension}/extension.json`);
-	console.logger(`Loading ${metadata.name} by ${metadata.authors}...`, "info")
-	var code = fs.readFileSync(`../Extensions/${extension}/index.js`, 'utf8');
-	const sandbox = { client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient, console, fetch };
-	vm.createContext(sandbox);
-	vm.runInContext(code, sandbox);
-	try {
-		var { tags } = require(`../Extensions/${extension}/tags.js`);
-		for (const i of tags) {
-			if (i.enabled === "true") {
-				tagCommands.push(i)
-				tagCommandsOrigins.push(metadata.name);
+	var { extensionsCheck } = require("../extentions.js")
+	for (const i of extensionsCheck) {
+		if (i[0] === extension) {
+			var extensionstate = i[1]
+		}
+	}
+	console.logger(extensionstate, 'info')
+	if (extensionstate === "enabled") {
+		var metadata = require(`../Extensions/${extension}/extension.json`);
+		console.logger(`Loading ${metadata.name} by ${metadata.authors}...`, "info")
+		var code = fs.readFileSync(`../Extensions/${extension}/index.js`, 'utf8');
+		const sandbox = { client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient, console, fetch };
+		vm.createContext(sandbox);
+		vm.runInContext(code, sandbox);
+		try {
+			var { tags } = require(`../Extensions/${extension}/tags.js`);
+			for (const i of tags) {
+				if (i.enabled === "true") {
+					tagCommands.push(i)
+					tagCommandsOrigins.push(metadata.name);
+				}
+			}
+		}
+		catch (err) {
+			tagDescriptions.push([metadata.name, ["This extension has no tag commands.\n"]])
+			noTags.push(extension)
+		}
+		const commandFilesExtension = fs.readdirSync(`../Extensions/${extension}/commands/`).filter(file => file.endsWith('.command.js'));
+		for (const file of commandFilesExtension) {
+			const filePath = path.join(`../Extensions/${extension}/commands/`, file);
+			const command = require(filePath);
+			if ('data' in command && 'execute' in command) {
+				client.commands.set(command.data.name, command);
+			} else {
+				console.logger(`The command at ${filePath} is missing a required "data" or "execute" property.`, "warn");
 			}
 		}
 	}
-	catch (err) {
-		tagDescriptions.push([metadata.name, ["This extension has no tag commands.\n"]])
-		noTags.push(extension)
-	}
-	const commandFilesExtension = fs.readdirSync(`../Extensions/${extension}/commands/`).filter(file => file.endsWith('.command.js'));
-	for (const file of commandFilesExtension) {
-		const filePath = path.join(`../Extensions/${extension}/commands/`, file);
-		const command = require(filePath);
-		if ('data' in command && 'execute' in command) {
-			client.commands.set(command.data.name, command);
-		} else {
-			console.logger(`The command at ${filePath} is missing a required "data" or "execute" property.`, "warn");
-		}
+	else {
+		disabled.push(extension)
 	}
 })
 
@@ -109,10 +122,12 @@ for (const file of commandFiles) {
 }
 
 extensions.forEach(extension => {
-	var test = noTags.includes(extension)
-	if (!test) {
-		var metadata = require(`../Extensions/${extension}/extension.json`);
-		tagDescriptions.unshift([metadata.name, []])
+	if (!disabled.includes(extension)) {
+		var test = noTags.includes(extension)
+		if (!test) {
+			var metadata = require(`../Extensions/${extension}/extension.json`);
+			tagDescriptions.unshift([metadata.name, []])
+		}
 	}
 })
 
