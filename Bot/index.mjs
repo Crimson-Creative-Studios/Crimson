@@ -1,17 +1,14 @@
 import { createRequire } from "module";
+import fetch from 'node-fetch';
+import { fileURLToPath } from 'url';
 const require = createRequire(import.meta.url);
-
 var commands = require("./deploy-commands");
-//const sharp = require('sharp');
 const axios = require('axios');
 var console = require("./consolelogger");
 const fs = require('fs');
 const path = require('path');
 const Canvas = require('@napi-rs/canvas');
-const { XMLHttpRequest } = require('xmlhttprequest');
-import fetch from 'node-fetch';
-import { fileURLToPath } from 'url';
-const { Client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient, REST, Routes } = require('discord.js');
 const vm = require('vm');
 
 var client = new Client({
@@ -40,8 +37,14 @@ const clientProxy = new Proxy({ proxy: client }, {
 
 require('dotenv').config()
 
+async function getServers(client) {
+	let serverCount = await client.guilds.cache.size;
+	return serverCount
+}
+
 client.once(Events.ClientReady, c => {
-	client.user.setActivity('over 2 servers', { type: ActivityType.Watching });
+	var serverCount = getServers(client)
+	client.user.setActivity(`over ${serverCount} servers`, { type: ActivityType.Watching });
 	console.logger(`The bot is now online! Running bot as ${c.user.tag}`, "info");
 });
 
@@ -68,7 +71,7 @@ var disabled = []
 
 const extensions = fs.readdirSync("../Extensions/")
 extensions.forEach(extension => {
-	var { extensionsCheck } = require("../extentions.js")
+	var { extensionsCheck } = require("../extensions.js")
 	for (const i of extensionsCheck) {
 		if (i[0] === extension) {
 			var extensionstate = i[1]
@@ -215,56 +218,4 @@ client.on(Events.InteractionCreate, async interaction => {
 function delay(time) {
 	return new Promise(resolve => setTimeout(resolve, time));
 }
-delay(1000).then(() => commands.deploy());
-
-async function convertWebpToJpg(webpImageUrl) {
-	const response = await axios.get(webpImageUrl, { responseType: 'arraybuffer' });
-	const webpImage = Buffer.from(response.data, 'binary');
-
-	const jpgImage = await sharp(webpImage)
-		.webp({ quality: 80 })
-		.toBuffer();
-
-	return jpgImage;
-}
-
-client.on(Events.GuildMemberAdd, member => {
-	async function createImageNSend(member) {
-		const background = await Canvas.loadImage('./blank.png');
-		const canvas = Canvas.createCanvas(600, 250);
-		const context = canvas.getContext('2d');
-		context.drawImage(background, 0, 0, canvas.width, canvas.height);
-		var pfp = await convertWebpToJpg(member.displayAvatarURL());
-		const avatar = await Canvas.loadImage(pfp);
-		context.drawImage(avatar, 25, 25, 200, 200);
-		context.beginPath();
-		context.arc(125, 125, 100, 0, Math.PI * 2, true);
-		context.closePath();
-		context.clip();
-		context.font = '28px sans-serif';
-		context.fillStyle = '#ffffff';
-		context.fillText('Welcome,', canvas.width / 2.5, canvas.height / 3.5);
-		const applyText = (canvas, text) => {
-			const context = canvas.getContext('2d');
-			let fontSize = 70;
-
-			do {
-				context.font = `${fontSize -= 10}px sans-serif`;
-			} while (context.measureText(text).width > canvas.width - 300);
-
-			return context.font;
-		};
-		context.font = applyText(canvas, `${member.displayName}!`);
-		context.fillStyle = '#ffffff';
-		context.fillText(member.displayName, canvas.width / 2.5, canvas.height / 1.8);
-		const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'profile-image.png' });
-		const messages = ["Welcome to the SkyoProductions server!", "Welcome to the SkoProducions sever!", `A wild ${member.displayName} appeared in the SkyoProductions Discord server!`];
-		const embed = new EmbedBuilder()
-			.setColor(0x01DADE)
-			.setTitle(messages[Math.floor((Math.random() * messages.length))])
-			.setImage(`attachment://${attachment.name}`)
-		member.guild.channels.cache.get('1066763410257215668').send({ embeds: [embed], files: [attachment] });
-		console.logger(member + " has joined the server!", "info")
-	}
-	createImageNSend(member)
-});
+delay(2000).then(() => commands.deploy());
