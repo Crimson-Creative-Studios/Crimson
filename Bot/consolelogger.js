@@ -2,12 +2,12 @@ var logger = function logger(info, type){
   var hour = new Date().getHours()
   var minutes = new Date().getMinutes()
   var seconds = new Date().getSeconds()
-  var hlength = hour.length
-  var mlength = minutes.length
-  var slength = seconds.length
-  if (hlength === 1) { var hour = "0" + hour }
-  if (mlength === 1) { var minutes = "0" + minutes }
-  if (slength === 1) { var seconds = "0" + seconds }
+  var hlength = String(hour).length
+  var mlength = String(minutes).length
+  var slength = String(seconds).length
+  if (hlength === 1) { var hour = "0" + String(hour) }
+  if (mlength === 1) { var minutes = "0" + String(minutes) }
+  if (slength === 1) { var seconds = "0" + String(seconds) }
   var day = new Date().getDay()
   let dayWord = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   var dayOfWeek = dayWord[day]
@@ -41,8 +41,13 @@ var logger = function logger(info, type){
     console.log('\x1b[37m%s\x1b[0m', `[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Logger Command ] ${info}`);
   }
 
+  else if (type === "start") {
+    console.log('\x1b[34m%s\x1b[0m', `[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Start-Up ] ${info}`);
+    console.log("")
+  }
+
   else {
-    console.log('\x1b[90m%s\x1b[0m', `[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Undefined ] ${info}`);
+    console.log('\x1b[90m%s\x1b[0m', `[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} ] ${info}`);
     console.log("")
   }
   

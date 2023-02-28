@@ -3,11 +3,9 @@ import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 const require = createRequire(import.meta.url);
 var commands = require("./deploy-commands");
-const axios = require('axios');
 var console = require("./consolelogger");
 const fs = require('fs');
 const path = require('path');
-const Canvas = require('@napi-rs/canvas');
 const { Client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient, REST, Routes } = require('discord.js');
 const vm = require('vm');
 
@@ -45,7 +43,7 @@ async function getServers(client) {
 client.once(Events.ClientReady, c => {
 	var serverCount = getServers(client)
 	client.user.setActivity(`over ${serverCount} servers`, { type: ActivityType.Watching });
-	console.logger(`The bot is now online! Running bot as ${c.user.tag}`, "info");
+	console.logger(`The bot is now online! Running bot as ${c.user.tag}`, "start");
 });
 
 client.login(process.env.TOKEN);
@@ -77,12 +75,11 @@ extensions.forEach(extension => {
 			var extensionstate = i[1]
 		}
 	}
-	console.logger(extensionstate, 'info')
 	if (extensionstate === "enabled") {
 		var metadata = require(`../Extensions/${extension}/extension.json`);
-		console.logger(`Loading ${metadata.name} by ${metadata.authors}...`, "info")
+		console.logger(`Loading ${metadata.name} by ${metadata.authors}...`, "start")
 		var code = fs.readFileSync(`../Extensions/${extension}/index.js`, 'utf8');
-		const sandbox = { client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient, console, fetch };
+		const sandbox = { client, console, fetch, fs, path, commands };
 		vm.createContext(sandbox);
 		vm.runInContext(code, sandbox);
 		try {

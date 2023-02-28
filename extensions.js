@@ -1,7 +1,7 @@
 const extensionsCheck = [
     ["delta", "enabled"],
     ["linkbot", "disabled"],
-    ["crafty", "enabled"]
+    ["crafty", "disabled"]
 ]
 
 module.exports = {
