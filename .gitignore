@@ -1,3 +1,4 @@
 *.env
 Extensions
 node_modules
+.vscode
