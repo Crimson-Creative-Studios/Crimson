@@ -2,8 +2,8 @@ import { createRequire } from "module";
 import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 const require = createRequire(import.meta.url);
-var commands = require("./deploy-commands");
-var console = require("./consolelogger");
+const console = require('./consolelogger')
+const { deploy } = require('./deploy-commands')
 const fs = require('fs');
 const path = require('path');
 const { Client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient, REST, Routes } = require('discord.js');
@@ -35,14 +35,8 @@ const clientProxy = new Proxy({ proxy: client }, {
 
 require('dotenv').config()
 
-async function getServers(client) {
-	let serverCount = await client.guilds.cache.size;
-	return serverCount
-}
-
 client.once(Events.ClientReady, c => {
-	var serverCount = getServers(client)
-	client.user.setActivity(`over ${serverCount} servers`, { type: ActivityType.Watching });
+	client.user.setActivity(`over the server`, { type: ActivityType.Watching });
 	console.logger(`The bot is now online! Running bot as ${c.user.tag}`, "start");
 });
 
@@ -69,17 +63,33 @@ var disabled = []
 
 const extensions = fs.readdirSync("../Extensions/")
 extensions.forEach(extension => {
-	var { extensionsCheck } = require("../extensions.js")
-	for (const i of extensionsCheck) {
-		if (i[0] === extension) {
-			var extensionstate = i[1]
+	var exstate = require("../extensions.json")
+	var enabled = exstate.enabled
+	var test = exstate.test
+	var disabled = exstate.disabled
+	if (enabled.includes(extension)) {
+		var extensionstate = "enabled"
+	} else if (test.includes(extension)) {
+		var extensionstate = "test"
+	} else if (disabled.includes(extension)) {
+		var extensionstate = "disabled"
+	} else {
+		var extensionstate = "disabled"
+	}
+	var dep = require(`../Extensions/${extension}/extension.json`)
+	var dep = dep.dependencies
+	if (!extensionstate === "disabled") {
+		for (const depe of dep) {
+			if (!extensions.includes(depe)) {
+				var extensionstate = "disabled"
+			}
 		}
 	}
-	if (extensionstate === "enabled") {
+	if (extensionstate === "enabled" || extensionstate === "test") {
 		var metadata = require(`../Extensions/${extension}/extension.json`);
 		console.logger(`Loading ${metadata.name} by ${metadata.authors}...`, "start")
 		var code = fs.readFileSync(`../Extensions/${extension}/index.js`, 'utf8');
-		const sandbox = { client, console, fetch, fs, path, commands };
+		const sandbox = { client, console, fetch, fs, path, require, __dirname, extension };
 		vm.createContext(sandbox);
 		vm.runInContext(code, sandbox);
 		try {
@@ -113,6 +123,7 @@ extensions.forEach(extension => {
 
 for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);
+	const require = createRequire(import.meta.url);
 	const command = require(filePath);
 	if ('data' in command && 'execute' in command) {
 		client.commands.set(command.data.name, command);
@@ -215,4 +226,7 @@ client.on(Events.InteractionCreate, async interaction => {
 function delay(time) {
 	return new Promise(resolve => setTimeout(resolve, time));
 }
-delay(2000).then(() => commands.deploy());
+
+export default client
+
+delay(2000).then(() => deploy(client))
