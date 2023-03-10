@@ -9,6 +9,11 @@ const path = require('path');
 const { Client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient, REST, Routes } = require('discord.js');
 const vm = require('vm');
 
+fs.writeFile("version.txt", "1.0.0", (err) => {
+  if (err)
+    console.log(err);
+});
+
 var client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
@@ -226,7 +231,5 @@ client.on(Events.InteractionCreate, async interaction => {
 function delay(time) {
 	return new Promise(resolve => setTimeout(resolve, time));
 }
-
-export default client
 
 delay(2000).then(() => deploy(client))

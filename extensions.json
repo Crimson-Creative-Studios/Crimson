@@ -1,1 +1,1 @@
-{"enabled": ["delta"], "disabled": ["linkbot"], "test": ["crafty", "pyrun"], "all": ["crafty", "delta", "linkbot", "pyrun"]}
+{"enabled": ["delta", "pyrun"], "disabled": ["linkbot"], "test": ["crafty"]}

@@ -2,3 +2,8 @@
 Extensions
 node_modules
 .vscode
+build
+dist
+.git
+.idea
+app.spec
