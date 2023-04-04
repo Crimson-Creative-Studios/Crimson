@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>CrimsonGUI</title>
+        <link rel="stylesheet" href="guiassets/css/styles.css">
+    </head>
+    <body>
+        <button class="startBot button" onclick="checkStart()" style="display: inline-block">Start Bot</button>
+        <button class="startBot button" onclick="checkEnd()" style="display: inline-block">Stop Bot</button>
+        <button class="startBot button" onclick="checkRestart()" style="display: inline-block">Restart Bot</button>
+        <button class="startBot button" onclick="checkRC()" style="display: inline-block">Refresh Commands</button>
+        <div class="console" id="cnsl">
+            <h4 class="white">Output Window</h4>
+            <p class="typeoutput white"></p>
+        </div>
+        <script>
+
+        var online = false;
+
+        async function checkRestart() {
+            if (online === false) {
+                crimAPI.BotStart()
+                online = true
+            } else {
+                crimAPI.BotStop()
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                crimAPI.BotStart()
+            }
+        }
+
+        function checkStart() {
+            if (online === true) {
+                var element = document.querySelectorAll(".typeoutput")
+                element = element[element.length -1]
+                element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is online, cannot start.</h4>')
+            } else {
+                crimAPI.BotStart()
+                online = true
+            }
+        }
+
+        function checkEnd() {
+            if (online === false) {
+                var element = document.querySelectorAll(".typeoutput")
+                element = element[element.length -1]
+                element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot stop.</h4>')
+            } else {
+                crimAPI.BotStop()
+                online = false
+            }
+        }
+
+        function checkRC() {
+            if (online === false) {
+                var element = document.querySelectorAll(".typeoutput")
+                element = element[element.length -1]
+                element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot refresh.</h4>')
+            } else {
+                crimAPI.BotRC()
+            }
+        }
+
+        crimAPI.botstdout((event, arg) => {
+            var element = document.querySelectorAll(".typeoutput")
+            element = element[element.length -1]
+            element.insertAdjacentHTML("beforeend", arg)
+        })
+
+        crimAPI.term((event, arg) => {
+            document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot Process Stopped</h4><p class="typeoutput white"></p>')
+        })
+
+        </script>
+    </body>
+</html>

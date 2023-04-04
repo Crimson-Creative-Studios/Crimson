@@ -3,15 +3,14 @@ import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 const require = createRequire(import.meta.url);
 const console = require('./consolelogger')
-const { deploy } = require('./deploy-commands')
 const fs = require('fs');
 const path = require('path');
-const { Client, Collection, Events, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, ActivityType, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder, WebhookClient, REST, Routes } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, EmbedBuilder, ActivityType, inlineCode, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const vm = require('vm');
 
-fs.writeFile("version.txt", "1.0.0", (err) => {
-  if (err)
-    console.log(err);
+fs.writeFile("version.txt", "0.0.1", (err) => {
+	if (err)
+		console.logger(err, "error");
 });
 
 var client = new Client({
@@ -23,18 +22,7 @@ var client = new Client({
 	],
 });
 
-const clientProxy = new Proxy({ proxy: client }, {
-	set: function (target, prop, value) {
-		if (prop === 'value') {
-			globalThis.client = clientProxy.proxy
-			target.value = value;
-		}
-		return true;
-	}
-});
-
-//var channel = interaction.channel
-//channel.send('content');
+//interaction.channel.send('content');
 //Can be used (I think) to send a normal message to where the user sent a slash command
 //(I think)
 
@@ -42,10 +30,71 @@ require('dotenv').config()
 
 client.once(Events.ClientReady, c => {
 	client.user.setActivity(`over the server`, { type: ActivityType.Watching });
+	client.user.setStatus('online');
 	console.logger(`The bot is now online! Running bot as ${c.user.tag}`, "start");
 });
 
 client.login(process.env.TOKEN);
+
+function deploy(client) {
+	const { REST, Routes } = require('discord.js');
+
+	const commands = []
+
+	var i = 0
+
+	fs.readdir("../Extensions/", function (err, files) {
+		if (err) {
+			return console.logger('Unable to scan directory: ' + err, "error");
+		}
+		files.forEach(function (file) {
+			var cfg = require(`../Extensions/${file}/config.json`)
+			var enabled = cfg.enabled
+			if (enabled === "true") {
+				var state = "enabled"
+			} else {
+				var state = "disabled"
+			}
+			if (state === "enabled") {
+				var j = 0
+				const commandFilesExtension = fs.readdirSync(`../Extensions/${file}/commands/`).filter(file => file.endsWith('.command.js'));
+				for (const file2 of commandFilesExtension) {
+					const command = require(`../Extensions/${file}/commands/${file2}`);
+					commands.push(command.data.toJSON());
+					i = i + 1
+					j = j + 1
+				}
+				var metadata = require(`../Extensions/${file}/extension.json`)
+				console.logger(`Started refreshing ${j} application commands from ${metadata.name}`, "start")
+			}
+		});
+	});
+
+	const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.command.js'));
+
+	for (const file of commandFiles) {
+		const command = require(`./commands/${file}`);
+		commands.push(command.data.toJSON());
+		i = i + 1
+	}
+
+	const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+
+	(async () => {
+		try {
+			console.logger(`Started refreshing ${commands.length} core application commands.`, "start");
+			client.guilds.cache.forEach(async guild => {
+				var data = await rest.put(
+					Routes.applicationGuildCommands(process.env.CLIENTID, guild.id),
+					{ body: commands },
+				);
+			})
+			console.logger(`Successfully reloaded ${i} core and extension application commands.`, "start");
+		} catch (error) {
+			console.logger(error, "error");
+		}
+	})();
+};
 
 client.commands = new Collection();
 
@@ -68,16 +117,10 @@ var disabled = []
 
 const extensions = fs.readdirSync("../Extensions/")
 extensions.forEach(extension => {
-	var exstate = require("../extensions.json")
-	var enabled = exstate.enabled
-	var test = exstate.test
-	var disabled = exstate.disabled
-	if (enabled.includes(extension)) {
+	var cfg = require(`../Extensions/${extension}/config.json`)
+	var enabled = cfg.enabled
+	if (enabled === "true") {
 		var extensionstate = "enabled"
-	} else if (test.includes(extension)) {
-		var extensionstate = "test"
-	} else if (disabled.includes(extension)) {
-		var extensionstate = "disabled"
 	} else {
 		var extensionstate = "disabled"
 	}
@@ -90,7 +133,7 @@ extensions.forEach(extension => {
 			}
 		}
 	}
-	if (extensionstate === "enabled" || extensionstate === "test") {
+	if (extensionstate === "enabled") {
 		var metadata = require(`../Extensions/${extension}/extension.json`);
 		console.logger(`Loading ${metadata.name} by ${metadata.authors}...`, "start")
 		var code = fs.readFileSync(`../Extensions/${extension}/index.js`, 'utf8');
@@ -216,6 +259,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const command = interaction.client.commands.get(interaction.commandName);
+	console.logger(command, "raw")
 
 	if (!command) {
 		console.logger(`No command matching ${interaction.commandName} was found.`, "error");
@@ -232,4 +276,20 @@ function delay(time) {
 	return new Promise(resolve => setTimeout(resolve, time));
 }
 
+if (process.argv.includes("--gui")) {
+	process.stdin.on('data', (data) => {
+		var message = JSON.parse(data.toString().trim());
+		if (message.type === "END") {
+			client.user.setStatus('invisible');
+			process.exit()
+		} else if (message.type === "RC") {
+			deploy(client)
+		}
+	})
+}
+
 delay(2000).then(() => deploy(client))
+
+process.on('exit', function (){
+	client.user.setStatus('invisible');
+});

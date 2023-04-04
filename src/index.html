@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>CrimsonGUI</title>
+    <link rel="stylesheet" href="guiassets/css/styles.css">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <script>
+        function startBot() {
+            crimAPI.BotStart()
+            status = 'Online'
+        }
+        function openTab(evt, tabName, override) {
+            var i, tabcontent, tablinks, presence;
+            var key = 'bigimg'
+
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            //try {
+            if (override !== null) {
+                document.getElementById(override).classList.add("active")
+            } else {
+                evt.currentTarget.className += " active";
+            }
+            //} catch(err) {
+            //console.log('Tab opened without a button press')
+            //}
+            var currentMenu = tabName;
+            if (currentMenu === "Bot" || currentMenu === "Configuration" || currentMenu === "Information") {
+                presence = `Currently in the ${currentMenu} menu.`
+                if (currentMenu === "Configuration") {
+                    key = 'bigimgcog'
+                } else {
+                    key = 'bigimg'
+                }
+            } else if (currentMenu === "DEBUG") {
+                presence = 'Currently DEBUGGING something...'
+                key = 'bigimg'
+            } else if (currentMenu === null) {
+                presence = 'ERR | Page not found'
+            } else if (currentMenu === "Options") {
+                presence = "Currently modifing CrimsonGUI's settings"
+                key = 'bigimgcog'
+            } else {
+                var metaname = codeAdditions.metanames[currentMenu]
+                presence = `Currently modifing ${metaname}'s settings.`
+                if (metaname === "PyRun") {
+                    key = 'pyrunlogo'
+                } else {
+                    key = 'bigimgcog'
+                }
+            }
+            if (presence === null) {
+                presence = 'Something has really gone wrong'
+            }
+            crimAPI.rcpChange([presence, key])
+        }
+        window.addEventListener('load', function () {
+            document.getElementById("Bot").style.display = "block";
+        })
+    </script>
+</head>
+
+<body>
+    <div class="top">
+        <h1>CrimsonGUI</h1>
+    </div>
+    <div class="tab">
+        <button id="BotButton" class="tablinks active" onclick="openTab(event, 'Bot', null)">Bot</button>
+        <button id="ConfigurationButton" class="tablinks"
+            onclick="openTab(event, 'Configuration', null)">Extensions</button>
+        <button id="InformationButton" class="tablinks"
+            onclick="openTab(event, 'Information', null)">Information</button>
+        <button id="DEBUGButton" class="tablinks" onclick="openTab(event, 'DEBUG', null)" style="display: none;"
+            id="debug">Debug</button>
+    </div>
+
+    <div id="Bot" class="tabcontent">
+        <h3 style="margin: none;">Bot menu</h3>
+        <button class="startBot button" onclick="crimAPI.OpenConsole()">Open Bot window</button>
+    </div>
+
+    <div id="Configuration" class="tabcontent">
+        <h3>Configuration menu</h3>
+    </div>
+
+    <div id="Information" class="tabcontent">
+        <h3>Information</h3>
+        <p>GUI Version - Open Beta 1</p>
+        <p id="botver">Bot Version - Unknown</p>
+        <p id="funfact">Fun Fact: Not loaded...</p>
+    </div>
+
+    <div id="Options" class="tabcontent">
+        <h3>Options</h3>
+        <p>Current theme: <strong id="theme-source">System</strong></p>
+        <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <button id="reset-to-system" class="button" onclick="sysDarkMode()">Reset to System Theme</button>
+    </div>
+
+    <div id="DEBUG" class="tabcontent">
+        <h2>Debug Menu</h2>
+        <h4>Chrome Version:</h4>
+        <p id="debugCHROME"></p>
+        <h4>Electron Version:</h4>
+        <p id="debugELECTRON"></p>
+        <h4>Node Version:</h4>
+        <p id="debugNODE"></p>
+        <p id="amoled"></p>
+    </div>
+
+    <div class="tabBottom">
+        <button id="OptionsButton" class="tablinks" onclick="openTab(event, 'Options', null)">Options</button>
+    </div>
+
+    <div id="savedModal" class="modal">
+
+        <div class="modal-content5s">
+            <div class="disappear5s"></div>
+            <p>Successfully saved settings!</p>
+        </div>
+
+    </div>
+
+    <script src="./renderer.js"></script>
+</body>
+
+</html>

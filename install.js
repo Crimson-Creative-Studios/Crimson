@@ -1,12 +1,14 @@
 const http = require('http');
 const decompress = require("decompress");
+const fs = require("fs");
+
+const file = fs.createWriteStream("temp.zip");
 
 const request = http.get("http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg", function(response) {
    response.pipe(file);
 
-   // after download completed close filestream
    file.on("finish", () => {
        file.close();
-       console.log("Download Completed");
+       decompress("temp.zip", "")
    });
 });

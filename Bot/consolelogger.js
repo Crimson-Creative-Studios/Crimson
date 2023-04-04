@@ -1,4 +1,7 @@
-var logger = function logger(info, type){
+var logger = function logger(info, type) {
+  function log(info) {
+    console.log(info)
+  }
   var hour = new Date().getHours()
   var minutes = new Date().getMinutes()
   var seconds = new Date().getSeconds()
@@ -11,44 +14,46 @@ var logger = function logger(info, type){
   var day = new Date().getDay()
   let dayWord = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   var dayOfWeek = dayWord[day]
+  if (process.argv.includes("--gui")) {
+    var br = "<br>"
+  } else {
+    var br = ""
+  }
   
   if (type === "info") {
-    console.log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Info ] ${info}`);
-    console.log("")
-  }
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Info ] ${info}${br}`);
+    log(br);
+    
+  } else if (type === "warn") {
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Warn ] ${info}${br}`);
+    log(br);
 
-  else if (type === "warn") {
-    console.log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Warn ] ${info}`);
-    console.log("")
-  }
+  } else if (type === "error") {
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Error ] ${info}${br}`);
+    log(br);
 
-  else if (type === "error") {
-    console.log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Error ] ${info}`);
-    console.log("")
-  }
+  } else if (type === "hint") {
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Hint ] ${info}${br}`);
+    log(br);
 
-  else if (type === "hint") {
-    console.log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Hint ] ${info}`);
-    console.log("")
-  }
+  } else if (type === "action") {
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | User Action ] ${info}${br}`);
+    log(br);
 
-  else if (type === "action") {
-    console.log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | User Action ] ${info}`);
-    console.log("")
-  }
+  } else if (type === "logCommand") {
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Logger Command ] ${info}${br}`);
 
-  else if (type === "logCommand") {
-    console.log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Logger Command ] ${info}`);
-  }
+  } else if (type === "start") {
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Start-Up ] ${info}${br}`);
+    log(br);
 
-  else if (type === "start") {
-    console.log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Start-Up ] ${info}`);
-    console.log("")
-  }
+  } else if (type === "raw") {
+    log(info,br)
+    log(br)
+  } else {
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} ] ${info}${br}`);
+    log(br);
 
-  else {
-    console.log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} ] ${info}`);
-    console.log("")
   }
   
 };
