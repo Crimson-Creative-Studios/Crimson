@@ -8,7 +8,7 @@ const path = require('path');
 const { Client, Collection, Events, GatewayIntentBits, EmbedBuilder, ActivityType, inlineCode, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const vm = require('vm');
 
-fs.writeFile("version.txt", "0.0.1", (err) => {
+fs.writeFile("version.txt", "0.1.0", (err) => {
 	if (err)
 		console.logger(err, "error");
 });
@@ -293,3 +293,8 @@ delay(2000).then(() => deploy(client))
 process.on('exit', function (){
 	client.user.setStatus('invisible');
 });
+
+//
+// This must be 300 lines
+// I NEED IT!!!
+//
