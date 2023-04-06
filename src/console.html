@@ -1,11 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>CrimsonGUI</title>
-        <link rel="stylesheet" href="guiassets/css/styles.css">
-    </head>
-    <body>
+
+<head>
+    <meta charset="UTF-8">
+    <title>CrimsonGUI</title>
+    <link rel="stylesheet" href="guiassets/css/styles.css">
+</head>
+
+<body>
+    <header id="titlebar">
+        <div id="drag-region">
+            <div id="window-controls">
+
+                <div class="winbutton" id="restart-button" style="display: none;">
+                    <p class="icon">Restart</p>
+                </div>
+
+                <div class="winbutton" id="min-button">
+                    <img class="icon"
+                        srcset="icons/min-w-10.png 1x, icons/min-w-12.png 1.25x, icons/min-w-15.png 1.5x, icons/min-w-15.png 1.75x, icons/min-w-20.png 2x, icons/min-w-20.png 2.25x, icons/min-w-24.png 2.5x, icons/min-w-30.png 3x, icons/min-w-30.png 3.5x"
+                        draggable="false" />
+                </div>
+
+                <div class="winbutton" id="max-button">
+                    <img class="icon"
+                        srcset="icons/max-w-10.png 1x, icons/max-w-12.png 1.25x, icons/max-w-15.png 1.5x, icons/max-w-15.png 1.75x, icons/max-w-20.png 2x, icons/max-w-20.png 2.25x, icons/max-w-24.png 2.5x, icons/max-w-30.png 3x, icons/max-w-30.png 3.5x"
+                        draggable="false" />
+                </div>
+
+                <div class="winbutton" id="restore-button">
+                    <img class="icon"
+                        srcset="icons/restore-w-10.png 1x, icons/restore-w-12.png 1.25x, icons/restore-w-15.png 1.5x, icons/restore-w-15.png 1.75x, icons/restore-w-20.png 2x, icons/restore-w-20.png 2.25x, icons/restore-w-24.png 2.5x, icons/restore-w-30.png 3x, icons/restore-w-30.png 3.5x"
+                        draggable="false" />
+                </div>
+
+                <div class="winbutton" id="close-button">
+                    <img class="icon"
+                        srcset="icons/close-w-10.png 1x, icons/close-w-12.png 1.25x, icons/close-w-15.png 1.5x, icons/close-w-15.png 1.75x, icons/close-w-20.png 2x, icons/close-w-20.png 2.25x, icons/close-w-24.png 2.5x, icons/close-w-30.png 3x, icons/close-w-30.png 3.5x"
+                        draggable="false" />
+                </div>
+
+            </div>
+        </div>
+    </header>
+    <div id="main">
+        <div class="top">
+            <h1>CrimsonGUI</h1>
+        </div>
         <button class="startBot button" onclick="checkStart()" style="display: inline-block">Start Bot</button>
         <button class="startBot button" onclick="checkEnd()" style="display: inline-block">Stop Bot</button>
         <button class="startBot button" onclick="checkRestart()" style="display: inline-block">Restart Bot</button>
@@ -16,61 +57,117 @@
         </div>
         <script>
 
-        var online = false;
+            var online = false;
 
-        async function checkRestart() {
-            if (online === false) {
-                crimAPI.BotStart()
-                online = true
-            } else {
-                crimAPI.BotStop()
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                crimAPI.BotStart()
+            async function checkRestart() {
+                if (online === false) {
+                    crimAPI.BotStart()
+                    online = true
+                } else {
+                    crimAPI.BotStop()
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    crimAPI.BotStart()
+                }
             }
-        }
 
-        function checkStart() {
-            if (online === true) {
+            function checkStart() {
+                if (online === true) {
+                    var element = document.querySelectorAll(".typeoutput")
+                    element = element[element.length - 1]
+                    element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is online, cannot start.</h4>')
+                } else {
+                    crimAPI.BotStart()
+                    online = true
+                }
+            }
+
+            function checkEnd() {
+                if (online === false) {
+                    var element = document.querySelectorAll(".typeoutput")
+                    element = element[element.length - 1]
+                    element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot stop.</h4>')
+                } else {
+                    crimAPI.BotStop()
+                    online = false
+                }
+            }
+
+            function checkRC() {
+                if (online === false) {
+                    var element = document.querySelectorAll(".typeoutput")
+                    element = element[element.length - 1]
+                    element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot refresh.</h4>')
+                } else {
+                    crimAPI.BotRC()
+                }
+            }
+
+            crimAPI.botstdout((event, arg) => {
                 var element = document.querySelectorAll(".typeoutput")
-                element = element[element.length -1]
-                element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is online, cannot start.</h4>')
-            } else {
-                crimAPI.BotStart()
-                online = true
+                element = element[element.length - 1]
+                element.insertAdjacentHTML("beforeend", arg)
+            })
+
+            crimAPI.term((event, arg) => {
+                document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot Process Stopped</h4><p class="typeoutput white"></p>')
+            })
+
+            document.onreadystatechange = (event) => {
+                if (document.readyState == "complete") {
+                    handleWindowControls();
+                }
+            };
+
+            var maximised = false
+
+            function handleWindowControls() {
+                document.getElementById('min-button').addEventListener("click", event => {
+                    crimAPI.winmin()
+                });
+
+                document.getElementById('max-button').addEventListener("click", event => {
+                    maximised = true
+                    crimAPI.winmax()
+                    toggleMaxRestoreButtons()
+                });
+
+                document.getElementById('restore-button').addEventListener("click", event => {
+                    maximised = false
+                    crimAPI.winunmax()
+                    toggleMaxRestoreButtons()
+                });
+
+                document.getElementById('close-button').addEventListener("click", event => {
+                    crimAPI.winclose()
+                });
+
+                document.getElementById('restart-button').addEventListener("click", event => {
+                    crimAPI.winrestart()
+                })
+
+                crimAPI.handleWinControl((event, arg) => {
+                    if (arg === "max") {
+                        maximised = true
+                        toggleMaxRestoreButtons()
+                    } else if (arg === "unmax") {
+                        maximised = false
+                        toggleMaxRestoreButtons()
+                    }
+                })
+
+                toggleMaxRestoreButtons()
+
+                function toggleMaxRestoreButtons() {
+                    if (maximised) {
+                        document.body.classList.add('maximized');
+                    } else {
+                        document.body.classList.remove('maximized');
+                    }
+                }
             }
-        }
-
-        function checkEnd() {
-            if (online === false) {
-                var element = document.querySelectorAll(".typeoutput")
-                element = element[element.length -1]
-                element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot stop.</h4>')
-            } else {
-                crimAPI.BotStop()
-                online = false
-            }
-        }
-
-        function checkRC() {
-            if (online === false) {
-                var element = document.querySelectorAll(".typeoutput")
-                element = element[element.length -1]
-                element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot refresh.</h4>')
-            } else {
-                crimAPI.BotRC()
-            }
-        }
-
-        crimAPI.botstdout((event, arg) => {
-            var element = document.querySelectorAll(".typeoutput")
-            element = element[element.length -1]
-            element.insertAdjacentHTML("beforeend", arg)
-        })
-
-        crimAPI.term((event, arg) => {
-            document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot Process Stopped</h4><p class="typeoutput white"></p>')
-        })
 
         </script>
-    </body>
+    </div>
+</body>
+
 </html>

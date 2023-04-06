@@ -7,8 +7,9 @@ const fs = require('fs');
 const path = require('path');
 const { Client, Collection, Events, GatewayIntentBits, EmbedBuilder, ActivityType, inlineCode, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const vm = require('vm');
+const config = require('../config.json')
 
-fs.writeFile("version.txt", "0.1.0", (err) => {
+fs.writeFile("version.txt", "0.1.5", (err) => {
 	if (err)
 		console.logger(err, "error");
 });
@@ -26,15 +27,13 @@ var client = new Client({
 //Can be used (I think) to send a normal message to where the user sent a slash command
 //(I think)
 
-require('dotenv').config()
-
 client.once(Events.ClientReady, c => {
 	client.user.setActivity(`over the server`, { type: ActivityType.Watching });
 	client.user.setStatus('online');
 	console.logger(`The bot is now online! Running bot as ${c.user.tag}`, "start");
 });
 
-client.login(process.env.TOKEN);
+client.login(config.token);
 
 function deploy(client) {
 	const { REST, Routes } = require('discord.js');
@@ -78,14 +77,14 @@ function deploy(client) {
 		i = i + 1
 	}
 
-	const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+	const rest = new REST({ version: '10' }).setToken(config.token);
 
 	(async () => {
 		try {
 			console.logger(`Started refreshing ${commands.length} core application commands.`, "start");
 			client.guilds.cache.forEach(async guild => {
 				var data = await rest.put(
-					Routes.applicationGuildCommands(process.env.CLIENTID, guild.id),
+					Routes.applicationGuildCommands(config.clientid, guild.id),
 					{ body: commands },
 				);
 			})
@@ -297,4 +296,5 @@ process.on('exit', function (){
 //
 // This must be 300 lines
 // I NEED IT!!!
+//
 //

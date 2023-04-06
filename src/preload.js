@@ -6,6 +6,8 @@ function requirePro(thing) {
     return res
 }
 
+var cfg = requirePro('../config.json')
+
 contextBridge.exposeInMainWorld('darkMode', {
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
     system: () => ipcRenderer.invoke('dark-mode:system'),
@@ -18,7 +20,15 @@ contextBridge.exposeInMainWorld('crimAPI', {
         ipcRenderer.invoke('clientChange', status)
     },
     jsonRequest: (arg) => ipcRenderer.invoke('jsonRequest', arg),
-    OpenConsole: (arg) => ipcRenderer.invoke('OpenConsole', arg)
+    OpenConsole: (arg) => ipcRenderer.invoke('OpenConsole', arg),
+    cfg: cfg,
+    saveENV: (arg) => ipcRenderer.invoke('putEnv', arg),
+    winmin: () => ipcRenderer.send('wincontrol', "min"),
+    winclose: () => ipcRenderer.send('wincontrol', "close"),
+    winmax: () => ipcRenderer.send('wincontrol', "max"),
+    winunmax: () => ipcRenderer.send('wincontrol', "unmax"),
+    winrestart: () => ipcRenderer.send('wincontrol', "restart"),
+    handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback)
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);
@@ -38,26 +48,60 @@ contextBridge.exposeInMainWorld('theme', {
     current: process.versions.mode,
 })
 
-var mainAdditions = [];
-var extensions = [];
-var configs = [];
-var metanames = {};
-var extensionss = ipcRenderer.sendSync("getDir", "../Extensions/")
-extensionss.forEach(extension => {
-    var arr = [];
-    var metadata = requirePro(`../Extensions/${extension}/extension.json`);
-    console.log(metadata)
+var mainAdditions = []
+var extensions = []
+var configs = []
+var errs = []
+var metanames = {}
+var userCFGS = {}
+var defaults = {}
+var extensionFiles = ipcRenderer.sendSync("getDir", "../Extensions/")
+extensionFiles.forEach(extension => {
+    var arr = []
+    arr.push(extension)
+    var metadata = requirePro(`../Extensions/${extension}/extension.json`)
     var metaname = metadata.name
     var config = requirePro(`../Extensions/${extension}/config.json`)
     var enabled = config.enabled
     metanames[extension] = metaname
     configs.push(`<button id="${metaname}Button" class="tablinksextension button" onclick="openTab(event, '${extension}', null)">${metaname}</button>`)
     if (enabled === "true") {
-        mainAdditions.push(`<div class="tabcontent" id="${extension}"><button class="tablinksextension button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label></div>`)
+        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="tablinksextension button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
     } else {
-        mainAdditions.push(`<div class="tabcontent" id="${extension}"><button class="tablinksextension button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label></div>`)
+        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="tablinksextension button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br></div>`)
     }
-    arr.push(extension)
+
+    var uicfg = requirePro(`../Extensions/${extension}/uiconfig.json`)
+
+    if (uicfg !== null) {
+
+        try {
+        for (const thing of Object.keys(uicfg)) {
+                if (thing !== "$LIBRARYMETA" && thing !== "$BUTTONS") {
+                    var information = uicfg[thing]
+                    userCFGS[information.uuid] = {
+                        item: information.item,
+                        file: information.file,
+                        extension: extension
+                    }
+
+                    if (information.hidden === "true") {
+                        var type = "password"
+                        var events = ` onfocus="this.type='text'" onblur="this.type='password'"`
+                    } else {
+                        var type = "text"
+                        var events = ""
+                    }
+
+                    arr.push(`<label for="${information.uuid}" title="${information.hover}">${information.metaname}</label><br><input type="${type}" id="${information.uuid}" name="${information.uuid}" style="width: 600px;"${events}><br><br>`)
+                    var file = requirePro(`../Extensions/${extension}/${information.file}`)
+                    defaults[information.uuid] = file[information.item]
+                }
+        }
+    } catch(err) {errs.push(err)}
+
+    }
+
     extensions.push(arr)
 })
 
@@ -65,5 +109,8 @@ contextBridge.exposeInMainWorld('codeAdditions', {
     mainAdd: mainAdditions,
     extensions: extensions,
     configs: configs,
-    metanames: metanames
+    metanames: metanames,
+    userCFGS: userCFGS,
+    errs: errs,
+    defaults: defaults
 })

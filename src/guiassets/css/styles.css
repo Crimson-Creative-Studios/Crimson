@@ -1,10 +1,52 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
 
 :root {
     --button: #cc0c39;
+    --buttondark: #a30a2e;
+    --buttonlight: #f22152;
+    --grad1: rgba(0, 0, 0, 0);
+    --grad2: rgba(0, 0, 0, 0);
     user-select: none;
-    --grad1: rgba(0,0,0,0);
-    --grad2: rgba(0,0,0,0);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #333;
+        --color: white;
+        --coloralt: #c4c4c4;
+        --buttonhov: #b80b33;
+        --buttonact: #a30a2e;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background: #F6F0F9;
+        --color: black;
+        --coloralt: #3B3B3B;
+        --buttonhov: #e80e41;
+        --buttonact: #f22152;
+    }
+
+    #close-button .icon {
+        filter: invert(1);
+        transition: 0.3s;
+    }
+
+    #close-button:hover .icon {
+        filter: invert(0);
+    }
+
+    #close-button:active .icon {
+        filter: invert(0);
+    }
+
+    #window-controls .icon {
+        filter: invert(1);
+        transition: 0.3s;
+    }
 }
 
 p,
@@ -27,35 +69,34 @@ input {
 
 .top {
     height: 10%;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #333;
-        --color: white;
-        --buttonhov: #a30a2e;
-        --buttonact: #7a0722;
-    }
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        --background: #F6F0F9;
-        --color: black;
-        --buttonhov: #d63d61;
-        --buttonact: #e06d88;
-    }
+    position: fixed;
+    top: -22px;
+    left: 8px;
+    font-size: 0.85rem;
 }
 
 body {
     background: var(--background);
     color: var(--color);
+    transition: 0.3s;
+    position: relative;
+    border: none;
+    overflow-y: hidden;
+    height: 100vh;
+}
+
+::selection {
+    color: white;
+    background: var(--buttonhov);
 }
 
 .tab {
+    position: fixed;
     float: left;
     border: none;
-    width: 15%;
+    left: 8px;
+    top: 50px;
+    width: 25%;
     min-width: 115px;
     max-width: 115px;
     height: 90%;
@@ -73,24 +114,24 @@ body {
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
-    text-align: center;
     width: 100%;
     display: block;
 }
 
 .tab button:hover {
     background-color: var(--buttonhov);
-    animation: background-color 0.1s;
+    animation: background-color 0.3s;
 }
 
 .tab button.active {
     background-color: var(--buttonact);
-    animation: background-color 0.1s;
+    animation: background-color 0.3s;
 }
 
 .tabBottom button {
     display: block;
     background-color: inherit;
+    position: fixed;
     color: white;
     padding: 22px 16px;
     width: 100%;
@@ -99,18 +140,20 @@ body {
     text-align: left;
     cursor: pointer;
     transition: 0.3s;
+    left: 8px;
+    bottom: 8px;
+    border-radius: 15px;
+    min-width: 115px;
+    max-width: 115px;
 }
 
 .tabBottom {
-    bottom: 8px;
-    left: 8px;
     border: none;
     width: 15%;
     min-width: 115px;
     max-width: 115px;
     border-radius: 15px;
     overflow: hidden;
-    position: absolute;
 }
 
 .tabBottom button {
@@ -126,12 +169,12 @@ body {
 
 .tabBottom button:hover {
     background-color: var(--buttonhov);
-    animation: background-color 0.1s;
+    animation: background-color 0.3s;
 }
 
 .tabBottom button.active {
     background-color: var(--buttonact);
-    animation: background-color 0.1s;
+    animation: background-color 0.3s;
 }
 
 .button {
@@ -141,23 +184,27 @@ body {
     color: white;
     padding: 5px 5px 5px 5px;
     border-radius: 5px;
+    margin-bottom: 5px;
 }
 
 .button:hover {
     cursor: pointer;
+    border: none;
     background-color: var(--buttonhov);
-    animation: background-color 0.1s;
+    animation: background-color 0.3s;
 }
 
 .button:active {
     cursor: pointer;
     background-color: var(--buttonact);
-    animation: background-color 0.1s;
+    animation: background-color 0.3s;
 }
 
 .tabcontent {
     display: none;
-    right: 10px;
+    position: fixed;
+    top: 50px;
+    left: 130px;
     padding: 0px 12px;
     border: none;
     border-left: none;
@@ -165,6 +212,7 @@ body {
     height: 90%;
     width: 80%;
     float: left;
+    overflow-y: scroll;
 }
 
 @keyframes fadeEffect {
@@ -181,11 +229,13 @@ body {
     margin-top: 5px;
     background-color: #222;
     border-radius: 15px;
+    display: block;
     width: 100%;
-    height: 100%;
-    max-height: 100%;
-    min-height: 100%;
-    overflow-y: auto;
+    height: 94.5%;
+    max-height: 94.5%;
+    min-height: 94.5%;
+    overflow-y: scroll;
+    pointer-events: auto;
 }
 
 .console h4,
@@ -195,6 +245,7 @@ p {
 
 .typeoutput {
     font-size: smaller;
+    user-select: text;
 }
 
 .white {
@@ -203,17 +254,17 @@ p {
 
 .modal {
     display: none;
-    position: absolute;
+    position: fixed;
     z-index: 1;
-    right: 5px;
-    bottom: 5px;
+    overflow: auto;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: none;
     margin-left: auto;
     margin-right: auto;
     pointer-events: none;
+    right: 8px;
+    bottom: 8px;
 }
 
 .modal::-webkit-scrollbar {
@@ -221,15 +272,15 @@ p {
 }
 
 .modal-content5s {
-    background-color: rgba(0,0,0,0);
-    position: absolute;
-    right: 5px;
-    bottom: -90px;
-    margin: 15% auto;
+    background-color: rgba(0, 0, 0, 0);
+    position: fixed;
+    right: 8px;
+    bottom: 8px;
+    margin: 0 auto;
     padding: 20px;
-    border: 1px solid rgba(0,0,0,0);
+    border: 1px solid rgba(0, 0, 0, 0);
     width: 65%;
-    color: rgba(0,0,0,0);
+    color: rgba(0, 0, 0, 0);
     border-radius: 12px;
     overflow: hidden;
     animation: appearModal 5s;
@@ -237,35 +288,35 @@ p {
 
 @keyframes appearModal {
     0% {
-        background-color: rgba(0,0,0,0);
-        border: 1px solid rgba(0,0,0,0);
-        color: rgba(0,0,0,0);
-        --grad1: rgba(0,0,0,0);
-        --grad2: rgba(0,0,0,0);
+        background-color: rgba(0, 0, 0, 0);
+        border: 1px solid rgba(0, 0, 0, 0);
+        color: rgba(0, 0, 0, 0);
+        --grad1: rgba(0, 0, 0, 0);
+        --grad2: rgba(0, 0, 0, 0);
     }
 
     2.5% {
         background-color: var(--background);
         border: 1px solid #888;
         color: var(--color);
-        --grad1: #00dbde;
-        --grad2: #00c8de;
+        --grad1: var(--buttonlight);
+        --grad2: var(--buttondark);
     }
 
     97.5% {
         background-color: var(--background);
         border: 1px solid #888;
         color: var(--color);
-        --grad1: #00dbde;
-        --grad2: #00c8de;
+        --grad1: var(--buttonlight);
+        --grad2: var(--buttondark);
     }
 
     100% {
-        background-color: rgba(0,0,0,0);
-        border: 1px solid rgba(0,0,0,0);
-        color: rgba(0,0,0,0);
-        --grad1: rgba(0,0,0,0);
-        --grad2: rgba(0,0,0,0);
+        background-color: rgba(0, 0, 0, 0);
+        border: 1px solid rgba(0, 0, 0, 0);
+        color: rgba(0, 0, 0, 0);
+        --grad1: rgba(0, 0, 0, 0);
+        --grad2: rgba(0, 0, 0, 0);
     }
 }
 
@@ -288,4 +339,201 @@ p {
     to {
         width: 101%;
     }
+}
+
+input,
+textarea {
+    box-sizing: border-box;
+    border: 1px solid var(--coloralt);
+    outline: none;
+    box-shadow: none;
+    transition: 0.5s;
+    border-radius: 2px;
+    background-color: var(--background);
+    color: var(--color);
+    font-family: 'DM Mono', monospace;
+}
+
+input:focus,
+textarea:focus {
+    border: 1px solid var(--color);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--coloralt);
+    border-radius: 5px;
+    transition: 0.5s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color);
+}
+
+#InformationButton {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+label {
+    font-family: 'Rubik', sans-serif;
+}
+
+#titlebar {
+    display: block;
+    position: fixed;
+    height: 32px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--background);
+    transition: 0.3s;
+    border-bottom: var(--color) 1px solid;
+}
+
+#titlebar #drag-region {
+    width: 100%;
+    height: 100%;
+    -webkit-app-region: drag;
+    display: grid;
+    grid-template-columns: auto 138px;
+}
+
+#window-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 46px);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    -webkit-app-region: no-drag;
+}
+
+#window-title {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    overflow: hidden;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12px;
+}
+
+#window-title span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.5;
+}
+
+#window-controls .winbutton {
+    grid-row: 1 / span 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#min-button {
+    grid-column: 1;
+}
+
+#max-button,
+#restore-button {
+    grid-column: 2;
+}
+
+#close-button {
+    grid-column: 3;
+}
+
+#main {
+    height: calc(100% - 32px);
+    margin-top: 32px;
+    padding: 20px;
+    overflow-y: scroll;
+}
+
+@media (-webkit-device-pixel-ratio: 1.5),
+(device-pixel-ratio: 1.5),
+(-webkit-device-pixel-ratio: 2),
+(device-pixel-ratio: 2),
+(-webkit-device-pixel-ratio: 3),
+(device-pixel-ratio: 3) {
+    #window-controls .icon {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+#window-controls .winbutton {
+    user-select: none;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+#window-controls .winbutton:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+#window-controls .winbutton:active {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+#close-button:hover {
+    background: var(--button) !important;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+#close-button:active {
+    background: var(--buttonact) !important;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+#restore-button {
+    display: none !important;
+}
+
+.maximized #titlebar {
+    width: 100%;
+    padding: 0;
+}
+
+.maximized #window-title {
+    margin-left: 12px;
+}
+
+.maximized #restore-button {
+    display: flex !important;
+}
+
+.maximized #max-button {
+    display: none;
+}
+
+.icon {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+.winbutton:has(p) {
+    padding: 0 3px 0 3px;
+}
+
+p.icon {
+    margin-top: 3px;
 }

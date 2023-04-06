@@ -17,6 +17,7 @@ zip_dir = os.path.dirname(os.path.abspath(__file__))
 zip_file.extractall(zip_dir)
 
 zip_file.close()
+os.system("npm i electron discord-rich-presence path node-fetch discord.js vm")
 
 #how to compile
 

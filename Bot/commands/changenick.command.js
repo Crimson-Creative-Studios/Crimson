@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const config = require('../../config.json')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -14,7 +15,7 @@ module.exports = {
 				.setName('nickname')
 				.setDescription('What the nickname is')),
 	async execute(interaction) {
-		if (!interaction.member.roles.cache.some(r => r.name.startsWith(process.env.ADMINNAME))) {
+		if (!interaction.member.roles.cache.some(r => r.name.startsWith(config.adminname))) {
 			await interaction.reply("You do not have access to this command.")
 		} else {
 			const target = interaction.options.getUser('target');

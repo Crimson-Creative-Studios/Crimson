@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 var console = require("../consolelogger");
+const config = require('../../config.json')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -10,7 +11,7 @@ module.exports = {
 				.setName('info')
 				.setDescription('What to log')),
 	async execute(interaction) {
-		if (!interaction.member.roles.cache.some(r => r.name.startsWith(process.env.ADMINNAME))) {
+		if (!interaction.member.roles.cache.some(r => r.name.startsWith(config.adminname))) {
 			await interaction.reply("You do not have access to this command.")
 		} else {
 			const info = interaction.options.getString('info') ?? 'No information provided!';
