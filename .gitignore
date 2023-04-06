@@ -8,3 +8,4 @@ dist
 .idea
 app.spec
 *.build
+config.json
