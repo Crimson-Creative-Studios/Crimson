@@ -1,5 +1,6 @@
 import os
+from subprocess import Popen
 
-os.chdir("src\\")
+os.chdir("src/")
 
-os.system("electron main.js")
+Popen(["electron", "main.js"], shell=True)

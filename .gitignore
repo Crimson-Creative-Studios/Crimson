@@ -9,3 +9,5 @@ dist
 app.spec
 *.build
 config.json
+package.json
+package-lock.json
