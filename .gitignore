@@ -11,3 +11,5 @@ app.spec
 config.json
 package.json
 package-lock.json
+*.cmd
+*.jar
