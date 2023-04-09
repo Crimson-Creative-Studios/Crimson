@@ -126,18 +126,17 @@
 
         <div id="Bot" class="tabcontent">
             <h3 style="margin: none;">Bot menu</h3>
-            <button class="startBot button" onclick="crimAPI.OpenConsole()">Open Bot window</button>
+            <button class="button" onclick="crimAPI.OpenConsole()">Open Bot window</button>
         </div>
 
         <div id="Configuration" class="tabcontent">
             <h3>Configuration menu</h3>
-            <button id="CrimsonButton" class="button" onclick="openTab(event, 'CrimsonOptions', null)"
-                style="margin-right: 2px;">Crimson</button>
+            <button id="CrimsonButton" class="button" onclick="openTab(event, 'CrimsonOptions', null)" style="margin-right: 2px;">Crimson</button>
         </div>
 
         <div id="CrimsonOptions" class="tabcontent">
             <h3>Crimson Options</h3>
-            <button class="tablinksextension button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button>
+            <button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button>
             <form onsubmit="return false;">
                 <label for="token">Token:</label><br>
                 <input type="password" id="token" name="token" style="width: 600px;" onfocus="this.type='text'" onblur="this.type='password'"><br><br>

@@ -191,6 +191,10 @@ function createWindow() {
         event.returnValue = result
     })
 
+    ipcMain.handle('siteopen', (event, arg) => {
+        require('electron').shell.openExternal(arg)
+    })
+
     ipcMain.handle('getEnv', (event, arg) => {
         try {
             var env = require("../config.json")

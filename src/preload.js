@@ -28,7 +28,8 @@ contextBridge.exposeInMainWorld('crimAPI', {
     winmax: () => ipcRenderer.send('wincontrol', "max"),
     winunmax: () => ipcRenderer.send('wincontrol', "unmax"),
     winrestart: () => ipcRenderer.send('wincontrol', "restart"),
-    handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback)
+    handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback),
+    openSite: (arg) => ipcRenderer.invoke('siteopen', arg)
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);
@@ -55,6 +56,8 @@ var errs = []
 var metanames = {}
 var userCFGS = {}
 var defaults = {}
+var libtext = {}
+var islib = {}
 var extensionFiles = ipcRenderer.sendSync("getDir", "../Extensions/")
 extensionFiles.forEach(extension => {
     var arr = []
@@ -62,13 +65,20 @@ extensionFiles.forEach(extension => {
     var metadata = requirePro(`../Extensions/${extension}/extension.json`)
     var metaname = metadata.name
     var config = requirePro(`../Extensions/${extension}/config.json`)
-    var enabled = config.enabled
     metanames[extension] = metaname
-    configs.push(`<button id="${metaname}Button" class="tablinksextension button" onclick="openTab(event, '${extension}', null)">${metaname}</button>`)
-    if (enabled === "true") {
-        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="tablinksextension button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+    configs.push(`<button id="${metaname}Button" class="button" onclick="openTab(event, '${extension}', null)">${metaname}</button>`)
+    if (metadata.type === "library") {
+        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+
+        islib[extension] = true
     } else {
-        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="tablinksextension button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br></div>`)
+        islib[extension] = false
+
+        if (config.enabled === "true") {
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+        } else {
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br></div>`)
+        }
     }
 
     var uicfg = requirePro(`../Extensions/${extension}/uiconfig.json`)
@@ -76,9 +86,9 @@ extensionFiles.forEach(extension => {
     if (uicfg !== null) {
 
         try {
-        for (const thing of Object.keys(uicfg)) {
+            for (const thing of Object.keys(uicfg)) {
+                var information = uicfg[thing]
                 if (thing !== "$LIBRARYMETA" && thing !== "$BUTTONS") {
-                    var information = uicfg[thing]
                     userCFGS[information.uuid] = {
                         item: information.item,
                         file: information.file,
@@ -93,12 +103,18 @@ extensionFiles.forEach(extension => {
                         var events = ""
                     }
 
-                    arr.push(`<label for="${information.uuid}" title="${information.hover}">${information.metaname}</label><br><input type="${type}" id="${information.uuid}" name="${information.uuid}" style="width: 600px;"${events}><br><br>`)
+                    arr.push(`<label for="${information.uuid}" title="${information.hover}">${information.metaname}</label><br><input type="${type}" id="${information.uuid}" name="${information.uuid}" style="width: 100%;"${events}><br><br>`)
                     var file = requirePro(`../Extensions/${extension}/${information.file}`)
                     defaults[information.uuid] = file[information.item]
+                } else if (thing === "$LIBRARYMETA") {
+                    libtext[extension] = {
+                        text: information.text,
+                        buttontext: information.docbuttontext,
+                        buttonlink: information.docbuttonlink
+                    }
                 }
-        }
-    } catch(err) {errs.push(err)}
+            }
+        } catch (err) { errs.push(err) }
 
     }
 
@@ -107,10 +123,12 @@ extensionFiles.forEach(extension => {
 
 contextBridge.exposeInMainWorld('codeAdditions', {
     mainAdd: mainAdditions,
-    extensions: extensions,
-    configs: configs,
-    metanames: metanames,
-    userCFGS: userCFGS,
-    errs: errs,
-    defaults: defaults
+    extensions,
+    configs,
+    metanames,
+    userCFGS,
+    errs,
+    defaults,
+    libtext,
+    islib
 })

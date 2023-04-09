@@ -49,6 +49,15 @@
     }
 }
 
+.top {
+    height: 10%;
+    position: fixed;
+    top: -23px;
+    left: 8px;
+    font-size: 14px;
+    border-right: var(--color);
+}
+
 p,
 h1,
 h2,
@@ -65,14 +74,6 @@ input {
 
 * {
     box-sizing: border-box
-}
-
-.top {
-    height: 10%;
-    position: fixed;
-    top: -22px;
-    left: 8px;
-    font-size: 0.85rem;
 }
 
 body {
@@ -211,7 +212,6 @@ body {
     animation: fadeEffect 0.25s;
     height: 90%;
     width: 80%;
-    float: left;
     overflow-y: scroll;
 }
 
@@ -384,6 +384,7 @@ textarea:focus {
 
 label {
     font-family: 'Rubik', sans-serif;
+    margin: 0 5px 0 5px;
 }
 
 #titlebar {

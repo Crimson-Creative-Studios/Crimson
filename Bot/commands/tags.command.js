@@ -1,10 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder, codeBlock, inlineCode, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-var console = require("../consolelogger");
-
-var extensionPath = path.join(__dirname + '../../../Extensions/')
-const extensions = fs.readdirSync(extensionPath)
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, inlineCode } = require('discord.js')
+const console = require("../consolelogger")
+const fs = require("fs")
 
 var tagCommands = [{
 	label: "All Commands",
@@ -13,30 +9,46 @@ var tagCommands = [{
 	detail: "Placeholder, this statement is unused so eh"
 }]
 var tagCommandsOrigins = ["Crimson"]
+var tagDescriptions = []
+var noTags = []
+var disabled = []
+var allCommands = ""
+const extensions = fs.readdirSync("../Extensions/")
 
 extensions.forEach(extension => {
-	try {
-		var extensionPath = path.join(__dirname + `../../../Extensions/${extension}/tags.js`)
-		var { tags } = require(extensionPath);
-		var extensionPath = path.join(__dirname + `../../../Extensions/${extension}/extension.json`)
-		var metadata = require(extensionPath);
-		for (const i of tags) {
-			if (i.enabled === "true") {
-				tagCommands.push(i)
-				tagCommandsOrigins.push(metadata.name);
+	var cfg = require(`../../Extensions/${extension}/config.json`)
+	var enabled = cfg.enabled
+	if (enabled === "true") {
+		var extensionstate = "enabled"
+	} else {
+		var extensionstate = "disabled"
+	}
+	if (extensionstate === "enabled") {
+		var metadata = require(`../../Extensions/${extension}/extension.json`)
+		try {
+			var { tags } = require(`../../Extensions/${extension}/tags.js`)
+			for (const i of tags) {
+				if (i.enabled === "true") {
+					tagCommands.push(i)
+					tagCommandsOrigins.push(metadata.name)
+				}
 			}
 		}
+		catch (err) {
+			tagDescriptions.push([metadata.name, ["This extension has no tag commands.\n"]])
+			noTags.push(extension)
+		}
 	}
-	catch (err) {
-		var whynotaddavarlmao = undefined
+	else {
+		disabled.push(extension)
 	}
-})
 
-var tagDescriptions = []
-extensions.forEach(extension => {
-	var extensionPath = path.join(__dirname + `../../../Extensions/${extension}/extension.json`)
-	var metadata = require(extensionPath);
-	tagDescriptions.push([metadata.name, []])
+	if (!disabled.includes(extension)) {
+		if (!noTags.includes(extension)) {
+			var metadata = require(`../../Extensions/${extension}/extension.json`);
+			tagDescriptions.unshift([metadata.name, []])
+		}
+	}
 })
 
 for (const tag of tagCommands) {
@@ -53,7 +65,7 @@ for (const tag of tagCommands) {
 		}
 	}
 }
-var allCommands = ""
+
 for (const des of tagDescriptions) {
 	allCommands = allCommands + `${des[0]}:\n`
 	var tags = des[1]
@@ -63,7 +75,7 @@ for (const des of tagDescriptions) {
 	allCommands = allCommands + "\n"
 }
 
-for (const i of tagDescriptions) {
+for (const i of Object.keys(tagDescriptions)) {
 	if (i[1] === []) {
 		var index = tagDescriptions.indexOf(i)
 		i[1] = ["`This extension has no tag commands.`\n"]
@@ -71,7 +83,7 @@ for (const i of tagDescriptions) {
 	}
 }
 
-const commandEmbed = new EmbedBuilder()
+var commandEmbed = new EmbedBuilder()
 	.setColor(0xFFFFFF)
 	.setTitle("Crimson Tag Commands")
 	.setDescription(allCommands)
@@ -82,13 +94,14 @@ const row = new ActionRowBuilder()
 			.setCustomId('commandSelector')
 			.setPlaceholder('Nothing')
 			.addOptions(tagCommands),
-	);
+	)
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("list_tag_commands")
 		.setDescription("Get all tag commands for Crimson"),
 	async execute(interaction) {
-		await interaction.reply({ embeds: [commandEmbed], components: [row] });
+		await interaction.reply({ embeds: [commandEmbed], components: [row] })
 	},
 };

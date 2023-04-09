@@ -104,6 +104,9 @@ codeAdditions.extensions.forEach(extension => {
         document.getElementById(name).insertAdjacentHTML("beforeend", item)
     }
     document.getElementById(name).insertAdjacentHTML("beforeend", '<button id="'+name+'save" class="button savebtn">Save Settings</button><br><br><br><br>')
+    if (codeAdditions.islib[extension]) {
+        document.getElementById(name).insertAdjacentHTML("beforeend", `<p>${codeAdditions.libtext[extension].text}</p><button class="button" onclick="crimAPI.openSite('${codeAdditions.libtext[extension].buttonlink}')">${codeAdditions.libtext[extension].buttontext}</button>`)
+    }
     document.getElementById(name+"save").addEventListener('click', () => {
         var items = []
         var vals = []
