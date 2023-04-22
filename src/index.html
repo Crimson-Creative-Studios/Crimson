@@ -5,73 +5,17 @@
     <meta charset="UTF-8">
     <title>CrimsonGUI</title>
     <link rel="stylesheet" href="guiassets/css/styles.css">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         function startBot() {
             crimAPI.BotStart()
             status = 'Online'
         }
-        function openTab(evt, tabName, override) {
-            var i, tabcontent, tablinks, presence;
-            var key = 'bigimg'
-
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-
-            document.getElementById(tabName).style.display = "block";
-            //try {
-            if (override !== null) {
-                document.getElementById(override).classList.add("active")
-            } else {
-                evt.currentTarget.className += " active";
-            }
-            //} catch(err) {
-            //console.log('Tab opened without a button press')
-            //}
-            var currentMenu = tabName;
-            if (currentMenu === "Bot" || currentMenu === "Configuration" || currentMenu === "Information") {
-                presence = `Currently in the ${currentMenu} menu.`
-                if (currentMenu === "Configuration") {
-                    key = 'bigimgcog'
-                } else {
-                    key = 'bigimg'
-                }
-            } else if (currentMenu === "DEBUG") {
-                presence = 'Currently DEBUGGING something...'
-                key = 'bigimg'
-            } else if (currentMenu === null) {
-                presence = 'ERR | Page not found'
-            } else if (currentMenu === "Options") {
-                presence = "Currently modifing CrimsonGUI's settings"
-                key = 'bigimgcog'
-            } else {
-                var metaname = codeAdditions.metanames[currentMenu]
-                presence = `Currently modifing ${metaname}'s settings.`
-                if (metaname === "PyRun") {
-                    key = 'pyrunlogo'
-                } else {
-                    key = 'bigimgcog'
-                }
-            }
-            if (presence === null) {
-                presence = 'Something has really gone wrong'
-            }
-            crimAPI.rcpChange([presence, key])
-        }
         window.addEventListener('load', function () {
-            document.getElementById("Bot").style.display = "block";
             var information = crimAPI.cfg
             document.getElementById("token").defaultValue = information.token
             document.getElementById("cid").defaultValue = information.clientid
             document.getElementById("adprefix").defaultValue = information.adminname
-            document.getElementById("tstsver").defaultValue = information.testServer
         })
     </script>
 </head>
@@ -81,29 +25,25 @@
         <div id="drag-region">
             <div id="window-controls">
 
-                <div class="winbutton" id="restart-button" style="display: none;">
-                    <p class="icon">Restart</p>
-                </div>
-
-                <div class="winbutton" id="min-button">
+                <div class="winbutton" id="min-button" onclick="crimAPI.winmin()">
                     <img class="icon"
                         srcset="icons/min-w-10.png 1x, icons/min-w-12.png 1.25x, icons/min-w-15.png 1.5x, icons/min-w-15.png 1.75x, icons/min-w-20.png 2x, icons/min-w-20.png 2.25x, icons/min-w-24.png 2.5x, icons/min-w-30.png 3x, icons/min-w-30.png 3.5x"
                         draggable="false" />
                 </div>
 
-                <div class="winbutton" id="max-button">
+                <div class="winbutton" id="max-button" onclick="crimAPI.winmax()">
                     <img class="icon"
                         srcset="icons/max-w-10.png 1x, icons/max-w-12.png 1.25x, icons/max-w-15.png 1.5x, icons/max-w-15.png 1.75x, icons/max-w-20.png 2x, icons/max-w-20.png 2.25x, icons/max-w-24.png 2.5x, icons/max-w-30.png 3x, icons/max-w-30.png 3.5x"
                         draggable="false" />
                 </div>
 
-                <div class="winbutton" id="restore-button">
+                <div class="winbutton" id="restore-button" onclick="crimAPI.winunmax()">
                     <img class="icon"
                         srcset="icons/restore-w-10.png 1x, icons/restore-w-12.png 1.25x, icons/restore-w-15.png 1.5x, icons/restore-w-15.png 1.75x, icons/restore-w-20.png 2x, icons/restore-w-20.png 2.25x, icons/restore-w-24.png 2.5x, icons/restore-w-30.png 3x, icons/restore-w-30.png 3.5x"
                         draggable="false" />
                 </div>
 
-                <div class="winbutton" id="close-button">
+                <div class="winbutton" id="close-button" onclick="crimAPI.winclose()">
                     <img class="icon"
                         srcset="icons/close-w-10.png 1x, icons/close-w-12.png 1.25x, icons/close-w-15.png 1.5x, icons/close-w-15.png 1.75x, icons/close-w-20.png 2x, icons/close-w-20.png 2.25x, icons/close-w-24.png 2.5x, icons/close-w-30.png 3x, icons/close-w-30.png 3.5x"
                         draggable="false" />
@@ -118,25 +58,33 @@
             <h1>CrimsonGUI</h1>
         </div>
         <div class="tab">
-            <button id="BotButton" class="tablinks active" onclick="openTab(event, 'Bot', null)">Bot</button>
-            <button id="ConfigurationButton" class="tablinks" onclick="openTab(event, 'Configuration', null)">Config</button>
-            <button id="InformationButton" class="tablinks" onclick="openTab(event, 'Information', null)">Information</button>
-            <button id="DEBUGButton" class="tablinks" onclick="openTab(event, 'DEBUG', null)" style="display: none;" id="debug">Debug</button>
+            <button id="BotButton" class="tablinks active" onclick="openTab('Home', 'BotButton')">Home</button>
+            <button id="ConfigurationButton" class="tablinks"
+                onclick="openTab('Configuration', 'ConfigurationButton')">Config</button>
+            <button id="MarketButton" class="tablinks"
+                onclick="openTab('Market', 'MarketButton')">Market</button>
+            <button id="InformationButton" class="tablinks"
+                onclick="openTab('Information', 'InformationButton')">Information</button>
         </div>
 
-        <div id="Bot" class="tabcontent">
+        <div id="extensionsHolder"></div>
+
+        <div id="Home" class="tabcontent" style="display: block;">
             <h3 style="margin: none;">Bot menu</h3>
             <button class="button" onclick="crimAPI.OpenConsole()">Open Bot window</button>
+            <h3 style="margin: none;">Version Updates</h3>
+            <p id="versionut">Checking for new versions...</p>
         </div>
 
         <div id="Configuration" class="tabcontent">
             <h3>Configuration menu</h3>
-            <button id="CrimsonButton" class="button" onclick="openTab(event, 'CrimsonOptions', null)" style="margin-right: 2px;">Crimson</button>
+            <button id="CrimsonButton" class="button" onclick="openTab('CrimsonOptions', 'ConfigurationButton')"
+                style="margin-right: 2px;">Crimson</button>
         </div>
 
         <div id="CrimsonOptions" class="tabcontent">
             <h3>Crimson Options</h3>
-            <button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button>
+            <button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button>
             <form onsubmit="return false;">
                 <label for="token">Token:</label><br>
                 <input type="password" id="token" name="token" style="width: 600px;" onfocus="this.type='text'" onblur="this.type='password'"><br><br>
@@ -144,10 +92,18 @@
                 <input type="password" id="cid" name="cid" style="width: 600px;" onfocus="this.type='text'" onblur="this.type='password'"><br><br>
                 <label for="adprefix">Admin Role Prefix:</label><br>
                 <input type="text" id="adprefix" name="adprefix" style="width: 600px;"><br><br>
-                <label for="tstsver">Test Server ID:</label><br>
-                <input type="text" id="tstsver" name="tstsver" style="width: 600px;"><br><br>
                 <button class="button" id="saveMainCFG">Save Settings</button><br><br>
             </form>
+        </div>
+
+        <div id="Market" class="tabcontent">
+            <h3 id="markettext">Market</h3>
+            <form>
+                <input type="text" id="exsearch" name="exsearch" placeholder="Enter search..." style="display: none;" onchange="handleInputChange(this.value)"
+                onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" />
+            </form>
+            <p>Find extensions for Crimson</p>
+            <p id="exloadtxt">Loading extensions...<br>Give me a second...</p>
         </div>
 
         <div id="Information" class="tabcontent">
@@ -162,6 +118,8 @@
             <p>Current theme: <strong id="theme-source">System</strong></p>
             <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
             <button id="reset-to-system" class="button" onclick="sysDarkMode()">Reset to System Theme</button>
+            <br>
+            <button class="button" onclick="openTab('DEBUG')">Open DEBUG menu</button>
         </div>
 
         <div id="DEBUG" class="tabcontent">
@@ -172,11 +130,20 @@
             <p id="debugELECTRON"></p>
             <h4>Node Version:</h4>
             <p id="debugNODE"></p>
-            <p id="amoled"></p>
+            <button class="button savebtn">Test save settings prompt</button>
+            <button class="button" onclick="openTab('falseErrorTest')">Test a generic tab fail</button>
+            <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab fail</button>
+        </div>
+
+        <div id="ErrorFound" class="tabcontent">
+            <h3 id="ErrorTXTM"></h3>
+            <p id="ErrorTXTS"></p>
+            <button id="CopyERR" class="button">Copy Error to clipboard</button>
+            <button id="GoBackERR" class="button">Go Back Home</button>
         </div>
 
         <div class="tabBottom">
-            <button id="OptionsButton" class="tablinks" onclick="openTab(event, 'Options', null)">Options</button>
+            <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')">Options</button>
         </div>
 
         <div id="savedModal" class="modal">
@@ -188,7 +155,20 @@
 
         </div>
 
-        <script src="./renderer.js"></script>
+        <div id="copiedModal" class="modal">
+
+            <div class="modal-content5s">
+                <div class="disappear5s"></div>
+                <p>Successfully copied to clipboard!</p>
+            </div>
+
+        </div>
+
+        <script src="./renderer.js" type="module"></script>
+        <script src="./tabhandler.js"></script>
+        <script src="./darkmodehandler.js"></script>
+        <script src="./extensionsearchhandler.js"></script>
+        <script src="./windowcontroller.js"></script>
     </div>
 </body>
 

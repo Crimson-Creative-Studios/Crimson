@@ -27,9 +27,11 @@ contextBridge.exposeInMainWorld('crimAPI', {
     winclose: () => ipcRenderer.send('wincontrol', "close"),
     winmax: () => ipcRenderer.send('wincontrol', "max"),
     winunmax: () => ipcRenderer.send('wincontrol', "unmax"),
-    winrestart: () => ipcRenderer.send('wincontrol', "restart"),
     handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback),
-    openSite: (arg) => ipcRenderer.invoke('siteopen', arg)
+    openSite: (arg) => ipcRenderer.invoke('siteopen', arg),
+    handleVer: (callback) => ipcRenderer.on('verfind', callback),
+    onlineRequest: (thing) => ipcRenderer.invoke('onlineRequest', thing),
+    extensionDownload: (arg) => ipcRenderer.invoke('extensionDownload', arg)
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);
@@ -66,18 +68,18 @@ extensionFiles.forEach(extension => {
     var metaname = metadata.name
     var config = requirePro(`../Extensions/${extension}/config.json`)
     metanames[extension] = metaname
-    configs.push(`<button id="${metaname}Button" class="button" onclick="openTab(event, '${extension}', null)">${metaname}</button>`)
+    configs.push(`<button id="${metaname}Button" class="button" onclick="openTab('${extension}', 'ConfigurationButton')">${metaname}</button>`)
     if (metadata.type === "library") {
-        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
 
         islib[extension] = true
     } else {
         islib[extension] = false
 
         if (config.enabled === "true") {
-            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
         } else {
-            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br></div>`)
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br></div>`)
         }
     }
 
