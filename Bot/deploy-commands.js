@@ -27,6 +27,12 @@ async function deploy(guilds, force = false) {
         }
     };
 
+    for (const file of commandFiles) {
+        if (!file.endsWith(".command.js")) return
+        const command = require(`./commands/${file}`)
+        commands.push(command.data.toJSON())
+    }
+
     const rest = new REST({ version: '10' }).setToken(config.token)
 
     try {
@@ -36,17 +42,6 @@ async function deploy(guilds, force = false) {
                 { body: commands },
             )
         })
-        if (force) {
-            for (const file of commandFiles) {
-                if (!file.endsWith(".command.js")) return
-                const command = require(`./commands/${file}`)
-                maincommands.push(command.data.toJSON())
-            }
-            await rest.put(
-                Routes.applicationCommands(config.clientid),
-                { body: maincommands },
-            )
-        }
         console.logger(`Successfully refreshed all application commands.`, "start")
         return true
     } catch (error) {
