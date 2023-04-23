@@ -6,6 +6,8 @@
     --button: #cc0c39;
     --buttondark: #a30a2e;
     --buttonlight: #f22152;
+    --successlight: #0000A0;
+    --successdark: #00009A;
     --grad1: rgba(0, 0, 0, 0);
     --grad2: rgba(0, 0, 0, 0);
     user-select: none;
@@ -13,21 +15,25 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --background: #333;
+        --background: #2f3136;
+        --backgroundalt: #2c2e32;
         --color: white;
         --coloralt: #c4c4c4;
         --buttonhov: #b80b33;
         --buttonact: #a30a2e;
+        --buttonacthov: #8f0828;
     }
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background: #F6F0F9;
+        --background: #F6F8FF;
+        --backgroundalt: #f1f4ff;
         --color: black;
         --coloralt: #3B3B3B;
         --buttonhov: #e80e41;
         --buttonact: #f22152;
+        --buttonacthov: #f43d67;
     }
 
     #close-button .icon {
@@ -77,7 +83,7 @@ input {
 }
 
 body {
-    background: var(--background);
+    background-color: var(--background);
     color: var(--color);
     transition: 0.3s;
     position: relative;
@@ -86,9 +92,13 @@ body {
     height: 100vh;
 }
 
+img {
+    pointer-events: none
+}
+
 ::selection {
-    color: white;
-    background: var(--buttonhov);
+    color: black;
+    background: #33F3C6;
 }
 
 .tab {
@@ -126,6 +136,11 @@ body {
 
 .tab button.active {
     background-color: var(--buttonact);
+    animation: background-color 0.3s;
+}
+
+.tab button.active:hover {
+    background-color: var(--buttonacthov);
     animation: background-color 0.3s;
 }
 
@@ -178,6 +193,11 @@ body {
     animation: background-color 0.3s;
 }
 
+.tabBottom button.active:hover {
+    background-color: var(--buttonacthov);
+    animation: background-color 0.3s;
+}
+
 .button {
     background-color: var(--button);
     background-size: 200%;
@@ -186,6 +206,7 @@ body {
     padding: 5px 5px 5px 5px;
     border-radius: 5px;
     margin-bottom: 5px;
+    transition: transform 0.05s;
 }
 
 .button:hover {
@@ -193,12 +214,30 @@ body {
     border: none;
     background-color: var(--buttonhov);
     animation: background-color 0.3s;
+    transform: scale(1.05);
+    transition: transform 0.1s;
 }
 
 .button:active {
     cursor: pointer;
     background-color: var(--buttonact);
     animation: background-color 0.3s;
+    animation: bouce 0.2s ease forwards;
+    transition: transform 0.05s;
+}
+
+@keyframes bouce {
+    0% {
+        transform: scale(1.05);
+    }
+
+    50% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .tabcontent {
@@ -209,6 +248,7 @@ body {
     padding: 0px 12px;
     border: none;
     border-left: none;
+    transition: opacity;
     animation: fadeEffect 0.25s;
     height: 90%;
     width: 80%;
@@ -227,7 +267,7 @@ body {
 
 .console {
     margin-top: 5px;
-    background-color: #222;
+    background-color: #202225;
     border-radius: 15px;
     display: block;
     width: 100%;
@@ -299,16 +339,16 @@ p {
         background-color: var(--background);
         border: 1px solid #888;
         color: var(--color);
-        --grad1: var(--buttonlight);
-        --grad2: var(--buttondark);
+        --grad1: var(--successlight);
+        --grad2: var(--successdark);
     }
 
     97.5% {
         background-color: var(--background);
         border: 1px solid #888;
         color: var(--color);
-        --grad1: var(--buttonlight);
-        --grad2: var(--buttondark);
+        --grad1: var(--successlight);
+        --grad2: var(--successdark);
     }
 
     100% {
@@ -349,7 +389,7 @@ textarea {
     box-shadow: none;
     transition: 0.5s;
     border-radius: 2px;
-    background-color: var(--background);
+    background-color: rgba(0, 0, 0, 0);
     color: var(--color);
     font-family: 'DM Mono', monospace;
 }
@@ -538,3 +578,56 @@ label {
 p.icon {
     margin-top: 3px;
 }
+
+.appearbtn {
+    animation: fadein 0.2s;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.bgd1 {
+    position: fixed;
+    outline-width: 5px;
+    outline-color: var(--backgroundalt);
+    background-color: var(--backgroundalt);
+    border-style: dashed;
+    border-color: var(--background);
+    border-width: 5px;
+    right: 0;
+    bottom: -150px;
+    width: 200px;
+    height: 500px;
+    transform: rotateZ(45deg);
+    z-index: -5;
+    transition: 0.3s;
+}
+
+.bgd2 {
+    position: fixed;
+    outline-width: 5px;
+    outline-color: var(--backgroundalt);
+    background-color: var(--backgroundalt);
+    border-style: dashed;
+    border-color: var(--background);
+    border-width: 5px;
+    left: 0;
+    top: -150px;
+    width: 200px;
+    height: 500px;
+    transform: rotateZ(45deg);
+    z-index: -5;
+    transition: 0.3s;
+}
+
+::placeholder {
+    color: var(--color);
+    opacity: 1;
+  }

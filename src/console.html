@@ -65,7 +65,7 @@
                     online = true
                 } else {
                     crimAPI.BotStop()
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    await new Promise(resolve => setTimeout(resolve, 100));
                     crimAPI.BotStart()
                 }
             }
@@ -110,6 +110,7 @@
 
             crimAPI.term((event, arg) => {
                 document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot Process Stopped</h4><p class="typeoutput white"></p>')
+                online = false
             })
 
             document.onreadystatechange = (event) => {

@@ -3,16 +3,16 @@ const { REST, Routes } = require('discord.js')
 const console = require("./consolelogger")
 const config = require('../config.json')
 
-async function deploy(guilds) {
+async function deploy(guilds, force = false) {
     console.logger("Started refreshing all application commands.", "start")
+    const maincommands = []
     const commands = []
     const commandFiles = await fs.promises.readdir('./commands/')
     const extensions = await fs.promises.readdir(`../Extensions/`)
 
     for (var extension of extensions) {
         var cfg = require(`../Extensions/${extension}/config.json`)
-        var enabled = cfg.enabled
-        if (enabled === "true") {
+        if (cfg.enabled === "true") {
             var state = "enabled"
         } else {
             var state = "disabled"
@@ -24,15 +24,8 @@ async function deploy(guilds) {
                 var command = require(`../Extensions/${extension}/commands/${file}`)
                 commands.push(command.data.toJSON())
             }
-            var metadata = require(`../Extensions/${extension}/extension.json`)
         }
     };
-
-    for (const file of commandFiles) {
-        if (!file.endsWith(".command.js")) return
-        const command = require(`./commands/${file}`)
-        commands.push(command.data.toJSON())
-    }
 
     const rest = new REST({ version: '10' }).setToken(config.token)
 
@@ -41,15 +34,24 @@ async function deploy(guilds) {
             await rest.put(
                 Routes.applicationGuildCommands(config.clientid, guild.id),
                 { body: commands },
-            );
+            )
         })
-        await rest.put(
-            Routes.applicationCommands(config.clientid),
-            { body: [] },
-        );
+        if (force) {
+            for (const file of commandFiles) {
+                if (!file.endsWith(".command.js")) return
+                const command = require(`./commands/${file}`)
+                maincommands.push(command.data.toJSON())
+            }
+            await rest.put(
+                Routes.applicationCommands(config.clientid),
+                { body: maincommands },
+            )
+        }
         console.logger(`Successfully refreshed all application commands.`, "start")
+        return true
     } catch (error) {
         console.logger(error, "error")
+        return false
     }
 };
 

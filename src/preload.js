@@ -11,6 +11,7 @@ var cfg = requirePro('../config.json')
 contextBridge.exposeInMainWorld('darkMode', {
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
     system: () => ipcRenderer.invoke('dark-mode:system'),
+    get: () => ipcRenderer.invoke('dark-mode:get'),
 })
 
 contextBridge.exposeInMainWorld('crimAPI', {
@@ -27,9 +28,11 @@ contextBridge.exposeInMainWorld('crimAPI', {
     winclose: () => ipcRenderer.send('wincontrol', "close"),
     winmax: () => ipcRenderer.send('wincontrol', "max"),
     winunmax: () => ipcRenderer.send('wincontrol', "unmax"),
-    winrestart: () => ipcRenderer.send('wincontrol', "restart"),
     handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback),
-    openSite: (arg) => ipcRenderer.invoke('siteopen', arg)
+    openSite: (arg) => ipcRenderer.invoke('siteopen', arg),
+    handleVer: (callback) => ipcRenderer.on('verfind', callback),
+    onlineRequest: (thing) => ipcRenderer.invoke('onlineRequest', thing),
+    extensionDownload: (arg) => ipcRenderer.invoke('extensionDownload', arg)
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);
@@ -66,18 +69,18 @@ extensionFiles.forEach(extension => {
     var metaname = metadata.name
     var config = requirePro(`../Extensions/${extension}/config.json`)
     metanames[extension] = metaname
-    configs.push(`<button id="${metaname}Button" class="button" onclick="openTab(event, '${extension}', null)">${metaname}</button>`)
+    configs.push(`<button id="${metaname}Button" class="button" onclick="openTab('${extension}', 'ConfigurationButton')">${metaname}</button>`)
     if (metadata.type === "library") {
-        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
 
         islib[extension] = true
     } else {
         islib[extension] = false
 
         if (config.enabled === "true") {
-            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
         } else {
-            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab(event, 'Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br></div>`)
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br></div>`)
         }
     }
 
@@ -107,10 +110,25 @@ extensionFiles.forEach(extension => {
                     var file = requirePro(`../Extensions/${extension}/${information.file}`)
                     defaults[information.uuid] = file[information.item]
                 } else if (thing === "$LIBRARYMETA") {
+                    if (information.text) {
+                        var text = information.text
+                    } else {
+                        var text = "This extension cannot be disabled because it is a library."
+                    }
+                    if (information.docubuttontext) {
+                        var doctext = information.docbuttontext
+                    } else {
+                        var doctext = "Click here to learn more"
+                    }
+                    if (information.docbuttonlink) {
+                        var doclink = information.docbuttonlink
+                    } else {
+                        var doclink = "https://skyoproductions.github.io/wiki/crimson/lib"
+                    }
                     libtext[extension] = {
-                        text: information.text,
-                        buttontext: information.docbuttontext,
-                        buttonlink: information.docbuttonlink
+                        text: text,
+                        buttontext: doctext,
+                        buttonlink: doclink
                     }
                 }
             }
