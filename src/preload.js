@@ -91,6 +91,7 @@ extensionFiles.forEach(extension => {
         try {
             for (const thing of Object.keys(uicfg)) {
                 var information = uicfg[thing]
+                console.log(thing)
                 if (thing !== "$LIBRARYMETA" && thing !== "$BUTTONS") {
                     userCFGS[information.uuid] = {
                         item: information.item,
