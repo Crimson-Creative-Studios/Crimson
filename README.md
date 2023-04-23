@@ -1,3 +1,7 @@
+</p>
+<img align="right" width="300" alt="image" src="https://cdn.discordapp.com/attachments/957344047494725672/1099675663172108331/crimsonLogoHiRes.png">
+</p>
+
 # Crimson
 
 This is the base of the "Delta" bot in the Skyo Productions Discord server
