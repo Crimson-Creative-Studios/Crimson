@@ -16,6 +16,7 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --background: #2f3136;
+        --backgroundalt: #2c2e32;
         --color: white;
         --coloralt: #c4c4c4;
         --buttonhov: #b80b33;
@@ -27,6 +28,7 @@
 @media (prefers-color-scheme: light) {
     :root {
         --background: #F6F8FF;
+        --backgroundalt: #f1f4ff;
         --color: black;
         --coloralt: #3B3B3B;
         --buttonhov: #e80e41;
@@ -81,7 +83,7 @@ input {
 }
 
 body {
-    background: var(--background);
+    background-color: var(--background);
     color: var(--color);
     transition: 0.3s;
     position: relative;
@@ -387,7 +389,7 @@ textarea {
     box-shadow: none;
     transition: 0.5s;
     border-radius: 2px;
-    background-color: var(--background);
+    background-color: rgba(0, 0, 0, 0);
     color: var(--color);
     font-family: 'DM Mono', monospace;
 }
@@ -585,7 +587,47 @@ p.icon {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
+
+.bgd1 {
+    position: fixed;
+    outline-width: 5px;
+    outline-color: var(--backgroundalt);
+    background-color: var(--backgroundalt);
+    border-style: dashed;
+    border-color: var(--background);
+    border-width: 5px;
+    right: 0;
+    bottom: -150px;
+    width: 200px;
+    height: 500px;
+    transform: rotateZ(45deg);
+    z-index: -5;
+    transition: 0.3s;
+}
+
+.bgd2 {
+    position: fixed;
+    outline-width: 5px;
+    outline-color: var(--backgroundalt);
+    background-color: var(--backgroundalt);
+    border-style: dashed;
+    border-color: var(--background);
+    border-width: 5px;
+    left: 0;
+    top: -150px;
+    width: 200px;
+    height: 500px;
+    transform: rotateZ(45deg);
+    z-index: -5;
+    transition: 0.3s;
+}
+
+::placeholder {
+    color: var(--color);
+    opacity: 1;
+  }

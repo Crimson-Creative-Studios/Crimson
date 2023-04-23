@@ -5,7 +5,6 @@ function handleInputChange(input) {
         if (input === "") {
             btn.style.display = "inline"
         } else {
-            console.log(btn.dataset.search, input)
             if (btn.dataset.search.toLowerCase().startsWith(input.toLowerCase())) {
                 btn.style.display = "inline"
             } else {

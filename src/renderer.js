@@ -135,21 +135,22 @@ async function handleExtensionData(key, data) {
     return new Promise((resolve, reject) => {
         setTimeout(async () => {
             var info = data[key]
+            console.log(info)
             var authors = info.authors
             var name = info.name
             var id = info.folder
             var file = info.zip
             var ui = info.ui
             var logo = await axios.get(repoLink(`${id}/${ui.logo}`), { responseType: "arraybuffer" })
-        
+
             const blob = new Blob([logo.data])
             const url = URL.createObjectURL(blob)
             const img = new Image()
-        
+
             img.onload = function () {
                 const canvas = document.createElement('canvas')
                 const ctx = canvas.getContext('2d')
-        
+
                 canvas.width = 100
                 canvas.height = 100
                 ctx.drawImage(img, 0, 0, 100, 100)
@@ -158,31 +159,68 @@ async function handleExtensionData(key, data) {
                     reader.onload = function () {
                         const resizedArrayBuffer = reader.result
                         const base64 = btoa(new Uint8Array(resizedArrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ''))
-                        resolve([`<button id="${id}market" class="button appearbtn exbtnid" onClick="openTab('${id}markettab', 'MarketButton')" style="width: 120px; height: 135px;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${id}market`, `<div id="${id}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}')">Download</button></div>`])
+                        var optionsobj = {
+                            light: {
+                                background: {
+                                    main: ui.light.background.main.replace("default", ""),
+                                    alt: ui.light.background.alt.replace("default", "")
+                                },
+                                button: {
+                                    main: ui.light.button.main.replace("default", ""),
+                                    hov: ui.light.button.hov.replace("default", ""),
+                                    act: ui.light.button.act.replace("default", ""),
+                                    hovact: ui.light.button.hovact.replace("default", "")
+                                }
+                            },
+                            dark: {
+                                background: {
+                                    main: ui.dark.background.main.replace("default", ""),
+                                    alt: ui.dark.background.alt.replace("default", "")
+                                },
+                                button: {
+                                    main: ui.dark.button.main.replace("default", ""),
+                                    hov: ui.dark.button.hov.replace("default", ""),
+                                    act: ui.dark.button.act.replace("default", ""),
+                                    hovact: ui.dark.button.hovact.replace("default", "")
+                                }
+                            }
+                        }
+                        var options = JSON.stringify(optionsobj).replaceAll('"', '&quot;')
+                        console.log(options)
+                        resolve([`<button id="${id}market" class="button appearbtn exbtnid" onClick="openTab('${id}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${id}market`, `<div id="${id}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}')">Download</button></div>`])
                     }
                     reader.readAsArrayBuffer(blob)
                 })
             }
-        
+
             img.src = url
         }, 300)
     })
 }
 
 async function getExtensions() {
-    var exts = await axios.get(repoLink("all.json"), { responseType: "json" })
+    var exts = await axios.get("https://raw.githubusercontent.com/SkyoProductions/OfficialCrimsonRepo/main/all.json", { responseType: "json" })
     for (const key of Object.keys(exts.data)) {
         var extension = await handleExtensionData(key, exts.data)
         try {
             document.getElementById("exloadtxt").remove()
-        } catch(err) {}
+        } catch (err) { }
         document.getElementById("Market").insertAdjacentHTML("beforeend", extension[0])
         new Promise(resolve => setTimeout(() => {
             document.getElementById(extension[1]).classList.remove("appearbtn")
+            resolve()
         }, 250))
         document.getElementById("extensionsHolder").innerHTML += extension[2]
+        var input = document.getElementById("exsearch").value
+        if (input === "") {
+            document.getElementById(extension[1]).style.display = "inline"
+        } else {
+            if (document.getElementById(extension[1]).dataset.search.toLowerCase().startsWith(input.toLowerCase())) {
+                document.getElementById(extension[1]).style.display = "inline"
+            } else {
+                document.getElementById(extension[1]).style.display = "none"
+            }
+        }
     }
-    document.getElementById("exsearch").style.display = "inline-block"
-    document.getElementById("markettext").style.display = "inline-block"
 }
 getExtensions()

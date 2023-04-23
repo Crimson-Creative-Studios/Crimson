@@ -11,6 +11,7 @@ var cfg = requirePro('../config.json')
 contextBridge.exposeInMainWorld('darkMode', {
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
     system: () => ipcRenderer.invoke('dark-mode:system'),
+    get: () => ipcRenderer.invoke('dark-mode:get'),
 })
 
 contextBridge.exposeInMainWorld('crimAPI', {
@@ -109,10 +110,25 @@ extensionFiles.forEach(extension => {
                     var file = requirePro(`../Extensions/${extension}/${information.file}`)
                     defaults[information.uuid] = file[information.item]
                 } else if (thing === "$LIBRARYMETA") {
+                    if (information.text) {
+                        var text = information.text
+                    } else {
+                        var text = "This extension cannot be disabled because it is a library."
+                    }
+                    if (information.docubuttontext) {
+                        var doctext = information.docbuttontext
+                    } else {
+                        var doctext = "Click here to learn more"
+                    }
+                    if (information.docbuttonlink) {
+                        var doclink = information.docbuttonlink
+                    } else {
+                        var doclink = "https://skyoproductions.github.io/wiki/crimson/lib"
+                    }
                     libtext[extension] = {
-                        text: information.text,
-                        buttontext: information.docbuttontext,
-                        buttonlink: information.docbuttonlink
+                        text: text,
+                        buttontext: doctext,
+                        buttonlink: doclink
                     }
                 }
             }

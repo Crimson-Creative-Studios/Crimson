@@ -245,6 +245,15 @@ function createWindow() {
     win.setMenuBarVisibility(false)
     win.webContents.setZoomFactor(1.0)
 
+    ipcMain.handle('clientChange', (event, args) => {
+        var status = {
+            details: args[0],
+            largeImageKey: args[1],
+            instance: true
+        }
+        client.updatePresence(status)
+    })
+
     ipcMain.handle('dark-mode:toggle', () => {
         if (nativeTheme.shouldUseDarkColors) {
             nativeTheme.themeSource = 'light'
@@ -254,13 +263,8 @@ function createWindow() {
         return nativeTheme.shouldUseDarkColors
     })
 
-    ipcMain.handle('clientChange', (event, args) => {
-        var status = {
-            details: args[0],
-            largeImageKey: args[1],
-            instance: true
-        }
-        client.updatePresence(status)
+    ipcMain.handle('dark-mode:get', () => {
+        return nativeTheme.shouldUseDarkColors
     })
 
     ipcMain.handle('dark-mode:system', () => {

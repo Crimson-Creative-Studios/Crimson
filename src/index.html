@@ -99,7 +99,7 @@
         <div id="Market" class="tabcontent">
             <h3 id="markettext">Market</h3>
             <form>
-                <input type="text" id="exsearch" name="exsearch" placeholder="Enter search..." style="display: none;" onchange="handleInputChange(this.value)"
+                <input type="text" id="exsearch" name="exsearch" placeholder="Enter search..." onchange="handleInputChange(this.value)"
                 onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" />
             </form>
             <p>Find extensions for Crimson</p>
@@ -108,7 +108,7 @@
 
         <div id="Information" class="tabcontent">
             <h3>Information</h3>
-            <p>GUI Version - Open Beta 2</p>
+            <p>GUI Version - Open Beta 3</p>
             <p id="botver">Bot Version - Unknown</p>
             <p id="funfact">Fun Fact: Not loaded...</p>
         </div>
@@ -133,6 +133,8 @@
             <button class="button savebtn">Test save settings prompt</button>
             <button class="button" onclick="openTab('falseErrorTest')">Test a generic tab fail</button>
             <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab fail</button>
+            <br>
+            <button class="button" onclick="openTab('ChangeColorTest')">Test some colors</button>
         </div>
 
         <div id="ErrorFound" class="tabcontent">
@@ -144,6 +146,25 @@
 
         <div class="tabBottom">
             <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')">Options</button>
+        </div>
+
+        <div id="ChangeColorTest" class="tabcontent">
+            <h3>Change color test</h3>
+            <form onsubmit="return false;">
+                <label for="backgroundmainchange">Background main:</label><br>
+                <input type="text" id="backgroundmainchange" name="backgroundmainchange" placeholder="Enter color..." /><br>
+                <label for="backgroundaltchange">Background alt:</label><br>
+                <input type="text" id="backgroundaltchange" name="backgroundaltchange" placeholder="Enter color..." /><br>
+                <label for="buttonmainchange">Button main:</label><br>
+                <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="Enter color..." /><br>
+                <label for="buttonhovchange">Button hover:</label><br>
+                <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="Enter color..." /><br>
+                <label for="buttonactchange">Button active:</label><br>
+                <input type="text" id="buttonactchange" name="buttonactchange" placeholder="Enter color..." /><br>
+                <label for="buttonhovactchange">Button hover active:</label><br>
+                <input type="text" id="buttonhovactchange" name="buttonhovactchange" placeholder="Enter color..." /><br><br>
+                <button class="button" id="loadcolors" onclick="loadColors()">Load colors</button><br><br>
+            </form>
         </div>
 
         <div id="savedModal" class="modal">
@@ -169,7 +190,10 @@
         <script src="./darkmodehandler.js"></script>
         <script src="./extensionsearchhandler.js"></script>
         <script src="./windowcontroller.js"></script>
+        <script src="./testinghandler.js"></script>
     </div>
+    <div class="bgd1"></div>
+    <div class="bgd2"></div>
 </body>
 
 </html>
