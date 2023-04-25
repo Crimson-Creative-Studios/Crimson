@@ -150,6 +150,8 @@
 
         <div id="ChangeColorTest" class="tabcontent">
             <h3>Change color test</h3>
+            <p>Used for testing new colors for either Crimson or extensions, feel free to mess around</p>
+            <p>Mess anything up? Just leave the menu</p>
             <form onsubmit="return false;">
                 <label for="backgroundmainchange">Background main:</label><br>
                 <input type="text" id="backgroundmainchange" name="backgroundmainchange" placeholder="Enter color..." /><br>
@@ -163,6 +165,9 @@
                 <input type="text" id="buttonactchange" name="buttonactchange" placeholder="Enter color..." /><br>
                 <label for="buttonhovactchange">Button hover active:</label><br>
                 <input type="text" id="buttonhovactchange" name="buttonhovactchange" placeholder="Enter color..." /><br><br>
+                <p>Change color theme, helpful for extension color testing</p>
+                <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button><br><br>
+                <p>Load the colors into the system</p>
                 <button class="button" id="loadcolors" onclick="loadColors()">Load colors</button><br><br>
             </form>
         </div>
@@ -187,10 +192,10 @@
 
         <script src="./renderer.js" type="module"></script>
         <script src="./tabhandler.js"></script>
-        <script src="./darkmodehandler.js"></script>
         <script src="./extensionsearchhandler.js"></script>
         <script src="./windowcontroller.js"></script>
         <script src="./testinghandler.js"></script>
+        <script src="./darkmodehandler.js"></script>
     </div>
     <div class="bgd1"></div>
     <div class="bgd2"></div>

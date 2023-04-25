@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('darkMode', {
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
     system: () => ipcRenderer.invoke('dark-mode:system'),
     get: () => ipcRenderer.invoke('dark-mode:get'),
+    handleDarkChange: (callback) => ipcRenderer.on('dark-mode:change', callback)
 })
 
 contextBridge.exposeInMainWorld('crimAPI', {
@@ -32,7 +33,7 @@ contextBridge.exposeInMainWorld('crimAPI', {
     openSite: (arg) => ipcRenderer.invoke('siteopen', arg),
     handleVer: (callback) => ipcRenderer.on('verfind', callback),
     onlineRequest: (thing) => ipcRenderer.invoke('onlineRequest', thing),
-    extensionDownload: (arg) => ipcRenderer.invoke('extensionDownload', arg)
+    extensionDownload: (arg) => ipcRenderer.invoke('extensionDownload', arg),
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);
@@ -65,11 +66,21 @@ var extensionFiles = ipcRenderer.sendSync("getDir", "../Extensions/")
 extensionFiles.forEach(extension => {
     var arr = []
     arr.push(extension)
+    var uicfg = requirePro(`../Extensions/${extension}/uiconfig.json`)
     var metadata = requirePro(`../Extensions/${extension}/extension.json`)
     var metaname = metadata.name
     var config = requirePro(`../Extensions/${extension}/config.json`)
     metanames[extension] = metaname
-    configs.push(`<button id="${metaname}Button" class="button" onclick="openTab('${extension}', 'ConfigurationButton')">${metaname}</button>`)
+    try {
+        if (uicfg.$UI) {
+            var options = JSON.stringify(uicfg.$UI).replaceAll('"', '&quot;')
+            configs.push(`<button id="${metaname}Button" class="button" onclick="openTab('${extension}', 'ConfigurationButton', '${options}')">${metaname}</button>`)
+        } else {
+            configs.push(`<button id="${metaname}Button" class="button" onclick="openTab('${extension}', 'ConfigurationButton')">${metaname}</button>`)
+        }
+    } catch (err) {
+        configs.push(`<button id="${metaname}Button" class="button" onclick="openTab('${extension}', 'ConfigurationButton')">${metaname}</button>`)
+    }
     if (metadata.type === "library") {
         mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
 
@@ -84,15 +95,13 @@ extensionFiles.forEach(extension => {
         }
     }
 
-    var uicfg = requirePro(`../Extensions/${extension}/uiconfig.json`)
-
     if (uicfg !== null) {
 
         try {
             for (const thing of Object.keys(uicfg)) {
                 var information = uicfg[thing]
                 console.log(thing)
-                if (thing !== "$LIBRARYMETA" && thing !== "$BUTTONS") {
+                if (thing !== "$LIBRARYMETA" && thing !== "$BUTTONS" && thing !== "$UI") {
                     userCFGS[information.uuid] = {
                         item: information.item,
                         file: information.file,

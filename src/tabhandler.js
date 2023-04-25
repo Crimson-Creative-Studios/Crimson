@@ -1,4 +1,6 @@
 var currentTab = null
+var currentOverride = null
+var currentOption = null
 
 async function openTab(tabName, override = null, option = "") {
     if (tabName.startsWith("falseErrorTest")) {
@@ -36,6 +38,8 @@ async function openTab(tabName, override = null, option = "") {
             return
         }
         currentTab = tabName
+        currentOverride = override
+        currentOption = option
         var i, tabcontent, tablinks, presence
         var key = 'bigimg'
         try {
@@ -142,3 +146,35 @@ async function openTab(tabName, override = null, option = "") {
         crimAPI.rcpChange([presence, key])
     }
 }
+
+async function reopenTab() {
+    openTab(currentTab, currentOverride, currentOption)
+}
+
+async function toggleDarkMode() {
+    try {
+        var isDarkMode = await window.darkMode.toggle()
+        document.getElementById('theme-source').innerHTML = isDarkMode ? 'Dark' : 'Light'
+    }
+    catch (err) {
+        console.log(err)
+    }
+    reopenTab()
+}
+
+async function sysDarkMode() {
+    try {
+        await window.darkMode.system()
+        document.getElementById('theme-source').innerHTML = 'System'
+    }
+    catch (err) {
+        console.log(err)
+    }
+    reopenTab()
+}
+
+darkMode.handleDarkChange(async (event, arg) => {
+    var isDarkMode = await window.darkMode.toggle()
+    document.getElementById('theme-source').innerHTML = isDarkMode ? 'Dark' : 'Light'
+    reopenTab()
+})

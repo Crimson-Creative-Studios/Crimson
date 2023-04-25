@@ -290,6 +290,9 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
+    globalShortcut.register('CommandOrControl+D+M', () => {
+        win.webContents.send("dark-mode:change", null)
+    })
     var win = createWindow()
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) {
