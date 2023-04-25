@@ -1,6 +1,10 @@
+</p>
+<img align="right" width="300" alt="image" src="https://cdn.discordapp.com/attachments/957344047494725672/1099675663172108331/crimsonLogoHiRes.png">
+</p>
+
 # Crimson
 
-This is the base of the "Delta" bot in the Skyo Productions Discord server
+Crimson is a Discord bot that is designed to be basic, but with a twist, extensions, this allows the user to have the bot do ANYTHING they want, with the power of Node.JS you can do anything
 
 You can install extensions using the built-in extension downloader, this will get extensions from any source you want but defaults to the main repo which is the Verified Crimson Extension Repo, these are verified by me and are **safe**, most will be from me however, I do accept community submissions though so don't be afraid to ask!
 
