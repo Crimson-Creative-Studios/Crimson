@@ -1,12 +1,14 @@
 var currentTab = null
 var currentOverride = null
 var currentOption = null
+var currentMode = null
+var custom = false
 
 async function openTab(tabName, override = null, option = "") {
     if (tabName.startsWith("falseErrorTest")) {
         tabcontent = document.getElementsByClassName("tabcontent")
         for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none"
+            tabcontent[i].classList.remove("showentab")
         }
         if (tabName.endsWith("markettab")) {
             document.getElementById("ErrorTXTM").innerHTML = "Oops, that extension's data wasn't found"
@@ -32,7 +34,7 @@ async function openTab(tabName, override = null, option = "") {
             old_element.parentNode.replaceChild(new_element, old_element)
         }
         currentMenu = "ErrorFound"
-        document.getElementById("ErrorFound").style.display = "block"
+        document.getElementById("ErrorFound").classList.add("showentab")
     } else {
         if (currentTab === tabName) {
             return
@@ -42,31 +44,7 @@ async function openTab(tabName, override = null, option = "") {
         currentOption = option
         var i, tabcontent, tablinks, presence
         var key = 'bigimg'
-        try {
-            var options = JSON.parse(option)
-            if (await darkMode.get()) {
-                document.documentElement.style.setProperty('--background', options.dark.background.main)
-                document.documentElement.style.setProperty('--backgroundalt', options.dark.background.alt)
-                document.documentElement.style.setProperty('--button', options.dark.button.main)
-                document.documentElement.style.setProperty('--buttonhov', options.dark.button.hov)
-                document.documentElement.style.setProperty('--buttonact', options.dark.button.act)
-                document.documentElement.style.setProperty('--buttonacthov', options.dark.button.hovact)
-            } else {
-                document.documentElement.style.setProperty('--background', options.light.background.main)
-                document.documentElement.style.setProperty('--backgroundalt', options.light.background.alt)
-                document.documentElement.style.setProperty('--button', options.light.button.main)
-                document.documentElement.style.setProperty('--buttonhov', options.light.button.hov)
-                document.documentElement.style.setProperty('--buttonact', options.light.button.act)
-                document.documentElement.style.setProperty('--buttonacthov', options.light.button.hovact)
-            }
-        } catch (err) {
-            document.documentElement.style.setProperty('--background', '')
-            document.documentElement.style.setProperty('--backgroundalt', '')
-            document.documentElement.style.setProperty('--button', '')
-            document.documentElement.style.setProperty('--buttonhov', '')
-            document.documentElement.style.setProperty('--buttonact', '')
-            document.documentElement.style.setProperty('--buttonacthov', '')
-        }
+        handleChange()
 
         try {
             if (!document.getElementById(override).classList.contains("active")) {
@@ -80,13 +58,13 @@ async function openTab(tabName, override = null, option = "") {
 
         tabcontent = document.getElementsByClassName("tabcontent")
         for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none"
+            tabcontent[i].classList.remove("showentab")
         }
 
         var currentMenu
 
         try {
-            document.getElementById(tabName).style.display = "block"
+            document.getElementById(tabName).classList.add("showentab")
             currentMenu = tabName
         } catch (err) {
             if (tabName.endsWith("markettab")) {
@@ -113,7 +91,7 @@ async function openTab(tabName, override = null, option = "") {
                 old_element.parentNode.replaceChild(new_element, old_element)
             }
             currentMenu = "ErrorFound"
-            document.getElementById("ErrorFound").style.display = "block"
+            document.getElementById("ErrorFound").classList.add("showentab")
         }
 
         if (currentMenu === "Home" || currentMenu === "Configuration" || currentMenu === "Information" || currentMenu === "Market") {
@@ -147,34 +125,58 @@ async function openTab(tabName, override = null, option = "") {
     }
 }
 
-async function reopenTab() {
-    openTab(currentTab, currentOverride, currentOption)
-}
-
 async function toggleDarkMode() {
     try {
-        var isDarkMode = await window.darkMode.toggle()
-        document.getElementById('theme-source').innerHTML = isDarkMode ? 'Dark' : 'Light'
+        currentMode = await window.darkMode.toggle()
+        document.getElementById('theme-source').innerHTML = currentMode ? 'Dark' : 'Light'
     }
     catch (err) {
         console.log(err)
     }
-    reopenTab()
+    await new Promise((resolve, reject) => setTimeout(resolve, 100))
 }
 
 async function sysDarkMode() {
     try {
-        await window.darkMode.system()
+        currentMode = await window.darkMode.system()
         document.getElementById('theme-source').innerHTML = 'System'
     }
     catch (err) {
         console.log(err)
     }
-    reopenTab()
+    await new Promise((resolve, reject) => setTimeout(resolve, 100))
 }
 
 darkMode.handleDarkChange(async (event, arg) => {
-    var isDarkMode = await window.darkMode.toggle()
-    document.getElementById('theme-source').innerHTML = isDarkMode ? 'Dark' : 'Light'
-    reopenTab()
+    toggleDarkMode()
 })
+
+function handleChange() {
+    try {
+        var options = JSON.parse(currentOption)
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.documentElement.style.setProperty('--background', options.dark.background.main)
+            document.documentElement.style.setProperty('--backgroundalt', options.dark.background.alt)
+            document.documentElement.style.setProperty('--button', options.dark.button.main)
+            document.documentElement.style.setProperty('--buttonhov', options.dark.button.hov)
+            document.documentElement.style.setProperty('--buttonact', options.dark.button.act)
+            document.documentElement.style.setProperty('--buttonacthov', options.dark.button.hovact)
+        } else {
+            document.documentElement.style.setProperty('--background', options.light.background.main)
+            document.documentElement.style.setProperty('--backgroundalt', options.light.background.alt)
+            document.documentElement.style.setProperty('--button', options.light.button.main)
+            document.documentElement.style.setProperty('--buttonhov', options.light.button.hov)
+            document.documentElement.style.setProperty('--buttonact', options.light.button.act)
+            document.documentElement.style.setProperty('--buttonacthov', options.light.button.hovact)
+        }
+    } catch (err) {
+        document.documentElement.style.setProperty('--background', '')
+            document.documentElement.style.setProperty('--backgroundalt', '')
+            document.documentElement.style.setProperty('--button', '')
+            document.documentElement.style.setProperty('--buttonhov', '')
+            document.documentElement.style.setProperty('--buttonact', '')
+            document.documentElement.style.setProperty('--buttonacthov', '')
+    }
+}
+
+window.matchMedia("(prefers-color-scheme: dark)").addListener(handleChange)

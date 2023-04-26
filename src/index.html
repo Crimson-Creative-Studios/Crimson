@@ -2,22 +2,11 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'" />
     <title>CrimsonGUI</title>
     <link rel="stylesheet" href="guiassets/css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        function startBot() {
-            crimAPI.BotStart()
-            status = 'Online'
-        }
-        window.addEventListener('load', function () {
-            var information = crimAPI.cfg
-            document.getElementById("token").defaultValue = information.token
-            document.getElementById("cid").defaultValue = information.clientid
-            document.getElementById("adprefix").defaultValue = information.adminname
-        })
-    </script>
+    <script src="./axios.min.js"></script>
 </head>
 
 <body>
@@ -69,7 +58,7 @@
 
         <div id="extensionsHolder"></div>
 
-        <div id="Home" class="tabcontent" style="display: block;">
+        <div id="Home" class="tabcontent showentab">
             <h3 style="margin: none;">Bot menu</h3>
             <button class="button" onclick="crimAPI.OpenConsole()">Open Bot window</button>
             <h3 style="margin: none;">Version Updates</h3>
@@ -130,6 +119,7 @@
             <p id="debugELECTRON"></p>
             <h4>Node Version:</h4>
             <p id="debugNODE"></p>
+            <button class="button" onclick="copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}`)">Copy debug information</button><br><br>
             <button class="button savebtn">Test save settings prompt</button>
             <button class="button" onclick="openTab('falseErrorTest')">Test a generic tab fail</button>
             <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab fail</button>
@@ -195,7 +185,6 @@
         <script src="./extensionsearchhandler.js"></script>
         <script src="./windowcontroller.js"></script>
         <script src="./testinghandler.js"></script>
-        <script src="./darkmodehandler.js"></script>
     </div>
     <div class="bgd1"></div>
     <div class="bgd2"></div>

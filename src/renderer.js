@@ -1,16 +1,31 @@
-var information = document.getElementById('debugCHROME')
-information.innerText = versions.chrome()
+window.gradon = false
 
-var information = document.getElementById('debugELECTRON')
-information.innerText = versions.electron()
+document.getElementById('debugCHROME').innerText = versions.chrome()
 
-var information = document.getElementById('debugNODE')
-information.innerText = versions.node()
+document.getElementById('debugELECTRON').innerText = versions.electron()
+
+document.getElementById('debugNODE').innerText = versions.node()
+
+function copy(thing) {
+    navigator.clipboard.writeText(thing)
+    if (window.gradon === false) {
+        window.gradon = true
+        document.getElementById("copiedModal").style.display = "block"
+        new Promise(resolve => {
+            setTimeout(() => {
+                document.getElementById("copiedModal").style.display = "none"
+                window.gradon = false
+            }, 5000)
+            resolve()
+        })
+    }
+}
+
+window.copy = copy
 
 ipc.handleAdd((event, arg) => {
     var id = arg[0]
     var content = arg[1]
-    console.log(id)
     document.getElementById(id).insertAdjacentHTML("beforeend", content)
 })
 
@@ -67,12 +82,7 @@ document.getElementById('funfact').innerHTML = `Fun Fact: ${funfact}`
 
 //! Saving and modals
 
-const savemodal = document.getElementById("savedModal")
-const copymodal = document.getElementById("copiedModal")
-
 var btns = document.getElementsByClassName("savebtn")
-
-var gradon = false;
 
 for (let i = 0; i < btns.length; i++) {
     btns[i].onclick = async function () {
@@ -88,12 +98,16 @@ for (let i = 0; i < btns.length; i++) {
 
 document.getElementById("CopyERR").addEventListener("click", async (event) => {
     navigator.clipboard.writeText(window.copyERROR)
-    if (gradon === false) {
-        gradon = true
-        copymodal.style.display = "block";
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        copymodal.style.display = "none";
-        gradon = false
+    if (window.gradon === false) {
+        window.gradon = true
+        document.getElementById("copiedModal").style.display = "block"
+        new Promise(resolve => {
+            setTimeout(() => {
+                document.getElementById("copiedModal").style.display = "none"
+                window.gradon = false
+            }, 5000)
+            resolve()
+        })
     }
 })
 
@@ -101,12 +115,16 @@ var mainCfg = document.getElementById("saveMainCFG")
 
 mainCfg.onclick = async function (e) {
     e.preventDefault()
-    if (gradon === false) {
-        gradon = true
-        savemodal.style.display = "block";
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        savemodal.style.display = "none";
-        gradon = false
+    if (window.gradon === false) {
+        window.gradon = true
+        document.getElementById("savedModal").style.display = "block"
+        new Promise(resolve => {
+            setTimeout(() => {
+                document.getElementById("savedModal").style.display = "none"
+                window.gradon = false
+            }, 5000)
+            resolve()
+        })
     }
     var information = {
         token: document.getElementById('token').value,
@@ -117,7 +135,6 @@ mainCfg.onclick = async function (e) {
 }
 
 crimAPI.handleVer((event, arg) => {
-    console.log(arg)
     if (arg.replace("\n", "") !== "Open Beta 3") {
         document.getElementById('versionut').innerHTML = `New version found!<br>Current version: Open Beta 3<br>Found version: ${arg}`
     } else {
@@ -135,7 +152,6 @@ async function handleExtensionData(key, data) {
     return new Promise((resolve, reject) => {
         setTimeout(async () => {
             var info = data[key]
-            console.log(info)
             var authors = info.authors
             var name = info.name
             var id = info.folder
@@ -186,7 +202,6 @@ async function handleExtensionData(key, data) {
                             }
                         }
                         var options = JSON.stringify(optionsobj).replaceAll('"', '&quot;')
-                        console.log(options)
                         resolve([`<button id="${id}market" class="button appearbtn exbtnid" onClick="openTab('${id}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${id}market`, `<div id="${id}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}')">Download</button></div>`])
                     }
                     reader.readAsArrayBuffer(blob)
@@ -224,3 +239,15 @@ async function getExtensions() {
     }
 }
 getExtensions()
+
+function startBot() {
+    crimAPI.BotStart()
+}
+window.addEventListener('load', function () {
+    var information = crimAPI.cfg
+    document.getElementById("token").defaultValue = information.token
+    document.getElementById("cid").defaultValue = information.clientid
+    document.getElementById("adprefix").defaultValue = information.adminname
+})
+
+window.startBot = startBot

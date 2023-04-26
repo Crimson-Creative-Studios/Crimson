@@ -11,6 +11,7 @@ const fs = require('fs')
 const axios = require('axios')
 const JSZip = require('jszip')
 var globalBot, consolewin
+var isMax = false
 
 const downloadAndUnzip = async (zipUrl, unzipPath) => {
     const response = await axios.get(zipUrl, { responseType: 'arraybuffer' })
@@ -129,6 +130,9 @@ function createWindow() {
     win.webContents.on('did-start-loading', async () => {
         var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/guiver.txt")
         win.webContents.send("verfind", data.data)
+        if (isMax) {
+            win.webContents.send("wincontroler", "max")
+        }
     })
 
     ipcMain.on('getDir', (event, arg) => {
@@ -137,10 +141,12 @@ function createWindow() {
 
     win.on('maximize', () => {
         win.webContents.send("wincontroler", "max")
+        isMax = true
     })
 
     win.on('unmaximize', () => {
         win.webContents.send("wincontroler", "unmax")
+        isMax = false
     })
 
     ipcMain.on('wincontrol', (event, arg) => {
@@ -269,6 +275,7 @@ function createWindow() {
 
     ipcMain.handle('dark-mode:system', () => {
         nativeTheme.themeSource = 'system'
+        return nativeTheme.shouldUseDarkColors
     })
 
     ipcMain.on('message', (event, data) => {
