@@ -485,16 +485,3 @@ if (process.argv.includes("--gui")) {
 process.on("exit", function () {
     client.user.setStatus("invisible")
 })
-
-//*
-//* Function handlers
-//*
-
-//? Ez tag commands with performance boost
-process.on("tagCMD", data => {
-    tagsList.push(data)
-})
-
-// 500 Lines
-// Will be mine
-// Because why not
