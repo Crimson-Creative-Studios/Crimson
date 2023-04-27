@@ -196,7 +196,7 @@ const server = net.createServer((socket) => {
                         } catch (err) {
                             var msgdata = msg.info.message
                         } finally {
-                            clients[msg.info.extension].write("EXMSG "+msgdata)
+                            clients[msg.info.extension].write("EXMSG " + msgdata)
                         }
                     }
                 } catch (err) {
@@ -222,8 +222,7 @@ function resolvePath(extension, file) {
 
 //! Read and run extension
 //? Run extensions and get tag commands
-var commandFiles = fs.readdirSync("./commands/")
-    .filter((file) => file.endsWith(".command.js"))
+const commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".command.js"))
 const extensions = fs.readdirSync("../Extensions/")
 var allCommands = ""
 
@@ -496,24 +495,6 @@ process.on("tagCMD", data => {
     tagsList.push(data)
 })
 
-// 5
-// 0
-// 0
-//
-// L
-// i
-// n
-// e
-// s
-//
-// W
-// i
-// l
-// l
-//
-// B
-// e
-// !
-// !
-// !
-// !
+// 500 Lines
+// Will be mine
+// Because why not
