@@ -88,9 +88,9 @@ for (let i = 0; i < btns.length; i++) {
     btns[i].onclick = async function () {
         if (gradon === false) {
             gradon = true
-            savemodal.style.display = "block";
+            document.getElementById("savedModal").style.display = "block";
             await new Promise(resolve => setTimeout(resolve, 5000));
-            savemodal.style.display = "none";
+            document.getElementById("savedModal").style.display = "none";
             gradon = false
         }
     }

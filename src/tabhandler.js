@@ -37,6 +37,7 @@ async function openTab(tabName, override = null, option = "") {
         document.getElementById("ErrorFound").classList.add("showentab")
     } else {
         if (currentTab === tabName) {
+            handleChange()
             return
         }
         currentTab = tabName

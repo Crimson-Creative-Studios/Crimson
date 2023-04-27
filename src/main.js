@@ -340,7 +340,7 @@ ipcMain.handle('BotStart', (event, arg) => {
         if (data === 'STPSCD') {
             consolewin.webContents.send('STP')
         } else if (data.startsWith("prompt:")) { } else {
-            consolewin.webContents.send('botstdout', data.replace("\n", "<br>"))
+            consolewin.webContents.send('botstdout', data)
         }
     })
     globalBot.stderr.setEncoding('utf8')

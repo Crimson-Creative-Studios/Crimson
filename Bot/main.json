@@ -1,0 +1,60 @@
+{
+    "GLOBAL": {
+        "1056199295168159814": {
+            "msgcount": "7",
+            "username": "Delta#3886",
+            "isbot": "true"
+        },
+        "779054724543414324": {
+            "msgcount": "17",
+            "username": "DevLime#6254",
+            "isbot": "false"
+        },
+        "439205512425504771": {
+            "msgcount": "1",
+            "username": "NotSoBot#9555",
+            "isbot": "true"
+        }
+    },
+    "779066985761210369": {
+        "1056199295168159814": {
+            "msgcount": "4",
+            "username": "Delta#3886",
+            "isbot": "true"
+        },
+        "779054724543414324": {
+            "msgcount": "11",
+            "username": "DevLime#6254",
+            "isbot": "false"
+        },
+        "439205512425504771": {
+            "msgcount": "1",
+            "username": "NotSoBot#9555",
+            "isbot": "true"
+        }
+    },
+    "931851065832374272": {
+        "1056199295168159814": {
+            "msgcount": "0",
+            "username": "Delta#3886",
+            "isbot": "true"
+        },
+        "779054724543414324": {
+            "msgcount": "2",
+            "username": "DevLime#6254",
+            "isbot": "false"
+        }
+    },
+    "1078056738399461536": {
+        "1056199295168159814": {
+            "msgcount": "3",
+            "username": "Delta#3886",
+            "isbot": "true"
+        },
+        "779054724543414324": {
+            "msgcount": "26",
+            "username": "DevLime#6254",
+            "isbot": "false"
+        }
+    }
+}

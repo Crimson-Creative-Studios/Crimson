@@ -21,41 +21,42 @@ var logger = function logger(info, type) {
   }
   
   if (type === "info") {
-    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Info ] ${info}${br}`);
-    log(br);
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Info ] ${info}${br}`)
+    log(br)
     
   } else if (type === "warn") {
-    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Warn ] ${info}${br}`);
-    log(br);
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Warn ] ${info}${br}`)
+    log(br)
 
   } else if (type === "error") {
-    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Error ] ${info}${br}`);
-    log(br);
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Error ] ${info}${br}`)
+    log(br)
 
   } else if (type === "hint") {
-    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Hint ] ${info}${br}`);
-    log(br);
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Hint ] ${info}${br}`)
+    log(br)
 
   } else if (type === "action") {
-    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | User Action ] ${info}${br}`);
-    log(br);
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | User Action ] ${info}${br}`)
+    log(br)
 
   } else if (type === "logCommand") {
-    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Logger Command ] ${info}${br}`);
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Logger Command ] ${info}${br}`)
 
   } else if (type === "start") {
-    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Start-Up ] ${info}${br}`);
-    log(br);
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Start-Up ] ${info}${br}`)
+    log(br)
 
   } else if (type === "raw") {
-    log(info,br)
+    log(info)
     log(br)
-  } else {
-    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} ] ${info}${br}`);
-    log(br);
+    log(br)
 
+  } else {
+    log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} ] ${info}${br}`)
+    log(br)
   }
   
-};
+}
 
-module.exports.logger = logger;
+module.exports.logger = logger
