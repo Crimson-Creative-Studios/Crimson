@@ -124,23 +124,23 @@
             function handleWindowControls() {
                 document.getElementById('min-button').addEventListener("click", event => {
                     crimAPI.winmin()
-                });
+                })
 
                 document.getElementById('max-button').addEventListener("click", event => {
                     maximised = true
                     crimAPI.winmax()
                     toggleMaxRestoreButtons()
-                });
+                })
 
                 document.getElementById('restore-button').addEventListener("click", event => {
                     maximised = false
                     crimAPI.winunmax()
                     toggleMaxRestoreButtons()
-                });
+                })
 
                 document.getElementById('close-button').addEventListener("click", event => {
                     crimAPI.winclose()
-                });
+                })
 
                 document.getElementById('restart-button').addEventListener("click", event => {
                     crimAPI.winrestart()
@@ -160,13 +160,17 @@
 
                 function toggleMaxRestoreButtons() {
                     if (maximised) {
-                        document.body.classList.add('maximized');
+                        document.body.classList.add('maximized')
                     } else {
-                        document.body.classList.remove('maximized');
+                        document.body.classList.remove('maximized')
                     }
                 }
             }
 
+            window.setInterval(function() {
+                var elem = document.getElementById('cnsl')
+                elem.scrollTop = elem.scrollHeight
+            }, 5000)
         </script>
     </div>
 </body>

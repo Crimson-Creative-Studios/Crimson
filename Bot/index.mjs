@@ -225,6 +225,13 @@ function resolvePath(extension, file) {
 const commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".command.js"))
 const extensions = fs.readdirSync("../Extensions/")
 var allCommands = ""
+const actsas = []
+
+for (const extension of extensions) {
+    for (const thing of require(`../Extensions/${extension}/extension.json`).actsas) {
+        actsas.push(thing)
+    }
+}
 
 extensions.forEach((extension) => {
     var cfg = require(`../Extensions/${extension}/config.json`)
@@ -234,17 +241,16 @@ extensions.forEach((extension) => {
     } else {
         var extensionstate = "disabled"
     }
-    var dep = require(`../Extensions/${extension}/extension.json`)
-    var dep = dep.dependencies
+    var metadata = require(`../Extensions/${extension}/extension.json`)
+    var dep = metadata.dependencies
     if (!extensionstate === "disabled") {
         for (const depe of dep) {
-            if (!extensions.includes(depe)) {
+            if (!extensions.includes(depe) && !actsas.includes(depe)) {
                 var extensionstate = "disabled"
             }
         }
     }
     if (extensionstate === "enabled") {
-        var metadata = require(`../Extensions/${extension}/extension.json`)
         console.logger(
             `Loading ${metadata.name} by ${metadata.authors}...`,
             "start"
@@ -473,7 +479,7 @@ if (process.argv.includes("--gui")) {
     process.stdin.on("data", (data) => {
         var message = JSON.parse(data.toString().trim())
         if (message.type === "END") {
-            client.user.setStatus("invisible")
+            client.user.setPresence({ activities: [{ name: 'the offline game' }], status: 'dnd' })
             process.exit()
         } else if (message.type === "RC") {
             command.deploy(client.guilds.cache)
@@ -483,5 +489,5 @@ if (process.argv.includes("--gui")) {
 
 //? Make bot go invisible as soon as the bot is shut down
 process.on("exit", function () {
-    client.user.setStatus("invisible")
+    client.user.setPresence({ activities: [{ name: 'the offline game' }], status: 'dnd' })
 })

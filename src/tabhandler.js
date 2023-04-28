@@ -110,6 +110,15 @@ async function openTab(tabName, override = null, option = "") {
         } else if (currentMenu === "Options") {
             presence = "Currently modifing CrimsonGUI's settings"
             key = 'bigimgcog'
+        } else if (currentMenu.endsWith("markettab")) {
+            var name = currentMenu.slice(0, -9)
+            while (name.endsWith("¬")) {
+                name = name.slice(0, -1)
+            }
+            presence = `Currently checking ${name} out.`
+            if (currentMenu.slice(0, -9) === "PyRun") {
+                key = 'pyrunlogo'
+            }
         } else {
             var metaname = codeAdditions.metanames[currentMenu]
             presence = `Currently modifing ${metaname}'s settings.`

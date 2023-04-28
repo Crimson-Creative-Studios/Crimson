@@ -96,6 +96,17 @@ function consoleWindow() {
     console.once('ready-to-show', () => {
         console.show()
     })
+
+    console.on('maximize', () => {
+        console.webContents.send("wincontroler", "max")
+        isMax = true
+    })
+
+    console.on('unmaximize', () => {
+        console.webContents.send("wincontroler", "unmax")
+        isMax = false
+    })
+
     console.loadFile(path.join(__dirname, 'console.html'))
     console.setMenuBarVisibility(false)
     console.webContents.setZoomFactor(1.0)

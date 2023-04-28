@@ -11,4 +11,5 @@ contextBridge.exposeInMainWorld('crimAPI', {
     winmax: () => ipcRenderer.send('wincontrol', "conmax"),
     winunmax: () => ipcRenderer.send('wincontrol', "conunmax"),
     winrestart: () => ipcRenderer.send('wincontrol', "conrestart"),
+    handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback),
 })

@@ -87,12 +87,18 @@
 
         <div id="Market" class="tabcontent">
             <h3 id="markettext">Market</h3>
-            <form>
+            <form onsubmit="return false">
                 <input type="text" id="exsearch" name="exsearch" placeholder="Enter search..." onchange="handleInputChange(this.value)"
-                onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" />
+                onkeyup="this.onchange()" onpaste="this.onchange()" oninput="this.onchange()" />
+                <button id="toggleofficial" class="button" onclick="toggleOfficial()">Toggle Official Extensions</button>
+                <button id="toggleunofficial" class="button" onclick="toggleUnofficial()">Toggle Unofficial Extensions</button>
             </form>
             <p>Find extensions for Crimson</p>
             <p id="exloadtxt">Loading extensions...<br>Give me a second...</p>
+            <h4 id="officialtext">Official</h4>
+            <div id="officialarea"></div>
+            <h4 id="unofficialtext">Unofficial</h4>
+            <div id="unofficialarea"></div>
         </div>
 
         <div id="Information" class="tabcontent">

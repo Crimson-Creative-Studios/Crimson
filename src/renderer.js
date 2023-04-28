@@ -146,7 +146,7 @@ function repoLink(thing, link = "https://github.com/SkyoProductions/OfficialCrim
     return link + thing
 }
 
-var finnum = 0
+const exsitent = []
 
 async function handleExtensionData(key, data) {
     return new Promise((resolve, reject) => {
@@ -202,7 +202,14 @@ async function handleExtensionData(key, data) {
                             }
                         }
                         var options = JSON.stringify(optionsobj).replaceAll('"', '&quot;')
-                        resolve([`<button id="${id}market" class="button appearbtn exbtnid" onClick="openTab('${id}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${id}market`, `<div id="${id}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}')">Download</button></div>`])
+                        if (exsitent.includes(name)) {
+                            var namething = name + "¬"
+                            exsitent.push(namething)
+                        } else {
+                            var namething = name
+                            exsitent.push(namething)
+                        }
+                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}')">Download</button></div>`, ui.type])
                     }
                     reader.readAsArrayBuffer(blob)
                 })
@@ -214,13 +221,19 @@ async function handleExtensionData(key, data) {
 }
 
 async function getExtensions() {
-    var exts = await axios.get("https://raw.githubusercontent.com/SkyoProductions/OfficialCrimsonRepo/main/all.json", { responseType: "json" })
+    var exts = await axios.get("https://raw.githubusercontent.com/SkyoProductions/OfficialCrimsonRepo/main/all.json", {
+        responseType: "text",
+        headers: {
+            'Content-Type': 'text/plain'
+        }
+    })
+    exts.data = JSON.parse(exts.data)
     for (const key of Object.keys(exts.data)) {
         var extension = await handleExtensionData(key, exts.data)
         try {
             document.getElementById("exloadtxt").remove()
         } catch (err) { }
-        document.getElementById("Market").insertAdjacentHTML("beforeend", extension[0])
+        document.getElementById(extension[3] + "area").insertAdjacentHTML("beforeend", extension[0])
         new Promise(resolve => setTimeout(() => {
             document.getElementById(extension[1]).classList.remove("appearbtn")
             resolve()
