@@ -223,7 +223,12 @@ function resolvePath(extension, file) {
 //! Read and run extension
 //? Run extensions and get tag commands
 const commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".command.js"))
-const extensions = fs.readdirSync("../Extensions/")
+var extensions = null
+try {
+    extensions = fs.readdirSync("../Extensions/")
+} catch (err) {
+    extensions = []
+}
 var allCommands = ""
 const actsas = []
 
@@ -255,21 +260,22 @@ extensions.forEach((extension) => {
             `Loading ${metadata.name} by ${metadata.authors}...`,
             "start"
         )
-        var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
-        const sandbox = {
-            client,
-            console,
-            fetch,
-            fs,
-            path,
-            require,
-            __dirname,
-            extension,
-            resolvePath: (thing, extension = extension) =>
-                resolvePath(extension, thing),
-        }
-        vm.createContext(sandbox)
-        vm.runInContext(`const net = require('net')
+        try {
+            var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
+            const sandbox = {
+                client,
+                console,
+                fetch,
+                fs,
+                path,
+                require,
+                __dirname,
+                extension,
+                resolvePath: (thing, extension = extension) =>
+                    resolvePath(extension, thing),
+            }
+            vm.createContext(sandbox)
+            vm.runInContext(`const net = require('net')
 
 const extensionHandler = net.createConnection({ port: 3000 }, () => {
     console.logger('Successfully loaded ${metadata.name}', "start")
@@ -300,11 +306,17 @@ function sendDataToExtension(extension, data) {
         }
     }))
 }`+ code, sandbox)
-        const commandFilesExtension = fs
-            .readdirSync(`../Extensions/${extension}/commands/`)
-            .filter((file) => file.endsWith(".command.js"))
+        } catch (err) {}
+        var commandFilesExtension = null
+        try {
+            commandFilesExtension = fs
+                .readdirSync(`../Extensions/${extension}/triggers/commands/`)
+                .filter((file) => file.endsWith(".command.js"))
+        } catch (err) {
+            commandFilesExtension = []
+        }
         for (const file of commandFilesExtension) {
-            const filePath = path.join(`../Extensions/${extension}/commands/`, file)
+            const filePath = path.join(`../Extensions/${extension}/triggers/commands/`, file)
             const command = require(filePath)
             if ("data" in command && "execute" in command) {
                 client.commands.set(command.data.name, command)
@@ -317,8 +329,9 @@ function sendDataToExtension(extension, data) {
         }
 
         try {
-            var { tags } = require(`../Extensions/${extension}/tags.js`)
-            for (const i of tags) {
+            var tags = require(`../Extensions/${extension}/tags.json`)
+            for (var j of Object.keys(tags)) {
+                var i = tags[j]
                 if (i.enabled === "true") {
                     tagCommands.push(i)
                     tagCommandsOrigins.push(metadata.name)

@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'" />
     <title>CrimsonGUI</title>
-    <link rel="stylesheet" href="guiassets/css/styles.css">
+    <link rel="stylesheet" href="guiassets/css/styles2t.css" onerror="this.onerror=null;this.href='guiassets/css/styles.css';" />
     <script src="./axios.min.js"></script>
 </head>
 
@@ -50,8 +50,7 @@
             <button id="BotButton" class="tablinks active" onclick="openTab('Home', 'BotButton')">Home</button>
             <button id="ConfigurationButton" class="tablinks"
                 onclick="openTab('Configuration', 'ConfigurationButton')">Config</button>
-            <button id="MarketButton" class="tablinks"
-                onclick="openTab('Market', 'MarketButton')">Market</button>
+            <button id="MarketButton" class="tablinks" onclick="openTab('Market', 'MarketButton')">Market</button>
             <button id="InformationButton" class="tablinks"
                 onclick="openTab('Information', 'InformationButton')">Information</button>
         </div>
@@ -76,9 +75,11 @@
             <button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button>
             <form onsubmit="return false;">
                 <label for="token">Token:</label><br>
-                <input type="password" id="token" name="token" style="width: 600px;" onfocus="this.type='text'" onblur="this.type='password'"><br><br>
+                <input type="password" id="token" name="token" style="width: 600px;" onfocus="this.type='text'"
+                    onblur="this.type='password'"><br><br>
                 <label for="cid">Client ID:</label><br>
-                <input type="password" id="cid" name="cid" style="width: 600px;" onfocus="this.type='text'" onblur="this.type='password'"><br><br>
+                <input type="password" id="cid" name="cid" style="width: 600px;" onfocus="this.type='text'"
+                    onblur="this.type='password'"><br><br>
                 <label for="adprefix">Admin Role Prefix:</label><br>
                 <input type="text" id="adprefix" name="adprefix" style="width: 600px;"><br><br>
                 <button class="button" id="saveMainCFG">Save Settings</button><br><br>
@@ -88,10 +89,13 @@
         <div id="Market" class="tabcontent">
             <h3 id="markettext">Market</h3>
             <form onsubmit="return false">
-                <input type="text" id="exsearch" name="exsearch" placeholder="Enter search..." onchange="handleInputChange(this.value)"
-                onkeyup="this.onchange()" onpaste="this.onchange()" oninput="this.onchange()" />
-                <button id="toggleofficial" class="button" onclick="toggleOfficial()">Toggle Official Extensions</button>
-                <button id="toggleunofficial" class="button" onclick="toggleUnofficial()">Toggle Unofficial Extensions</button>
+                <input type="text" id="exsearch" name="exsearch" placeholder="Enter search..."
+                    onchange="handleInputChange(this.value)" onkeyup="this.onchange()" onpaste="this.onchange()"
+                    oninput="this.onchange()" />
+                <button id="toggleofficial" class="button" onclick="toggleOfficial()">Toggle Official
+                    Extensions</button>
+                <button id="toggleunofficial" class="button" onclick="toggleUnofficial()">Toggle Unofficial
+                    Extensions</button>
             </form>
             <p>Find extensions for Crimson</p>
             <p id="exloadtxt">Loading extensions...<br>Give me a second...</p>
@@ -114,7 +118,77 @@
             <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
             <button id="reset-to-system" class="button" onclick="sysDarkMode()">Reset to System Theme</button>
             <br>
+            <button class="button" onclick="openTab('GUISettings')">Open GUI settings</button>
+            <br>
+            <br>
+            <br>
             <button class="button" onclick="openTab('DEBUG')">Open DEBUG menu</button>
+        </div>
+
+        <div id="GUISettings" class="tabcontent">
+            <h3>GUI Options</h3>
+            <button class="button" onclick="openTab('ColorChanger')">Change theme</button>
+        </div>
+
+        <div id="ColorChanger" class="tabcontent">
+            <h3>Theme</h3>
+            <form onsubmit="return false;">
+                <div id="darkmodecolors">
+                    <label for="backgroundmainchange">Background main:</label><br>
+                    <input type="text" id="backgroundmainchange" name="backgroundmainchange" placeholder="Enter color..." /><br>
+
+                    <label for="backgroundaltchange">Background alt:</label><br>
+                    <input type="text" id="backgroundaltchange" name="backgroundaltchange" placeholder="Enter color..." /><br>
+
+                    <label for="textmainchange">Text color main:</label><br>
+                    <input type="text" id="textmainchange" name="textmainchange" placeholder="Enter color..." /><br>
+
+                    <label for="textaltchange">Text color alt:</label><br>
+                    <input type="text" id="textaltchange" name="textaltchange" placeholder="Enter color..." /><br>
+
+                    <label for="buttonmainchange">Button main:</label><br>
+                    <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="Enter color..." /><br>
+
+                    <label for="buttonhovchange">Button hover:</label><br>
+                    <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="Enter color..." /><br>
+
+                    <label for="buttonactchange">Button active:</label><br>
+                    <input type="text" id="buttonactchange" name="buttonactchange" placeholder="Enter color..." /><br>
+
+                    <label for="buttonhovactchange">Button hover active:</label><br>
+                    <input type="text" id="buttonhovactchange" name="buttonhovactchange" placeholder="Enter color..." /><br><br>
+                </div>
+                <div id="lightmodecolors">
+                    <label for="backgroundmainchangel">Background main:</label><br>
+                    <input type="text" id="backgroundmainchangel" name="backgroundmainchangel" placeholder="Enter color..." /><br>
+
+                    <label for="backgroundaltchangel">Background alt:</label><br>
+                    <input type="text" id="backgroundaltchangel" name="backgroundaltchangel" placeholder="Enter color..." /><br>
+
+                    <label for="textmainchangel">Text color main:</label><br>
+                    <input type="text" id="textmainchangel" name="textmainchangel" placeholder="Enter color..." /><br>
+
+                    <label for="textaltchangel">Text color alt:</label><br>
+                    <input type="text" id="textaltchangel" name="textaltchangel" placeholder="Enter color..." /><br>
+
+                    <label for="buttonmainchangel">Button main:</label><br>
+                    <input type="text" id="buttonmainchangel" name="buttonmainchangel" placeholder="Enter color..." /><br>
+
+                    <label for="buttonhovchangel">Button hover:</label><br>
+                    <input type="text" id="buttonhovchangel" name="buttonhovchangel" placeholder="Enter color..." /><br>
+
+                    <label for="buttonactchangel">Button active:</label><br>
+                    <input type="text" id="buttonactchangel" name="buttonactchangel" placeholder="Enter color..." /><br>
+
+                    <label for="buttonhovactchangel">Button hover active:</label><br>
+                    <input type="text" id="buttonhovactchangel" name="buttonhovactchangel" placeholder="Enter color..." /><br><br>
+                </div>
+                <p>Change color theme.</p>
+                <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark
+                    Mode</button><br><br>
+                <p>Load and save colors</p>
+                <button class="button" id="loadcolors" onclick="loadColors()">Load colors</button><br><br>
+            </form>
         </div>
 
         <div id="DEBUG" class="tabcontent">
@@ -125,12 +199,13 @@
             <p id="debugELECTRON"></p>
             <h4>Node Version:</h4>
             <p id="debugNODE"></p>
-            <button class="button" onclick="copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}\n    GUI version: Open Beta 4`)">Copy debug information</button><br><br>
+            <button class="button"
+                onclick="copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}\n    GUI version: Open Beta 4`)">Copy
+                debug information</button><br><br>
             <button class="button savebtn">Test save settings prompt</button>
             <button class="button" onclick="openTab('falseErrorTest')">Test a generic tab fail</button>
-            <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab fail</button>
-            <br>
-            <button class="button" onclick="openTab('ChangeColorTest')">Test some colors</button>
+            <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab
+                fail</button>
         </div>
 
         <div id="ErrorFound" class="tabcontent">
@@ -142,30 +217,6 @@
 
         <div class="tabBottom">
             <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')">Options</button>
-        </div>
-
-        <div id="ChangeColorTest" class="tabcontent">
-            <h3>Change color test</h3>
-            <p>Used for testing new colors for either Crimson or extensions, feel free to mess around</p>
-            <p>Mess anything up? Just leave the menu</p>
-            <form onsubmit="return false;">
-                <label for="backgroundmainchange">Background main:</label><br>
-                <input type="text" id="backgroundmainchange" name="backgroundmainchange" placeholder="Enter color..." /><br>
-                <label for="backgroundaltchange">Background alt:</label><br>
-                <input type="text" id="backgroundaltchange" name="backgroundaltchange" placeholder="Enter color..." /><br>
-                <label for="buttonmainchange">Button main:</label><br>
-                <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="Enter color..." /><br>
-                <label for="buttonhovchange">Button hover:</label><br>
-                <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="Enter color..." /><br>
-                <label for="buttonactchange">Button active:</label><br>
-                <input type="text" id="buttonactchange" name="buttonactchange" placeholder="Enter color..." /><br>
-                <label for="buttonhovactchange">Button hover active:</label><br>
-                <input type="text" id="buttonhovactchange" name="buttonhovactchange" placeholder="Enter color..." /><br><br>
-                <p>Change color theme, helpful for extension color testing</p>
-                <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button><br><br>
-                <p>Load the colors into the system</p>
-                <button class="button" id="loadcolors" onclick="loadColors()">Load colors</button><br><br>
-            </form>
         </div>
 
         <div id="savedModal" class="modal">
@@ -190,7 +241,7 @@
         <script src="./tabhandler.js"></script>
         <script src="./extensionsearchhandler.js"></script>
         <script src="./windowcontroller.js"></script>
-        <script src="./testinghandler.js"></script>
+        <script src="./themehandler.js"></script>
     </div>
     <div class="bgd1"></div>
     <div class="bgd2"></div>

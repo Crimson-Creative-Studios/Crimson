@@ -139,11 +139,13 @@ function createWindow() {
     })
 
     win.webContents.on('did-start-loading', async () => {
-        var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/guiver.txt")
-        win.webContents.send("verfind", data.data)
         if (isMax) {
             win.webContents.send("wincontroler", "max")
         }
+        var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/guiver.txt")
+        win.webContents.send("verfind", data.data)
+        var data = fs.readFileSync("guicfg.json", "utf-8")
+        win.webContents.send("guicfgfind", data)
     })
 
     ipcMain.on('getDir', (event, arg) => {
@@ -226,6 +228,8 @@ function createWindow() {
             } else {
                 var result = await getJSON(arg[1])
             }
+        } else if (arg[0] === "setJSON") {
+            fs.writeFileSync(arg[1], arg[2])
         }
         event.returnValue = result
     })

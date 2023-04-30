@@ -1,12 +1,12 @@
 {
     "GLOBAL": {
         "1056199295168159814": {
-            "msgcount": "7",
+            "msgcount": "14",
             "username": "Delta#3886",
             "isbot": "true"
         },
         "779054724543414324": {
-            "msgcount": "17",
+            "msgcount": "24",
             "username": "DevLime#6254",
             "isbot": "false"
         },
@@ -18,12 +18,12 @@
     },
     "779066985761210369": {
         "1056199295168159814": {
-            "msgcount": "4",
+            "msgcount": "8",
             "username": "Delta#3886",
             "isbot": "true"
         },
         "779054724543414324": {
-            "msgcount": "11",
+            "msgcount": "18",
             "username": "DevLime#6254",
             "isbot": "false"
         },
@@ -47,7 +47,7 @@
     },
     "1078056738399461536": {
         "1056199295168159814": {
-            "msgcount": "3",
+            "msgcount": "6",
             "username": "Delta#3886",
             "isbot": "true"
         },

@@ -8,21 +8,31 @@ async function deploy(guilds, force = false) {
     const maincommands = []
     const commands = []
     const commandFiles = await fs.promises.readdir('./commands/')
-    const extensions = await fs.promises.readdir(`../Extensions/`)
+    var extensions = null
+    try {
+        extensions = await fs.promises.readdir(`../Extensions/`)
+    } catch(err) {
+        extensions = []
+    }
 
     for (var extension of extensions) {
-        var cfg = require(`../Extensions/${extension}/config.json`)
+        const cfg = require(`../Extensions/${extension}/config.json`)
+        const metadata = require(`../Extensions/${extension}/extension.json`)
         if (cfg.enabled === "true") {
             var state = "enabled"
         } else {
             var state = "disabled"
         }
         if (state === "enabled") {
-            var commandFilesExtension = await fs.promises.readdir(`../Extensions/${extension}/commands/`)
-            for (var file of commandFilesExtension) {
-                if (!file.endsWith(".command.js")) return
-                var command = require(`../Extensions/${extension}/commands/${file}`)
-                commands.push(command.data.toJSON())
+            try {
+                var commandFilesExtension = await fs.promises.readdir(`../Extensions/${extension}/triggers/commands/`)
+                for (var file of commandFilesExtension) {
+                    if (!file.endsWith(".command.js")) return
+                    var command = require(`../Extensions/${extension}/triggers/commands/${file}`)
+                    commands.push(command.data.toJSON())
+                }
+            } catch (err) {
+                console.logger(`${metadata.name} has no application commands.`, "start")
             }
         }
     };

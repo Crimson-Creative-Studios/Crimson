@@ -1,0 +1,36 @@
+{
+    "theme": {
+        "dark": {
+            "background": {
+                "main": "",
+                "alt": ""
+            },
+            "text": {
+                "main": "",
+                "alt": ""
+            },
+            "button": {
+                "main": "",
+                "hov": "",
+                "act": "",
+                "acthov": ""
+            }
+        },
+        "light": {
+            "background": {
+                "main": "",
+                "alt": ""
+            },
+            "text": {
+                "main": "",
+                "alt": ""
+            },
+            "button": {
+                "main": "",
+                "hov": "",
+                "act": "",
+                "acthov": ""
+            }
+        }
+    }
+}

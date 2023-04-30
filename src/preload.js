@@ -34,6 +34,7 @@ contextBridge.exposeInMainWorld('crimAPI', {
     handleVer: (callback) => ipcRenderer.on('verfind', callback),
     onlineRequest: (thing) => ipcRenderer.invoke('onlineRequest', thing),
     extensionDownload: (arg) => ipcRenderer.invoke('extensionDownload', arg),
+    handleGUICFG: (callback) => ipcRenderer.on('guicfgfind', callback)
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);
@@ -66,7 +67,10 @@ var extensionFiles = ipcRenderer.sendSync("getDir", "../Extensions/")
 extensionFiles.forEach(extension => {
     var arr = []
     arr.push(extension)
-    var uicfg = requirePro(`../Extensions/${extension}/uiconfig.json`)
+    var uicfg = null
+    try {
+        uicfg = requirePro(`../Extensions/${extension}/uiconfig.json`)
+    } catch(err) {}
     var metadata = requirePro(`../Extensions/${extension}/extension.json`)
     var metaname = metadata.name
     var config = requirePro(`../Extensions/${extension}/config.json`)

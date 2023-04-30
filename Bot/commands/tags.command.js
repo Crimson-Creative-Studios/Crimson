@@ -26,8 +26,9 @@ extensions.forEach(extension => {
 	if (extensionstate === "enabled") {
 		var metadata = require(`../../Extensions/${extension}/extension.json`)
 		try {
-			var { tags } = require(`../../Extensions/${extension}/tags.js`)
-			for (const i of tags) {
+			var tags = require(`../../Extensions/${extension}/tags.json`)
+			for (var j of Object.keys(tags)) {
+				var i = tags[j]
 				if (i.enabled === "true") {
 					tagCommands.push(i)
 					tagCommandsOrigins.push(metadata.name)
