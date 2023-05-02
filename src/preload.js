@@ -34,7 +34,8 @@ contextBridge.exposeInMainWorld('crimAPI', {
     handleVer: (callback) => ipcRenderer.on('verfind', callback),
     onlineRequest: (thing) => ipcRenderer.invoke('onlineRequest', thing),
     extensionDownload: (arg) => ipcRenderer.invoke('extensionDownload', arg),
-    handleGUICFG: (callback) => ipcRenderer.on('guicfgfind', callback)
+    handleGUICFG: (callback) => ipcRenderer.on('guicfgfind', callback),
+    handleNotificationMain: (callback) => ipcRenderer.on("notificationSend", callback)
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);

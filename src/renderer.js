@@ -6,19 +6,22 @@ document.getElementById('debugELECTRON').innerText = versions.electron()
 
 document.getElementById('debugNODE').innerText = versions.node()
 
+async function handleModalTest() {
+    for (const modal of document.querySelectorAll(".modal5s")) {
+        handleNotification(modal.id, 5000)
+        await new Promise(resolve => setTimeout(resolve, 5100))
+    }
+
+    for (const modal of document.querySelectorAll(".modal2s")) {
+        handleNotification(modal.id, 2000)
+        await new Promise(resolve => setTimeout(resolve, 2100))
+    }
+}
+window.handleModalTest = handleModalTest
+
 function copy(thing) {
     navigator.clipboard.writeText(thing)
-    if (window.gradon === false) {
-        window.gradon = true
-        document.getElementById("copiedModal").style.display = "block"
-        new Promise(resolve => {
-            setTimeout(() => {
-                document.getElementById("copiedModal").style.display = "none"
-                window.gradon = false
-            }, 5000)
-            resolve()
-        })
-    }
+    handleNotification('copiedModal', 2000)
 }
 
 window.copy = copy
@@ -30,7 +33,7 @@ ipc.handleAdd((event, arg) => {
 })
 
 codeAdditions.mainAdd.forEach(addition => {
-    document.body.innerHTML += addition
+    document.getElementById("main").innerHTML += addition
 })
 
 codeAdditions.extensions.forEach(extension => {
@@ -49,6 +52,7 @@ codeAdditions.extensions.forEach(extension => {
         var items = []
         var vals = []
         var value = document.getElementById(name + "input").checked
+        console.log(value)
         items.push("enabled")
         vals.push(String(value))
         for (const uuid of Object.keys(codeAdditions.userCFGS)) {
@@ -59,7 +63,7 @@ codeAdditions.extensions.forEach(extension => {
                 vals.push(value)
             }
         }
-        crimAPI.jsonRequest(["setValBulk", `../Extensions/${name}/${information.file}`, items, vals])
+        crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, items, vals])
     })
 })
 
@@ -86,46 +90,20 @@ var btns = document.getElementsByClassName("savebtn")
 
 for (let i = 0; i < btns.length; i++) {
     btns[i].onclick = async function () {
-        if (gradon === false) {
-            gradon = true
-            document.getElementById("savedModal").style.display = "block";
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            document.getElementById("savedModal").style.display = "none";
-            gradon = false
-        }
+        handleNotification("savingModal", 5000)
     }
 }
 
 document.getElementById("CopyERR").addEventListener("click", async (event) => {
     navigator.clipboard.writeText(window.copyERROR)
-    if (window.gradon === false) {
-        window.gradon = true
-        document.getElementById("copiedModal").style.display = "block"
-        new Promise(resolve => {
-            setTimeout(() => {
-                document.getElementById("copiedModal").style.display = "none"
-                window.gradon = false
-            }, 5000)
-            resolve()
-        })
-    }
+    handleNotification("copiedModal", 2000)
 })
 
 var mainCfg = document.getElementById("saveMainCFG")
 
 mainCfg.onclick = async function (e) {
     e.preventDefault()
-    if (window.gradon === false) {
-        window.gradon = true
-        document.getElementById("savedModal").style.display = "block"
-        new Promise(resolve => {
-            setTimeout(() => {
-                document.getElementById("savedModal").style.display = "none"
-                window.gradon = false
-            }, 5000)
-            resolve()
-        })
-    }
+    handleNotification("savingModal", 5000)
     var information = {
         token: document.getElementById('token').value,
         clientid: document.getElementById('cid').value,
@@ -133,6 +111,13 @@ mainCfg.onclick = async function (e) {
     }
     crimAPI.saveENV(information)
 }
+
+crimAPI.handleNotificationMain((event, arg) => {
+    new Promise(resolve => setTimeout(() => {
+        handleNotification(arg[0], arg[1])
+        resolve()
+    }, arg[2]))
+})
 
 crimAPI.handleVer((event, arg) => {
     if (arg.replace("\n", "") !== "Open Beta 3") {
@@ -209,7 +194,7 @@ async function handleExtensionData(key, data) {
                             var namething = name
                             exsitent.push(namething)
                         }
-                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}')">Download</button></div>`, ui.type])
+                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
                     }
                     reader.readAsArrayBuffer(blob)
                 })

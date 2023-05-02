@@ -202,7 +202,7 @@
             <button class="button"
                 onclick="copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}\n    GUI version: Open Beta 4`)">Copy
                 debug information</button><br><br>
-            <button class="button savebtn">Test save settings prompt</button>
+            <button class="button" onclick="handleModalTest()">Test all modals</button>
             <button class="button" onclick="openTab('falseErrorTest')">Test a generic tab fail</button>
             <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab
                 fail</button>
@@ -219,32 +219,84 @@
             <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')">Options</button>
         </div>
 
-        <div id="savedModal" class="modal">
-
-            <div class="modal-content5s">
-                <div class="disappear5s"></div>
-                <p>Successfully saved settings!</p>
-            </div>
-
-        </div>
-
-        <div id="copiedModal" class="modal">
-
-            <div class="modal-content5s">
-                <div class="disappear5s"></div>
-                <p>Successfully copied to clipboard!</p>
-            </div>
-
-        </div>
-
         <script src="./renderer.js" type="module"></script>
         <script src="./tabhandler.js"></script>
         <script src="./extensionsearchhandler.js"></script>
         <script src="./windowcontroller.js"></script>
         <script src="./themehandler.js"></script>
+        <script src="./notificationhandler.js"></script>
     </div>
     <div class="bgd1"></div>
     <div class="bgd2"></div>
+    <div id="savingModal" class="modal modal5s">
+
+        <div class="modal-content5s">
+            <div class="disappear5s"></div>
+            <p>Saving settings...</p>
+            <button class="button close-button">𐌢</button>
+        </div>
+
+    </div>
+
+    <div id="savedModal" class="modal modal5s">
+
+        <div class="modal-content5s">
+            <div class="disappear5s"></div>
+            <p>Successfully saved settings...</p>
+            <button class="button close-button">𐌢</button>
+        </div>
+
+    </div>
+
+    <div id="saveFailModal" class="modal modal5s">
+
+        <div class="modal-content5s">
+            <div class="disappear5s"></div>
+            <p>Something went wrong while saving...</p>
+            <button class="button close-button">𐌢</button>
+        </div>
+
+    </div>
+
+    <div id="downloadingModal" class="modal modal5s">
+
+        <div class="modal-content5s">
+            <div class="disappear5s"></div>
+            <p>Downloading extension...</p>
+            <button class="button close-button">𐌢</button>
+        </div>
+
+    </div>
+
+    <div id="downloadedModal" class="modal modal5s">
+
+        <div class="modal-content5s">
+            <div class="disappear5s"></div>
+            <p>Successfully downloaded extension...</p>
+            <button class="button close-button">𐌢</button>
+        </div>
+
+    </div>
+
+    <div id="downloadFailModal" class="modal modal5s">
+
+        <div class="modal-content5s">
+            <div class="disappear5s"></div>
+            <p>Something went wrong while downloading...</p>
+            <button class="button close-button">𐌢</button>
+        </div>
+
+    </div>
+
+    <div id="copiedModal" class="modal modal2s">
+
+        <div class="modal-content2s">
+            <div class="disappear2s"></div>
+            <p>Copied to clipboard...</p>
+            <button class="button close-button">𐌢</button>
+        </div>
+
+    </div>
 </body>
 
 </html>

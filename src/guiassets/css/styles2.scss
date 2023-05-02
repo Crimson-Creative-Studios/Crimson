@@ -11,7 +11,6 @@
     @media (prefers-color-scheme: dark) {
         --background: #2f3136;
         --backgroundalt: #2c2e32;
-        --backgrounddarker: #26272b;
         --color: white;
         --coloralt: #c4c4c4;
         --buttonhov: #b80b33;
@@ -22,7 +21,6 @@
     @media (prefers-color-scheme: light) {
         --background: #fff;
         --backgroundalt: #eee;
-        --backgrounddarker: #ccc;
         --color: black;
         --coloralt: #3B3B3B;
         --buttonhov: #e80e41;
@@ -57,7 +55,6 @@
     top: -23px;
     left: 8px;
     font-size: 14px;
-    border-right: var(--color);
 }
 
 p,
@@ -276,10 +273,11 @@ img {
     overflow: auto;
     width: 100%;
     height: 100%;
+    min-width: 100%;
+    min-height: 100%;
     background-color: none;
-    z-index: 9999 !important;
-    margin-left: auto;
-    margin-right: auto;
+    z-index: 99999;
+    margin: 0 auto;
     pointer-events: none;
     top: 3px;
 
@@ -288,7 +286,7 @@ img {
     }
 
     &-content5s {
-        background-color: var(--backgrounddarker);
+        background-color: var(--backgroundalt);
         position: relative;
         margin: 0 auto;
         padding: 20px;
@@ -300,25 +298,71 @@ img {
         opacity: 0;
         transition: opacity 0.3s, border 0.3s, background-color 0.3s, color 0.3s;
         animation: appearModal 5s;
-        z-index: 9999 !important;
+        z-index: 99999;
+        --opacity: 1;
+    }
+
+    &-content2s {
+        background-color: var(--backgroundalt);
+        position: relative;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid var(--color);
+        width: clamp(100px, 65%, 800px);
+        color: var(--color);
+        border-radius: 12px;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.3s, border 0.3s, background-color 0.3s, color 0.3s;
+        animation: appearModal 2s;
+        z-index: 99999;
+        --opacity: 1;
+    }
+}
+
+.close-button {
+    position: absolute;
+    pointer-events: all;
+    bottom: 6px;
+    right: 6px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0);
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
     }
 }
 
 @keyframes appearModal {
     0% {
-        opacity: 0;
+        opacity: calc(0 *  var(--opacity));
+        top: -20px;
     }
 
     2.5% {
-        opacity: 1;
+        opacity: calc(1 *  var(--opacity));
+        top: 60px;
+    }
+
+    7.5% {
+        opacity: calc(1 *  var(--opacity));
+        top: 40px;
+    }
+
+    92.5% {
+        opacity: calc(1 *  var(--opacity));
+        top: 40px;
     }
 
     97.5% {
-        opacity: 1;
+        opacity: calc(1 *  var(--opacity));
+        top: 60px;
     }
 
     100% {
-        opacity: 0;
+        opacity: calc(0 *  var(--opacity));
+        top: -20px;
     }
 }
 
@@ -331,6 +375,17 @@ img {
     border-radius: 2px;
     width: calc(100% + 1px);
     animation: progressBar 5s;
+}
+
+.disappear2s {
+    background-color: rgba(0, 179, 255, 0.5);
+    position: absolute;
+    top: 0px;
+    left: -1px;
+    min-height: 5px;
+    border-radius: 2px;
+    width: calc(100% + 1px);
+    animation: progressBar 2s;
 }
 
 @keyframes progressBar {

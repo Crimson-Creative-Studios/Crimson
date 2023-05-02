@@ -68,13 +68,11 @@ async function setValueJSON(file, value, data) {
 async function setValueJSONBulk(file, value, data) {
     var json = null
     var jsonString = fs.readFileSync(file, 'utf8')
-    try {
-        json = JSON.parse(jsonString)
-    } catch (err) {
-        console.log(`Error setting "${value}" in "${file}", the file is not a valid JSON file.`)
-    }
+    json = JSON.parse(jsonString)
+    var index = 0
     for (const i of value) {
-        json[value[i]] = data[i]
+        json[value[index]] = data[index]
+        index++
     }
     fs.writeFileSync(file, JSON.stringify(json, null, 4))
     return json
@@ -211,22 +209,34 @@ function createWindow() {
     })
 
     ipcMain.handle('jsonRequest', async (event, arg) => {
+        var result
         if (arg[0] === "setVal") {
-            var result = await setValueJSON(arg[1], arg[2], arg[3])
+            result = await setValueJSON(arg[1], arg[2], arg[3])
         } else if (arg[0] === "setValBulk") {
-            var result = await setValueJSONBulk(arg[1], arg[2], arg[3])
+            try {
+                result = await setValueJSONBulk(arg[1], arg[2], arg[3])
+            } catch(err) {
+                result = err
+            }
+        } else if (arg[0] === "setValBulkNotStyle") {
+            try {
+                result = await setValueJSONBulk(arg[1], arg[2], arg[3])
+                win.webContents.send("notificationSend", ["savedModal", 5000, 5000])
+            } catch(err) {
+                win.webContents.send("notificationSend", ["saveFailModal", 5000, 5000])
+            }
         } else if (arg[0] === "getVal") {
             if (arg[3] === "speed") {
                 var json = require(arg[1])
-                var result = json[arg[2]]
+                result = json[arg[2]]
             } else {
-                var result = await getValueJSON(arg[1], arg[2])
+                result = await getValueJSON(arg[1], arg[2])
             }
         } else if (arg[0] === "getJSON") {
             if (arg[3] === "speed") {
-                var result = require(arg[1])
+                result = require(arg[1])
             } else {
-                var result = await getJSON(arg[1])
+                result = await getJSON(arg[1])
             }
         } else if (arg[0] === "setJSON") {
             fs.writeFileSync(arg[1], arg[2])
@@ -235,7 +245,12 @@ function createWindow() {
     })
 
     ipcMain.handle('extensionDownload', (event, arg) => {
-        downloadAndUnzip(arg, "../Extensions")
+        try {
+            downloadAndUnzip(arg, "../Extensions")
+            win.webContents.send("notificationSend", ["downloadedModal", 5000, 5000])
+        } catch(err) {
+            win.webContents.send("notificationSend", ["downloadFailModal", 5000, 5000])
+        }
     })
 
     ipcMain.handle('siteopen', (event, arg) => {
@@ -245,7 +260,6 @@ function createWindow() {
     ipcMain.handle('getEnv', (event, arg) => {
         try {
             var env = require("../config.json")
-            console.log(env)
         } catch (err) {
             var env = {
                 token: "",
@@ -258,8 +272,13 @@ function createWindow() {
     })
 
     ipcMain.handle('putEnv', async (event, arg) => {
-        var data = JSON.stringify(arg, null, 4)
-        fs.writeFileSync("../config.json", data)
+        try {
+            await fs.promises.writeFile("../config.json", JSON.stringify(arg, null, 4))
+            win.webContents.send("notificationSend", ["savedModal", 5000, 5000])
+        } catch (err) {
+            console.log(err)
+            win.webContents.send("notificationSend", ["saveFailModal", 5000, 5000])
+        }
     })
 
     win.loadFile(path.join(__dirname, 'index.html'))
