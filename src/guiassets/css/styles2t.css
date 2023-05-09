@@ -80,6 +80,7 @@ body {
   position: relative;
   border: none;
   overflow-y: hidden;
+  overflow-x: hidden;
   height: 100vh;
 }
 
@@ -419,7 +420,7 @@ label {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: var(--backgroundalt);
+  background-color: rgba(0, 0, 0, 0.1);
   transition: 0.3s;
   border-bottom: var(--color) 1px solid;
 }
@@ -563,39 +564,6 @@ p.icon {
     opacity: 1;
   }
 }
-.bgd1 {
-  position: fixed;
-  outline-width: 5px;
-  outline-color: var(--backgroundalt);
-  background-color: var(--backgroundalt);
-  border-style: dashed;
-  border-color: var(--background);
-  border-width: 5px;
-  right: 0;
-  bottom: -150px;
-  width: 200px;
-  height: 500px;
-  transform: rotateZ(45deg);
-  z-index: -5;
-  transition: 0.3s;
-}
-.bgd2 {
-  position: fixed;
-  outline-width: 5px;
-  outline-color: var(--backgroundalt);
-  background-color: var(--backgroundalt);
-  border-style: dashed;
-  border-color: var(--background);
-  border-width: 5px;
-  left: 0;
-  top: -150px;
-  width: 200px;
-  height: 500px;
-  transform: rotateZ(45deg);
-  z-index: -5;
-  transition: 0.3s;
-}
-
 ::placeholder {
   color: var(--color);
   opacity: 1;
@@ -606,6 +574,48 @@ p.icon {
   opacity: 1;
   transition: opacity 0.1s;
   pointer-events: all;
+}
+
+/* Tiles */
+#tiles {
+  height: calc(100vh - 1px);
+  width: calc(100vw - 1px);
+  position: relative;
+  z-index: -1;
+  top: -7px;
+  left: -7px;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+}
+
+.tile {
+  position: relative;
+}
+
+.tile:before {
+  background-color: var(--backgroundalt);
+  transition: background-color 0.3s;
+  content: "";
+  inset: 1px;
+  position: absolute;
+  animation: pulse 4s infinite;
+  animation-delay: calc(var(--delay) * 1s);
+}
+
+@keyframes pulse {
+  from {
+    inset: 1px;
+  }
+  50% {
+    inset: 5px;
+  }
+  to {
+    inset: 1px;
+  }
+}
+div#tiles.hiddentiles > .tile {
+  display: none;
 }
 
 /*# sourceMappingURL=styles2t.css.map */

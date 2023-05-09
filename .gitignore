@@ -11,5 +11,7 @@ app.spec
 config.json
 package.json
 package-lock.json
-*.cmd
+CrimsonGUI.cmd
+install.cmd
 *.jar
+dc.js

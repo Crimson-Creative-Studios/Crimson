@@ -32,72 +32,6 @@ const clients = {}
 const vm = require("vm")
 
 //*
-//* Start JSON file storage
-//*
-
-//? Read file
-var globalStorage = JSON.parse(fs.readFileSync("./main.json", "utf-8"))
-
-//? Save file
-function save() {
-    fs.writeFileSync("./main.json", JSON.stringify(globalStorage, null, 4))
-}
-
-//? Add a server
-function addServer(server) {
-    globalStorage[server] = {}
-    save()
-}
-
-//? Add a user in a server
-function addUserInServer(server, user) {
-    globalStorage[server][user.id] = {}
-    save()
-}
-
-//? Add a user globally
-function addUserGlobally(user) {
-    globalStorage["GLOBAL"][user.id] = {}
-    save()
-}
-
-//? Get data from user in a server
-function getUserDataInServer(server, user, thing) {
-    return globalStorage[server][user.id][thing]
-}
-
-//? Get data from user globally
-function getUserDataGlobally(user, thing) {
-    return globalStorage["GLOBAL"][user.id][thing]
-}
-
-//? Change some data for a user
-function changeUserDataInServer(server, user, thing, data) {
-    globalStorage[server][user.id][thing] = data
-    save()
-}
-
-//? Change some data for a user
-function changeUserDataGlobally(user, thing, data) {
-    globalStorage["GLOBAL"][user.id][thing] = data
-    save()
-}
-
-function setupUserInServer(server, user) {
-    addUserInServer(server, user)
-    changeUserDataInServer(server, user, "msgcount", "0")
-    changeUserDataInServer(server, user, "username", user.user.tag)
-    changeUserDataInServer(server, user, "isbot", String(user.user.bot))
-}
-
-function setupUserGlobally(user) {
-    addUserGlobally(user)
-    changeUserDataGlobally(user, "msgcount", "0")
-    changeUserDataGlobally(user, "username", user.user.tag)
-    changeUserDataGlobally(user, "isbot", String(user.user.bot))
-}
-
-//*
 //* Global vars/consts
 //*
 
@@ -136,11 +70,12 @@ var client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildVoiceStates
     ],
 })
 
 //? When client is ready do some logging and cleaning and setup users
-client.once(Events.ClientReady, (c) => {
+client.once(Events.ClientReady, async (c) => {
     client.user.setActivity(`over the server`, { type: ActivityType.Watching })
     client.user.setStatus("online")
     console.logger(
@@ -148,20 +83,6 @@ client.once(Events.ClientReady, (c) => {
         "start"
     )
     command.deploy(client.guilds.cache)
-    client.guilds.cache.forEach(guild => {
-        if (globalStorage[guild.id] === undefined) {
-            addServer(guild.id)
-        }
-        const Guild = client.guilds.cache.get(guild.id)
-        Guild.members.cache.forEach(member => {
-            if (globalStorage["GLOBAL"][member.id] === undefined) {
-                setupUserGlobally(member)
-            }
-            if (globalStorage[guild.id][member.id] === undefined) {
-                setupUserInServer(guild.id, member)
-            }
-        })
-    })
 })
 
 //? Login to client and define some commands
@@ -222,7 +143,7 @@ function resolvePath(extension, file) {
 
 //! Read and run extension
 //? Run extensions and get tag commands
-const commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".command.js"))
+const commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".js"))
 var extensions = null
 try {
     extensions = fs.readdirSync("../Extensions/")
@@ -271,8 +192,8 @@ extensions.forEach((extension) => {
                 require,
                 __dirname,
                 extension,
-                resolvePath: (thing, extension = extension) =>
-                    resolvePath(extension, thing),
+                resolvePath: (thing, ext = extension) =>
+                    resolvePath(ext, thing),
             }
             vm.createContext(sandbox)
             vm.runInContext(`const net = require('net')
@@ -306,15 +227,25 @@ function sendDataToExtension(extension, data) {
         }
     }))
 }`+ code, sandbox)
-        } catch (err) {}
+        } catch (err) {
+            console.logger(`${metadata.name} has no index.js file`, "warn")
+        }
         var commandFilesExtension = null
+        var workflows = null
         try {
             commandFilesExtension = fs
                 .readdirSync(`../Extensions/${extension}/triggers/commands/`)
-                .filter((file) => file.endsWith(".command.js"))
+                .filter((file) => file.endsWith(".js"))
         } catch (err) {
             commandFilesExtension = []
         }
+
+        try {
+            workflows = fs.readdirSync(`../Extensions/${extension}/triggers/workflows/`).filter((file) => file.endsWith(".json"))
+        } catch (err) {
+            workflows = []
+        }
+
         for (const file of commandFilesExtension) {
             const filePath = path.join(`../Extensions/${extension}/triggers/commands/`, file)
             const command = require(filePath)
@@ -325,6 +256,120 @@ function sendDataToExtension(extension, data) {
                     `The command at ${filePath} is missing a required "data" or "execute" property.`,
                     "warn"
                 )
+            }
+        }
+
+        for (const workflow of workflows) {
+            const filePath = path.join(`../Extensions/${extension}/triggers/workflows/`, workflow)
+            const context = {
+                client,
+                require
+            }
+            const data = require(filePath)
+            var filebuilder = "const { Events, EmbedBuilder } = require('discord.js')\n"
+
+            if (data.type === "message") {
+                filebuilder += "client.on(Events.MessageCreate, async message => {\n"
+                var ifstring = []
+
+                if (data.requirements.startsWith) {
+                    var thing = data.requirements.startsWith
+                    var start = "!message.toString()"
+                    if (data.requirements.caseSensitive === "false") {
+                        start += ".toLowerCase()"
+                        thing = thing.toLowerCase()
+                    }
+                    start += `.startsWith("${thing}")`
+                    ifstring.push(start)
+                }
+
+                if (data.requirements.contains) {
+                    for (var thing of data.requirements.contains) {
+                        var start = "!message.toString()"
+                        if (data.requirements.caseSensitive === "false") {
+                            start += ".toLowerCase()"
+                            thing = thing.toLowerCase()
+                        }
+                        start += `.includes("${thing}")`
+                        ifstring.push(start)
+                    }
+                }
+
+                if (data.requirements.endsWith) {
+                    var thing = data.requirements.endsWith
+                    var start = "!message.toString()"
+                    if (data.requirements.caseSensitive === "false") {
+                        start += ".toLowerCase()"
+                        thing = thing.toLowerCase()
+                    }
+                    start += `.endsWith("${thing}")`
+                    ifstring.push(start)
+                }
+
+                filebuilder += `    if(${ifstring.join(" || ")}) {return false} else {\n`
+
+                if (data.actions.react) {
+                    filebuilder += `        message.react('${data.actions.react}')\n`
+                }
+
+                if (data.actions.reply) {
+                    filebuilder += `    message.reply(\`${data.actions.reply.content.replaceAll("${user}", "<@${member.user.id}>")}\`)\n`
+                }
+
+                if (data.actions.embed) {
+                    filebuilder += `    const embed = new EmbedBuilder()`
+
+                    if (data.actions.embed.title) {
+                        filebuilder += `.setTitle(\`${data.actions.embed.title.replaceAll("${user}", "<@${member.user.id}>")}\`)`
+                    }
+
+                    if (data.actions.embed.content) {
+                        filebuilder += `.setDescription(\`${data.actions.embed.content.replaceAll("${user}", "<@${member.user.id}>")}\`)`
+                    }
+
+                    if (data.actions.embed.color) {
+                        filebuilder += `.setColor('${data.actions.embed.color}')`
+                    }
+
+                    filebuilder += `\n    client.channels.cache.find(channel => channel.name === "${data.actions.embed.channel}" && member.guild.id === channel.guild.id).send({ embeds: [embed]})\n`
+                }
+
+                filebuilder += "    }\n})"
+            } else if (data.type === "memberAdd") {
+                filebuilder += "client.on(Events.GuildMemberAdd, async member => {\n"
+
+                if (data.actions.message) {
+                    filebuilder += `    client.channels.cache.find(channel => channel.name === "${data.actions.message.channel}" && member.guild.id === channel.guild.id).send(\`${data.actions.message.content.replaceAll("${user}", "<@${member.user.id}>")}\`)\n`
+                }
+
+                if (data.actions.embed) {
+                    filebuilder += `    const embed = new EmbedBuilder()`
+
+                    if (data.actions.embed.title) {
+                        filebuilder += `.setTitle(\`${data.actions.embed.title.replaceAll("${user}", "<@${member.user.id}>")}\`)`
+                    }
+
+                    if (data.actions.embed.content) {
+                        filebuilder += `.setDescription(\`${data.actions.embed.content.replaceAll("${user}", "<@${member.user.id}>")}\`)`
+                    }
+
+                    if (data.actions.embed.color) {
+                        filebuilder += `.setColor('${data.actions.embed.color}')`
+                    }
+
+                    filebuilder += `\n    client.channels.cache.find(channel => channel.name === "${data.actions.embed.channel}" && member.guild.id === channel.guild.id).send({ embeds: [embed]})\n`
+                }
+
+                filebuilder += "})"
+            }
+
+            vm.createContext(context)
+
+            try {
+                vm.runInContext(filebuilder, context)
+            } catch (err) {
+                console.logger(`Failed to run workflow from ${extension}, file "${workflow}" may have errors!`, "error")
+                console.logger(err, "error")
             }
         }
 
@@ -460,15 +505,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 //? Handle tag command execution
 client.on(Events.MessageCreate, async message => {
-    try {
-        changeUserDataInServer(message.guild.id, message.member, "msgcount", String(Number(getUserDataInServer(message.guild.id, message.member, "msgcount")) + 1))
-        changeUserDataGlobally(message.member, "msgcount", String(Number(getUserDataGlobally(message.member, "msgcount")) + 1))
-    } catch (err) {
-        setupUserInServer(message.guild.id, message.member)
-        setupUserGlobally(message.member)
-        changeUserDataInServer(message.guild.id, message.member, "msgcount", String(Number(getUserDataInServer(message.guild.id, message.member, "msgcount")) + 1))
-        changeUserDataGlobally(message.member, "msgcount", String(Number(getUserDataGlobally(message.member, "msgcount")) + 1))
-    }
     for (const i of tagsList) {
         if (i.tag instanceof Array) {
             for (const j of i.tag) {

@@ -21,4 +21,4 @@ os.system("npm i electron discord-rich-presence path node-fetch discord.js vm ax
 
 #how to compile
 
-#python -m nuitka --mingw64 --windows-icon-from-ico=iconPath install.py
+#python -m nuitka --mingw64 --windows-icon-from-ico=iconPath --windows-disable-console install.py

@@ -14,11 +14,7 @@ var logger = function logger(info, type) {
   var day = new Date().getDay()
   let dayWord = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   var dayOfWeek = dayWord[day]
-  if (process.argv.includes("--gui")) {
-    var br = "<br>"
-  } else {
-    var br = ""
-  }
+  var br = ""
   
   if (type === "info") {
     log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Info ] ${info}${br}`)

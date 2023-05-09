@@ -65,13 +65,18 @@ var defaults = {}
 var libtext = {}
 var islib = {}
 var extensionFiles = ipcRenderer.sendSync("getDir", "../Extensions/")
-extensionFiles.forEach(extension => {
+
+
+
+extensionFiles.forEach((extension) => {
     var arr = []
     arr.push(extension)
-    var uicfg = null
+    var uicfg;
     try {
         uicfg = requirePro(`../Extensions/${extension}/uiconfig.json`)
-    } catch(err) {}
+    } catch (err) {
+        uicfg = null
+    }
     var metadata = requirePro(`../Extensions/${extension}/extension.json`)
     var metaname = metadata.name
     var config = requirePro(`../Extensions/${extension}/config.json`)

@@ -107,7 +107,7 @@
 
         <div id="Information" class="tabcontent">
             <h3>Information</h3>
-            <p>GUI Version - Open Beta 3</p>
+            <p>GUI Version - Open Beta 4</p>
             <p id="botver">Bot Version - Unknown</p>
             <p id="funfact">Fun Fact: Not loaded...</p>
         </div>
@@ -118,20 +118,17 @@
             <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
             <button id="reset-to-system" class="button" onclick="sysDarkMode()">Reset to System Theme</button>
             <br>
-            <button class="button" onclick="openTab('GUISettings')">Open GUI settings</button>
+            <button class="button" onclick="openTab('ColorChanger')">Change theme</button>
+            <button class="button" onclick="toggleBG()">Toggle background</button>
             <br>
             <br>
             <br>
             <button class="button" onclick="openTab('DEBUG')">Open DEBUG menu</button>
         </div>
 
-        <div id="GUISettings" class="tabcontent">
-            <h3>GUI Options</h3>
-            <button class="button" onclick="openTab('ColorChanger')">Change theme</button>
-        </div>
-
         <div id="ColorChanger" class="tabcontent">
             <h3>Theme</h3>
+            <button class="button" onclick="openTab('Options')">Go back</button>
             <form onsubmit="return false;">
                 <div id="darkmodecolors">
                     <label for="backgroundmainchange">Background main:</label><br>
@@ -193,6 +190,7 @@
 
         <div id="DEBUG" class="tabcontent">
             <h2>Debug Menu</h2>
+            <button class="button" onclick="openTab('Options')">Go back</button>
             <h4>Chrome Version:</h4>
             <p id="debugCHROME"></p>
             <h4>Electron Version:</h4>
@@ -225,9 +223,9 @@
         <script src="./windowcontroller.js"></script>
         <script src="./themehandler.js"></script>
         <script src="./notificationhandler.js"></script>
+        <script src="./backgroundhandler.js"></script>
     </div>
-    <div class="bgd1"></div>
-    <div class="bgd2"></div>
+    <div id="tiles"></div>
     <div id="savingModal" class="modal modal5s">
 
         <div class="modal-content5s">

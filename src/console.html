@@ -51,13 +51,24 @@
         <button class="startBot button" onclick="checkEnd()" style="display: inline-block">Stop Bot</button>
         <button class="startBot button" onclick="checkRestart()" style="display: inline-block">Restart Bot</button>
         <button class="startBot button" onclick="checkRC()" style="display: inline-block">Refresh Commands</button>
+        <button class="startBot button" onclick="resetCNSL()" style="display: inline-block">Clear Output</button>
         <div class="console" id="cnsl">
             <h4 class="white">Output Window</h4>
             <p class="typeoutput white"></p>
         </div>
         <script>
 
-            var online = false;
+            var online = false
+            var element = document.getElementById("cnsl")
+            var lastHeight = element.scrollHeight
+
+            function scrollDown() {
+                var currentHeight = element.scrollHeight
+                if (lastHeight != currentHeight) {
+                    element.scrollTop = currentHeight
+                    lastHeight = currentHeight
+                }
+            }
 
             async function checkRestart() {
                 if (online === false) {
@@ -65,16 +76,19 @@
                     online = true
                 } else {
                     crimAPI.BotStop()
-                    await new Promise(resolve => setTimeout(resolve, 100));
+                    await new Promise(resolve => setTimeout(resolve, 100))
                     crimAPI.BotStart()
                 }
             }
 
+            function resetCNSL() {
+                document.getElementById("cnsl").innerHTML = '<h4 class="white">Output Window</h4><p class="typeoutput white"></p>'
+            }
+
             function checkStart() {
                 if (online === true) {
-                    var element = document.querySelectorAll(".typeoutput")
-                    element = element[element.length - 1]
-                    element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is online, cannot start.</h4>')
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is online, cannot start.</h4><p class="typeoutput white"></p>')
+                    scrollDown()
                 } else {
                     crimAPI.BotStart()
                     online = true
@@ -83,9 +97,8 @@
 
             function checkEnd() {
                 if (online === false) {
-                    var element = document.querySelectorAll(".typeoutput")
-                    element = element[element.length - 1]
-                    element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot stop.</h4>')
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot stop.</h4><p class="typeoutput white"></p>')
+                    scrollDown()
                 } else {
                     crimAPI.BotStop()
                     online = false
@@ -94,9 +107,8 @@
 
             function checkRC() {
                 if (online === false) {
-                    var element = document.querySelectorAll(".typeoutput")
-                    element = element[element.length - 1]
-                    element.insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot refresh.</h4>')
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot refresh.</h4><p class="typeoutput white"></p>')
+                    scrollDown()
                 } else {
                     crimAPI.BotRC()
                 }
@@ -106,18 +118,20 @@
                 var element = document.querySelectorAll(".typeoutput")
                 element = element[element.length - 1]
                 element.insertAdjacentHTML("beforeend", arg)
+                scrollDown()
             })
 
             crimAPI.term((event, arg) => {
                 document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot Process Stopped</h4><p class="typeoutput white"></p>')
+                scrollDown()
                 online = false
             })
 
             document.onreadystatechange = (event) => {
                 if (document.readyState == "complete") {
-                    handleWindowControls();
+                    handleWindowControls()
                 }
-            };
+            }
 
             var maximised = false
 
@@ -166,11 +180,6 @@
                     }
                 }
             }
-
-            window.setInterval(function() {
-                var elem = document.getElementById('cnsl')
-                elem.scrollTop = elem.scrollHeight
-            }, 5000)
         </script>
     </div>
 </body>
