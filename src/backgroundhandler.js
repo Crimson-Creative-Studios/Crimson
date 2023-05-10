@@ -7,7 +7,7 @@ window.addEventListener("load", (event) => {
     const createTile = index => {
         const tile = document.createElement("div")
 
-        var delay = Math.floor(Math.random() * 3)
+        var delay = Math.floor(Math.random() * 5)
 
         tile.style.setProperty('--delay', delay)
 

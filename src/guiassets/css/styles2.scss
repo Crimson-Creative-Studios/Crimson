@@ -645,7 +645,7 @@ p.icon {
     content: "";
     inset: 1px;
     position: absolute;
-    animation: pulse 4s infinite;
+    animation: pulse 2.5s infinite;
     animation-delay: calc(var(--delay) * 1s);
 }
 
