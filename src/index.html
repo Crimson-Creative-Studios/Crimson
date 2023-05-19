@@ -5,7 +5,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'" />
     <title>CrimsonGUI</title>
-    <link rel="stylesheet" href="guiassets/css/styles2t.css" onerror="this.onerror=null;this.href='guiassets/css/styles.css';" />
+    <link rel="stylesheet" href="guiassets/css/styles2t.css">
+    <link href="guiassets/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="guiassets/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="guiassets/fontawesome/css/solid.css" rel="stylesheet">
     <script src="./axios.min.js"></script>
 </head>
 
@@ -47,12 +50,14 @@
             <h1>CrimsonGUI</h1>
         </div>
         <div class="tab">
-            <button id="BotButton" class="tablinks active" onclick="openTab('Home', 'BotButton')">Home</button>
+            <button id="BotButton" class="tablinks active" onclick="openTab('Home', 'BotButton')"><i class="fa-solid fa-house"></i></button>
             <button id="ConfigurationButton" class="tablinks"
-                onclick="openTab('Configuration', 'ConfigurationButton')">Config</button>
-            <button id="MarketButton" class="tablinks" onclick="openTab('Market', 'MarketButton')">Market</button>
+                onclick="openTab('Configuration', 'ConfigurationButton')"><i class="fa-solid fa-wrench"></i></button>
+            <button id="MarketButton" class="tablinks" onclick="openTab('Market', 'MarketButton')"><i class="fa-solid fa-shop"></i></button>
             <button id="InformationButton" class="tablinks"
-                onclick="openTab('Information', 'InformationButton')">Information</button>
+                onclick="openTab('Information', 'InformationButton')"><i class="fa-solid fa-circle-info"></i></button>
+            <button id="DEBUGButton" class="tablinks hidden"
+                onclick="openTab('DEBUG', 'DEBUGButton')"><i class="fa-solid fa-bug"></i></button>
         </div>
 
         <div id="extensionsHolder"></div>
@@ -123,7 +128,7 @@
             <br>
             <br>
             <br>
-            <button class="button" onclick="openTab('DEBUG')">Open DEBUG menu</button>
+            <button class="button" onclick="toggleVis('DEBUGButton')">Toggle Debug Menu Button</button>
         </div>
 
         <div id="ColorChanger" class="tabcontent">
@@ -132,10 +137,12 @@
             <form onsubmit="return false;">
                 <div id="darkmodecolors">
                     <label for="backgroundmainchange">Background main:</label><br>
-                    <input type="text" id="backgroundmainchange" name="backgroundmainchange" placeholder="Enter color..." /><br>
+                    <input type="text" id="backgroundmainchange" name="backgroundmainchange"
+                        placeholder="Enter color..." /><br>
 
                     <label for="backgroundaltchange">Background alt:</label><br>
-                    <input type="text" id="backgroundaltchange" name="backgroundaltchange" placeholder="Enter color..." /><br>
+                    <input type="text" id="backgroundaltchange" name="backgroundaltchange"
+                        placeholder="Enter color..." /><br>
 
                     <label for="textmainchange">Text color main:</label><br>
                     <input type="text" id="textmainchange" name="textmainchange" placeholder="Enter color..." /><br>
@@ -153,14 +160,17 @@
                     <input type="text" id="buttonactchange" name="buttonactchange" placeholder="Enter color..." /><br>
 
                     <label for="buttonhovactchange">Button hover active:</label><br>
-                    <input type="text" id="buttonhovactchange" name="buttonhovactchange" placeholder="Enter color..." /><br><br>
+                    <input type="text" id="buttonhovactchange" name="buttonhovactchange"
+                        placeholder="Enter color..." /><br><br>
                 </div>
                 <div id="lightmodecolors">
                     <label for="backgroundmainchangel">Background main:</label><br>
-                    <input type="text" id="backgroundmainchangel" name="backgroundmainchangel" placeholder="Enter color..." /><br>
+                    <input type="text" id="backgroundmainchangel" name="backgroundmainchangel"
+                        placeholder="Enter color..." /><br>
 
                     <label for="backgroundaltchangel">Background alt:</label><br>
-                    <input type="text" id="backgroundaltchangel" name="backgroundaltchangel" placeholder="Enter color..." /><br>
+                    <input type="text" id="backgroundaltchangel" name="backgroundaltchangel"
+                        placeholder="Enter color..." /><br>
 
                     <label for="textmainchangel">Text color main:</label><br>
                     <input type="text" id="textmainchangel" name="textmainchangel" placeholder="Enter color..." /><br>
@@ -169,7 +179,8 @@
                     <input type="text" id="textaltchangel" name="textaltchangel" placeholder="Enter color..." /><br>
 
                     <label for="buttonmainchangel">Button main:</label><br>
-                    <input type="text" id="buttonmainchangel" name="buttonmainchangel" placeholder="Enter color..." /><br>
+                    <input type="text" id="buttonmainchangel" name="buttonmainchangel"
+                        placeholder="Enter color..." /><br>
 
                     <label for="buttonhovchangel">Button hover:</label><br>
                     <input type="text" id="buttonhovchangel" name="buttonhovchangel" placeholder="Enter color..." /><br>
@@ -178,7 +189,8 @@
                     <input type="text" id="buttonactchangel" name="buttonactchangel" placeholder="Enter color..." /><br>
 
                     <label for="buttonhovactchangel">Button hover active:</label><br>
-                    <input type="text" id="buttonhovactchangel" name="buttonhovactchangel" placeholder="Enter color..." /><br><br>
+                    <input type="text" id="buttonhovactchangel" name="buttonhovactchangel"
+                        placeholder="Enter color..." /><br><br>
                 </div>
                 <p>Change color theme.</p>
                 <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark
@@ -189,8 +201,8 @@
         </div>
 
         <div id="DEBUG" class="tabcontent">
-            <h2>Debug Menu</h2>
-            <button class="button" onclick="openTab('Options')">Go back</button>
+            <h3>Debug Menu</h3>
+            <button class="button" onclick="openTab('Home', 'BotButton')">Go back Home</button>
             <h4>Chrome Version:</h4>
             <p id="debugCHROME"></p>
             <h4>Electron Version:</h4>
@@ -214,7 +226,7 @@
         </div>
 
         <div class="tabBottom">
-            <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')">Options</button>
+            <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')"><i class="fa-solid fa-gear"></i></button>
         </div>
 
         <script src="./renderer.js" type="module"></script>
@@ -226,10 +238,10 @@
         <script src="./backgroundhandler.js"></script>
     </div>
     <div id="tiles"></div>
-    <div id="savingModal" class="modal modal5s">
+    <div id="savingModal" class="modal modal2s">
 
-        <div class="modal-content5s">
-            <div class="disappear5s"></div>
+        <div class="modal-content2s">
+            <div class="disappear2s"></div>
             <p>Saving settings...</p>
             <button class="button close-button">𐌢</button>
         </div>
@@ -256,10 +268,10 @@
 
     </div>
 
-    <div id="downloadingModal" class="modal modal5s">
+    <div id="downloadingModal" class="modal modal2s">
 
-        <div class="modal-content5s">
-            <div class="disappear5s"></div>
+        <div class="modal-content2s">
+            <div class="disappear2s"></div>
             <p>Downloading extension...</p>
             <button class="button close-button">𐌢</button>
         </div>

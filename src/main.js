@@ -221,9 +221,9 @@ function createWindow() {
         } else if (arg[0] === "setValBulkNotStyle") {
             try {
                 result = await setValueJSONBulk(arg[1], arg[2], arg[3])
-                win.webContents.send("notificationSend", ["savedModal", 5000, 5000])
+                win.webContents.send("notificationSend", ["savedModal", 5000, 2000])
             } catch(err) {
-                win.webContents.send("notificationSend", ["saveFailModal", 5000, 5000])
+                win.webContents.send("notificationSend", ["saveFailModal", 5000, 2000])
             }
         } else if (arg[0] === "getVal") {
             if (arg[3] === "speed") {
@@ -247,9 +247,9 @@ function createWindow() {
     ipcMain.handle('extensionDownload', (event, arg) => {
         try {
             downloadAndUnzip(arg, "../Extensions")
-            win.webContents.send("notificationSend", ["downloadedModal", 5000, 5000])
+            win.webContents.send("notificationSend", ["downloadedModal", 5000, 2000])
         } catch(err) {
-            win.webContents.send("notificationSend", ["downloadFailModal", 5000, 5000])
+            win.webContents.send("notificationSend", ["downloadFailModal", 5000, 2000])
         }
     })
 
@@ -274,10 +274,10 @@ function createWindow() {
     ipcMain.handle('putEnv', async (event, arg) => {
         try {
             await fs.promises.writeFile("../config.json", JSON.stringify(arg, null, 4))
-            win.webContents.send("notificationSend", ["savedModal", 5000, 5000])
+            win.webContents.send("notificationSend", ["savedModal", 5000, 2000])
         } catch (err) {
             console.log(err)
-            win.webContents.send("notificationSend", ["saveFailModal", 5000, 5000])
+            win.webContents.send("notificationSend", ["saveFailModal", 5000, 2000])
         }
     })
 

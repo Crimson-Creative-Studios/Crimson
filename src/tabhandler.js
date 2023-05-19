@@ -157,6 +157,10 @@ async function sysDarkMode() {
     await new Promise((resolve, reject) => setTimeout(resolve, 100))
 }
 
+async function toggleVis(id) {
+    document.getElementById(id).classList.toggle("hidden")
+}
+
 darkMode.handleDarkChange(async (event, arg) => {
     toggleDarkMode()
 })

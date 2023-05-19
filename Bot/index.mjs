@@ -30,6 +30,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const clients = {}
 const vm = require("vm")
+const { Player } = require('discord-player')
 
 //*
 //* Global vars/consts
@@ -55,7 +56,7 @@ const disabled = []
 //*
 
 //? Version file, for CrimsonGUI
-fs.writeFile("version.txt", "0.2.0", (err) => {
+fs.writeFile("version.txt", "0.7.5", (err) => {
     if (err) console.logger(err, "error")
 })
 
@@ -72,6 +73,23 @@ var client = new Client({
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildVoiceStates
     ],
+})
+
+var player = new Player(client)
+
+player.on('connectionCreate', (queue) => {
+    queue.connection.voiceConnection.on('stateChange', (oldState, newState) => {
+        const oldNetworking = Reflect.get(oldState, 'networking')
+        const newNetworking = Reflect.get(newState, 'networking')
+
+        const networkStateChangeHandler = (oldNetworkState, newNetworkState) => {
+            const newUdp = Reflect.get(newNetworkState, 'udp')
+            clearInterval(newUdp?.keepAliveInterval)
+        }
+
+        oldNetworking?.off('stateChange', networkStateChangeHandler)
+        newNetworking?.on('stateChange', networkStateChangeHandler)
+    })
 })
 
 //? When client is ready do some logging and cleaning and setup users
@@ -249,11 +267,15 @@ function sendDataToExtension(extension, data) {
         for (const file of commandFilesExtension) {
             const filePath = path.join(`../Extensions/${extension}/triggers/commands/`, file)
             const command = require(filePath)
-            if ("data" in command && "execute" in command) {
-                client.commands.set(command.data.name, command)
+            if ("execute" in command) {
+                try {
+                    client.commands.set(command.data.name, command)
+                } catch(err) {
+                    client.commands.set(command.name, command)
+                }
             } else {
                 console.logger(
-                    `The command at ${filePath} is missing a required "data" or "execute" property.`,
+                    `The command at ${filePath} is missing a required "execute" property.`,
                     "warn"
                 )
             }

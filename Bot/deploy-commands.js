@@ -29,7 +29,11 @@ async function deploy(guilds) {
                     for (var file of commandFilesExtension) {
                         if (file.endsWith(".js")) {
                             var command = require(`../Extensions/${extension}/triggers/commands/${file}`)
-                            commands.push(command.data.toJSON())
+                            try {
+                                commands.push(command.data.toJSON())
+                            } catch(err) {
+                                commands.push(command.data)
+                            }
                         }
                     }
                 } catch (err) {

@@ -91,6 +91,11 @@ img {
     pointer-events: none
 }
 
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
 ::selection {
     color: black;
     background: #33F3C6;
@@ -102,15 +107,12 @@ img {
     border: none;
     left: 8px;
     top: 50px;
-    width: 25%;
-    min-width: 115px;
-    max-width: 115px;
+    width: 75px;
     height: 90%;
     min-height: 90%;
-    border-radius: 15px;
-    overflow: hidden;
 
     button {
+        border-radius: 15px;
         background-color: var(--button);
         float: left;
         color: white;
@@ -121,6 +123,8 @@ img {
         transition: 0.3s;
         width: 100%;
         display: block;
+        margin: 5px;
+        transition: opacity 0.3s;
 
         &:hover {
             background-color: var(--buttonhov);
@@ -137,26 +141,26 @@ img {
             animation: background-color 0.3s;
         }
     }
+
+    i {
+        font-size: 1.5rem;
+    }
 }
 
 .tabBottom {
     border: none;
-    width: 15%;
-    min-width: 115px;
-    max-width: 115px;
+    width: 80px;
     border-radius: 15px;
     overflow: hidden;
+    position: fixed;
+    left: 8px;
+    bottom: 8px;
 
     button {
         display: block;
-        position: fixed;
         color: white;
         width: 100%;
-        left: 8px;
-        bottom: 8px;
         border-radius: 15px;
-        min-width: 115px;
-        max-width: 115px;
         background-color: var(--button);
         float: left;
         border: none;
@@ -165,6 +169,7 @@ img {
         padding: 14px 16px;
         transition: 0.3s;
         text-align: center;
+        margin: 5px;
 
         &:hover {
             background-color: var(--buttonhov);
@@ -181,6 +186,14 @@ img {
             animation: background-color 0.3s;
         }
     }
+
+    i {
+        font-size: 1.5rem;
+    }
+}
+
+#OptionsButton {
+    width: 75px;
 }
 
 .button {
@@ -229,7 +242,7 @@ img {
     display: block;
     position: fixed;
     top: 50px;
-    left: 130px;
+    left: 100px;
     padding: 0px 12px;
     border: none;
     border-left: none;
@@ -435,11 +448,6 @@ textarea {
     }
 }
 
-#InformationButton {
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-}
-
 label {
     font-family: 'Rubik', sans-serif;
     margin: 0 5px 0 5px;
@@ -637,6 +645,8 @@ p.icon {
 
 .tile {
     position: relative;
+    opacity: 1;
+    transition: opacity 0.3s;
 }
 
 .tile:before {
@@ -664,5 +674,5 @@ p.icon {
 }
 
 div#tiles.hiddentiles > .tile {
-    display: none;
+    opacity: 0;
 }
