@@ -7,7 +7,12 @@ async function deploy(guilds) {
     try {
         console.logger("Started refreshing all application commands.", "start")
         const commands = []
-        const commandFiles = await fs.promises.readdir('./commands/')
+        var commandFiles = null
+        try {
+            commandFiles = await fs.promises.readdir('./commands/')
+        } catch(err) {
+            commandFiles = []
+        }
         var extensions = null
         try {
             extensions = await fs.promises.readdir(`../Extensions/`)

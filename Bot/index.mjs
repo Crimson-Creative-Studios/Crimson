@@ -39,18 +39,6 @@ const { Player } = require('discord-player')
 //? Tag command list for ez tag commands
 const tagsList = []
 
-//? Extension tag commands and disabled extensions
-const tagCommands = [{
-    label: "All Commands",
-    description: "All commands known to Crimson",
-    value: "allcommands",
-    detail: "Placeholder, this statement is unused so eh",
-}]
-const tagCommandsOrigins = ["Crimson"]
-const tagDescriptions = []
-const noTags = []
-const disabled = []
-
 //*
 //* Standard functions
 //*
@@ -161,14 +149,19 @@ function resolvePath(extension, file) {
 
 //! Read and run extension
 //? Run extensions and get tag commands
-const commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".js"))
+var commandFiles = null
+try {
+    commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".js"))
+} catch(err) {
+    commandFiles = []
+}
 var extensions = null
 try {
     extensions = fs.readdirSync("../Extensions/")
 } catch (err) {
     extensions = []
 }
-var allCommands = ""
+
 const actsas = []
 
 for (const extension of extensions) {
@@ -210,6 +203,7 @@ extensions.forEach((extension) => {
                 require,
                 __dirname,
                 extension,
+                extensions,
                 resolvePath: (thing, ext = extension) =>
                     resolvePath(ext, thing),
             }
@@ -246,7 +240,7 @@ function sendDataToExtension(extension, data) {
     }))
 }`+ code, sandbox)
         } catch (err) {
-            console.logger(`${metadata.name} has no index.js file`, "warn")
+            console.logger(`${metadata.name} ran into an error running the index.js file, it may not exist`, "warn")
         }
         var commandFilesExtension = null
         var workflows = null
@@ -394,55 +388,8 @@ function sendDataToExtension(extension, data) {
                 console.logger(err, "error")
             }
         }
-
-        try {
-            var tags = require(`../Extensions/${extension}/tags.json`)
-            for (var j of Object.keys(tags)) {
-                var i = tags[j]
-                if (i.enabled === "true") {
-                    tagCommands.push(i)
-                    tagCommandsOrigins.push(metadata.name)
-                }
-            }
-        } catch (err) {
-            tagDescriptions.push([
-                metadata.name,
-                ["This extension has no tag commands.\n"],
-            ])
-            noTags.push(extension)
-        }
-
-        if (!noTags.includes(extension)) {
-            tagDescriptions.unshift([metadata.name, []])
-        }
-    } else {
-        disabled.push(extension)
     }
 })
-
-for (const tag of tagCommands) {
-    var exindex = tagCommands.indexOf(tag)
-    var extension = tagCommandsOrigins[exindex]
-    for (const des of tagDescriptions) {
-        if (des[0] === extension) {
-            var index = tagDescriptions.indexOf(des)
-            var tempTagDescriptions = tagDescriptions[index]
-            var tempTags = tempTagDescriptions[1]
-            tempTags.push(tag.label)
-            tempTagDescriptions[1] = tempTags
-            tagDescriptions[index] = tempTagDescriptions
-        }
-    }
-}
-
-for (const des of tagDescriptions) {
-    allCommands = allCommands + `${des[0]}:\n`
-    var tags = des[1]
-    for (const tag of tags) {
-        allCommands = allCommands + inlineCode(tag) + "\n"
-    }
-    allCommands = allCommands + "\n"
-}
 
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`)
@@ -481,46 +428,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
                     "Uh oh, something went wrong! See the console for more information.",
                 ephemeral: true,
             })
-        }
-    } else if (interaction.isStringSelectMenu()) {
-        const row = new ActionRowBuilder().addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId("commandSelector")
-                .setPlaceholder("Nothing")
-                .addOptions(tagCommands)
-        )
-
-        const selected = interaction.values[0]
-        if (selected === "allcommands") {
-            const commandEmbed = new EmbedBuilder()
-                .setColor(0xffffff)
-                .setTitle("Crimson Tag Commands")
-                .setDescription(allCommands)
-            await interaction.update({ embeds: [commandEmbed], components: [row] })
-        } else {
-            var success = false
-            for (const tag of tagCommands) {
-                if (selected === tag.value) {
-                    const commandEmbed = new EmbedBuilder()
-                        .setColor(0xffffff)
-                        .setTitle(`Crimson Tag Commands - ${tag.label}`)
-                        .setDescription(tag.detail)
-                    await interaction.update({
-                        embeds: [commandEmbed],
-                        components: [row],
-                    })
-                    var success = true
-                }
-            }
-            if (success === false) {
-                const commandEmbed = new EmbedBuilder()
-                    .setColor(0xffffff)
-                    .setTitle(`Crimson Tag Commands - Error`)
-                    .setDescription(
-                        "I was unable to get the information of that tag command, if it's from an extension then the developer likely has not set the tag commands file up properly!"
-                    )
-                await interaction.update({ embeds: [commandEmbed], components: [row] })
-            }
         }
     } else return
 })

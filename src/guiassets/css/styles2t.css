@@ -107,6 +107,7 @@ img {
   width: 75px;
   height: 90%;
   min-height: 90%;
+  transition: 0.3s;
 }
 .tab button {
   border-radius: 15px;
@@ -117,23 +118,19 @@ img {
   outline: none;
   cursor: pointer;
   padding: 14px 16px;
-  transition: 0.3s;
   width: 100%;
   display: block;
   margin: 5px;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, background-color 0.3s !important;
 }
 .tab button:hover {
   background-color: var(--buttonhov);
-  animation: background-color 0.3s;
 }
 .tab button.active {
   background-color: var(--buttonact);
-  animation: background-color 0.3s;
 }
 .tab button.active:hover {
   background-color: var(--buttonacthov);
-  animation: background-color 0.3s;
 }
 .tab i {
   font-size: 1.5rem;
@@ -165,15 +162,12 @@ img {
 }
 .tabBottom button:hover {
   background-color: var(--buttonhov);
-  animation: background-color 0.3s;
 }
 .tabBottom button.active {
   background-color: var(--buttonact);
-  animation: background-color 0.3s;
 }
 .tabBottom button.active:hover {
   background-color: var(--buttonacthov);
-  animation: background-color 0.3s;
 }
 .tabBottom i {
   font-size: 1.5rem;
