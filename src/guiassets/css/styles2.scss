@@ -1,0 +1,672 @@
+@import url('fonts.css');
+
+:root {
+    --button: #cc0c39;
+    --buttondark: #a30a2e;
+    --buttonlight: #f22152;
+    --grad1: rgba(0, 0, 0, 0);
+    --grad2: rgba(0, 0, 0, 0);
+    user-select: none;
+
+    @media (prefers-color-scheme: dark) {
+        --background: #2f3136;
+        --backgroundalt: #2c2e32;
+        --color: white;
+        --coloralt: #c4c4c4;
+        --buttonhov: #b80b33;
+        --buttonact: #a30a2e;
+        --buttonacthov: #8f0828;
+    }
+
+    @media (prefers-color-scheme: light) {
+        --background: #fff;
+        --backgroundalt: #eee;
+        --color: black;
+        --coloralt: #3B3B3B;
+        --buttonhov: #e80e41;
+        --buttonact: #f22152;
+        --buttonacthov: #f43d67;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    #close-button .icon {
+        filter: invert(1);
+        transition: 0.3s;
+    }
+
+    #close-button:hover .icon {
+        filter: invert(0);
+    }
+
+    #close-button:active .icon {
+        filter: invert(0);
+    }
+
+    #window-controls .icon {
+        filter: invert(1);
+        transition: 0.3s;
+    }
+}
+
+.top {
+    height: 10%;
+    position: fixed;
+    top: -23px;
+    left: 8px;
+    font-size: 14px;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+label,
+input {
+    margin-right: 5px;
+}
+
+* {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+    z-index: 0;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--color);
+    transition: 0.3s;
+    position: relative;
+    border: none;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: 100vh;
+}
+
+img {
+    pointer-events: none
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+::selection {
+    color: black;
+    background: #33F3C6;
+}
+
+.tab {
+    position: fixed;
+    float: left;
+    border: none;
+    left: 8px;
+    top: 50px;
+    width: 75px;
+    height: 90%;
+    min-height: 90%;
+    transition: 0.3s;
+
+    button {
+        border-radius: 15px;
+        background-color: var(--button);
+        float: left;
+        color: white;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        width: 100%;
+        display: block;
+        margin: 5px;
+        transition: opacity 0.3s, background-color 0.3s !important;
+
+        &:hover {
+            background-color: var(--buttonhov);
+        }
+    
+        &.active {
+            background-color: var(--buttonact);
+        }
+    
+        &.active:hover {
+            background-color: var(--buttonacthov);
+        }
+    }
+
+    i {
+        font-size: 1.5rem;
+    }
+}
+
+.tabBottom {
+    border: none;
+    width: 80px;
+    border-radius: 15px;
+    overflow: hidden;
+    position: fixed;
+    left: 8px;
+    bottom: 8px;
+
+    button {
+        display: block;
+        color: white;
+        width: 100%;
+        border-radius: 15px;
+        background-color: var(--button);
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        text-align: center;
+        margin: 5px;
+
+        &:hover {
+            background-color: var(--buttonhov);
+        }
+
+        &.active {
+            background-color: var(--buttonact);
+        }
+
+        &.active:hover {
+            background-color: var(--buttonacthov);
+        }
+    }
+
+    i {
+        font-size: 1.5rem;
+    }
+}
+
+#OptionsButton {
+    width: 75px;
+}
+
+.button {
+    background-color: var(--button);
+    background-size: 200%;
+    border: none;
+    color: white;
+    padding: 5px 5px 5px 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: transform 0.05s, background-color 0.3s;
+
+    &:hover {
+        cursor: pointer;
+        border: none;
+        background-color: var(--buttonhov);
+        animation: background-color 0.3s;
+        transform: scale(1.05);
+        transition: transform 0.1s, background-color 0.3s;
+    }
+
+    &.active {
+        cursor: pointer;
+        background-color: var(--buttonact);
+        animation: background-color 0.3s;
+        animation: bouce 0.2s ease forwards;
+        transition: transform 0.05s, background-color 0.3s;
+    }
+}
+
+@keyframes bouce {
+    0% {
+        transform: scale(1.05);
+    }
+
+    50% {
+        transform: scale(0.95);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.tabcontent {
+    display: block;
+    position: fixed;
+    top: 50px;
+    left: 100px;
+    padding: 0px 12px;
+    border: none;
+    border-left: none;
+    transition: opacity 0.1s;
+    height: 90%;
+    width: 80%;
+    overflow-y: scroll;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.console {
+    margin-top: 5px;
+    background-color: #202225;
+    border-radius: 15px;
+    display: block;
+    width: 100%;
+    height: 94.5%;
+    max-height: 94.5%;
+    min-height: 94.5%;
+    overflow-y: scroll;
+    pointer-events: auto;
+
+    h4,
+    p {
+        margin-left: 10px;
+    }
+}
+
+.typeoutput {
+    font-size: smaller;
+    user-select: text;
+}
+
+.white {
+    color: #fff;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    background-color: none;
+    z-index: 99999;
+    margin: 0 auto;
+    pointer-events: none;
+    top: 3px;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    &-content5s {
+        background-color: var(--backgroundalt);
+        position: relative;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid var(--color);
+        width: clamp(100px, 65%, 800px);
+        color: var(--color);
+        border-radius: 12px;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.3s, border 0.3s, background-color 0.3s, color 0.3s;
+        animation: appearModal 5s;
+        z-index: 99999;
+        --opacity: 1;
+    }
+
+    &-content2s {
+        background-color: var(--backgroundalt);
+        position: relative;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid var(--color);
+        width: clamp(100px, 65%, 800px);
+        color: var(--color);
+        border-radius: 12px;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.3s, border 0.3s, background-color 0.3s, color 0.3s;
+        animation: appearModal 2s;
+        z-index: 99999;
+        --opacity: 1;
+    }
+}
+
+.close-button {
+    position: absolute;
+    pointer-events: all;
+    bottom: 6px;
+    right: 6px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0);
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+}
+
+@keyframes appearModal {
+    0% {
+        opacity: calc(0 *  var(--opacity));
+        top: -20px;
+    }
+
+    2.5% {
+        opacity: calc(1 *  var(--opacity));
+        top: 60px;
+    }
+
+    7.5% {
+        opacity: calc(1 *  var(--opacity));
+        top: 40px;
+    }
+
+    92.5% {
+        opacity: calc(1 *  var(--opacity));
+        top: 40px;
+    }
+
+    97.5% {
+        opacity: calc(1 *  var(--opacity));
+        top: 60px;
+    }
+
+    100% {
+        opacity: calc(0 *  var(--opacity));
+        top: -20px;
+    }
+}
+
+.disappear5s {
+    background-color: rgba(0, 179, 255, 0.5);
+    position: absolute;
+    top: 0px;
+    left: -1px;
+    min-height: 5px;
+    border-radius: 2px;
+    width: calc(100% + 1px);
+    animation: progressBar 5s;
+}
+
+.disappear2s {
+    background-color: rgba(0, 179, 255, 0.5);
+    position: absolute;
+    top: 0px;
+    left: -1px;
+    min-height: 5px;
+    border-radius: 2px;
+    width: calc(100% + 1px);
+    animation: progressBar 2s;
+}
+
+@keyframes progressBar {
+    from {
+        width: 0%
+    }
+
+    to {
+        width: calc(100% + 1px);
+    }
+}
+
+input,
+textarea {
+    box-sizing: border-box;
+    border: 1px solid var(--coloralt);
+    outline: none;
+    box-shadow: none;
+    transition: 0.5s;
+    border-radius: 2px;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--color);
+    font-family: 'DM Mono', monospace;
+
+    &:focus {
+        border: 1px solid var(--color);
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+
+    &-track {
+        background: rgba(0, 0, 0, 0);
+    }
+
+    &-thumb {
+        background: var(--coloralt);
+        border-radius: 5px;
+        transition: 0.3s;
+
+        &:hover {
+            background: var(--color);
+            transition: 0.3s;
+        }
+    }
+}
+
+label {
+    font-family: 'Rubik', sans-serif;
+    margin: 0 5px 0 5px;
+}
+
+#titlebar {
+    display: block;
+    position: fixed;
+    height: 32px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    border-bottom: var(--color) 1px solid;
+
+    #drag-region {
+        width: 100%;
+        height: 100%;
+        -webkit-app-region: drag;
+        pointer-events: none;
+        display: grid;
+        grid-template-columns: auto 138px;
+    }
+}
+
+#window-title {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    overflow: hidden;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12px;
+}
+
+#window-title span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.5;
+}
+
+#min-button {
+    grid-column: 1;
+}
+
+#max-button,
+#restore-button {
+    grid-column: 2;
+}
+
+#close-button {
+    grid-column: 3;
+}
+
+#main {
+    height: calc(100% - 32px);
+    width: 100%;
+    position: fixed;
+    top: 32px;
+    left: 0;
+    padding: 20px;
+    overflow-y: scroll;
+}
+
+@media (-webkit-device-pixel-ratio: 1.5),
+(device-pixel-ratio: 1.5),
+(-webkit-device-pixel-ratio: 2),
+(device-pixel-ratio: 2),
+(-webkit-device-pixel-ratio: 3),
+(device-pixel-ratio: 3) {
+    #window-controls .icon {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+#window-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 46px);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    -webkit-app-region: no-drag;
+
+    .winbutton {
+        grid-row: 1 / span 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        pointer-events: all;
+        user-select: none;
+        border-radius: 0px;
+        border-bottom: rgba(0, 0, 0, 0) 0px solid;
+        transition: background 0.2s, border-bottom 0.2s;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: rgba(0, 0, 0, 0) 4px solid;
+        }
+
+        &:active {
+            background: rgba(255, 255, 255, 0.2);
+            border-bottom: rgba(0, 0, 0, 0) 6px solid;
+        }
+    }
+}
+
+#close-button:hover {
+    background: var(--button) !important;
+}
+
+#close-button:active {
+    background: var(--buttonact) !important;
+}
+
+#restore-button {
+    display: none !important;
+}
+
+.maximized #titlebar {
+    width: 100%;
+    padding: 0;
+}
+
+.maximized #window-title {
+    margin-left: 12px;
+}
+
+.maximized #restore-button {
+    display: flex !important;
+}
+
+.maximized #max-button {
+    display: none;
+}
+
+.icon {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+.winbutton:has(p) {
+    padding: 0 3px 0 3px;
+}
+
+p.icon {
+    margin-top: 3px;
+}
+
+.appearbtn {
+    animation: fadein 0.2s;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+::placeholder {
+    color: var(--color);
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.showentab {
+    opacity: 1;
+    transition: opacity 0.1s;
+    pointer-events: all;
+}
+
+/* Tiles */
+
+#tiles {
+    height: calc(100vh - 1px);
+    width: calc(100vw - 1px);
+    position: relative;
+    z-index: -1;
+    top: -7px;
+    left: -7px;
+
+    display: grid;
+    grid-template-columns: repeat(var(--columns), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+}
+
+.tile {
+    position: relative;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.tile:before {
+    background-color: var(--backgroundalt);
+    transition: background-color 0.3s;
+    content: "";
+    inset: 1px;
+    position: absolute;
+    animation: pulse 2.5s infinite;
+    animation-delay: calc(var(--delay) * 1s);
+}
+
+@keyframes pulse {
+    from {
+        inset: 1px;
+    }
+
+    50% {
+        inset: 5px;
+    }
+
+    to {
+        inset: 1px;
+    }
+}
+
+div#tiles.hiddentiles > .tile {
+    opacity: 0;
+}

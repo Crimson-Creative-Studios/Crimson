@@ -1,13 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+@import url('fonts.css');
 
 :root {
     --button: #cc0c39;
     --buttondark: #a30a2e;
     --buttonlight: #f22152;
-    --successlight: #0000A0;
-    --successdark: #00009A;
     --grad1: rgba(0, 0, 0, 0);
     --grad2: rgba(0, 0, 0, 0);
     user-select: none;
@@ -17,6 +13,7 @@
     :root {
         --background: #2f3136;
         --backgroundalt: #2c2e32;
+        --backgrounddarker: #26272b;
         --color: white;
         --coloralt: #c4c4c4;
         --buttonhov: #b80b33;
@@ -27,8 +24,9 @@
 
 @media (prefers-color-scheme: light) {
     :root {
-        --background: #F6F8FF;
-        --backgroundalt: #f1f4ff;
+        --background: #fff;
+        --backgroundalt: #eee;
+        --backgrounddarker: #ccc;
         --color: black;
         --coloralt: #3B3B3B;
         --buttonhov: #e80e41;
@@ -206,7 +204,7 @@ img {
     padding: 5px 5px 5px 5px;
     border-radius: 5px;
     margin-bottom: 5px;
-    transition: transform 0.05s;
+    transition: transform 0.05s, background-color 0.3s;
 }
 
 .button:hover {
@@ -215,7 +213,7 @@ img {
     background-color: var(--buttonhov);
     animation: background-color 0.3s;
     transform: scale(1.05);
-    transition: transform 0.1s;
+    transition: transform 0.1s, background-color 0.3s;
 }
 
 .button:active {
@@ -223,7 +221,7 @@ img {
     background-color: var(--buttonact);
     animation: background-color 0.3s;
     animation: bouce 0.2s ease forwards;
-    transition: transform 0.05s;
+    transition: transform 0.05s, background-color 0.3s;
 }
 
 @keyframes bouce {
@@ -241,28 +239,19 @@ img {
 }
 
 .tabcontent {
-    display: none;
+    display: block;
     position: fixed;
     top: 50px;
     left: 130px;
     padding: 0px 12px;
     border: none;
     border-left: none;
-    transition: opacity;
-    animation: fadeEffect 0.25s;
+    transition: opacity 0.1s;
     height: 90%;
     width: 80%;
     overflow-y: scroll;
-}
-
-@keyframes fadeEffect {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    opacity: 0;
+    pointer-events: none;
 }
 
 .console {
@@ -312,62 +301,48 @@ p {
 }
 
 .modal-content5s {
-    background-color: rgba(0, 0, 0, 0);
+    background-color: var(--backgrounddarker);
     position: fixed;
     right: 8px;
     bottom: 8px;
     margin: 0 auto;
     padding: 20px;
-    border: 1px solid rgba(0, 0, 0, 0);
-    width: 65%;
-    color: rgba(0, 0, 0, 0);
+    border: 1px solid var(--color);
+    width: clamp(100px, 65%, 800px);
+    color: var(--color);
     border-radius: 12px;
     overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, border 0.3s, background-color 0.3s, color 0.3s;
     animation: appearModal 5s;
 }
 
 @keyframes appearModal {
     0% {
-        background-color: rgba(0, 0, 0, 0);
-        border: 1px solid rgba(0, 0, 0, 0);
-        color: rgba(0, 0, 0, 0);
-        --grad1: rgba(0, 0, 0, 0);
-        --grad2: rgba(0, 0, 0, 0);
+        opacity: 0;
     }
 
     2.5% {
-        background-color: var(--background);
-        border: 1px solid #888;
-        color: var(--color);
-        --grad1: var(--successlight);
-        --grad2: var(--successdark);
+        opacity: 1;
     }
 
     97.5% {
-        background-color: var(--background);
-        border: 1px solid #888;
-        color: var(--color);
-        --grad1: var(--successlight);
-        --grad2: var(--successdark);
+        opacity: 1;
     }
 
     100% {
-        background-color: rgba(0, 0, 0, 0);
-        border: 1px solid rgba(0, 0, 0, 0);
-        color: rgba(0, 0, 0, 0);
-        --grad1: rgba(0, 0, 0, 0);
-        --grad2: rgba(0, 0, 0, 0);
+        opacity: 0;
     }
 }
 
 .disappear5s {
-    background: linear-gradient(135deg, var(--grad1) 0%, var(--grad2) 100%);
+    background-color: rgba(0, 179, 255, 0.5);
     position: absolute;
     top: 0px;
     left: -1px;
     min-height: 5px;
     border-radius: 2px;
-    width: 101%;
+    width: calc(100% + 1px);
     animation: progressBar 5s;
 }
 
@@ -377,7 +352,7 @@ p {
     }
 
     to {
-        width: 101%;
+        width: calc(100% + 1px);
     }
 }
 
@@ -410,11 +385,12 @@ textarea:focus {
 ::-webkit-scrollbar-thumb {
     background: var(--coloralt);
     border-radius: 5px;
-    transition: 0.5s;
+    transition: 0.3s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--color);
+    transition: 0.3s;
 }
 
 #InformationButton {
@@ -434,7 +410,7 @@ label {
     top: 0;
     left: 0;
     width: 100%;
-    background: var(--background);
+    background-color: var(--backgroundalt);
     transition: 0.3s;
     border-bottom: var(--color) 1px solid;
 }
@@ -443,6 +419,7 @@ label {
     width: 100%;
     height: 100%;
     -webkit-app-region: drag;
+    pointer-events: none;
     display: grid;
     grid-template-columns: auto 138px;
 }
@@ -481,6 +458,7 @@ label {
     align-items: center;
     width: 100%;
     height: 100%;
+    pointer-events: all;
 }
 
 #min-button {
@@ -498,7 +476,10 @@ label {
 
 #main {
     height: calc(100% - 32px);
-    margin-top: 32px;
+    width: 100%;
+    position: fixed;
+    top: 32px;
+    left: 0;
     padding: 20px;
     overflow-y: scroll;
 }
@@ -517,32 +498,27 @@ label {
 
 #window-controls .winbutton {
     user-select: none;
-    border-radius: 5px;
-    transition: 0.2s;
+    border-radius: 0px;
+    border-bottom: rgba(0, 0, 0, 0) 0px solid;
+    transition: background 0.2s, border-bottom 0.2s;
 }
 
 #window-controls .winbutton:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    transition: 0.2s;
+    border-bottom: rgba(0, 0, 0, 0) 4px solid;
 }
 
 #window-controls .winbutton:active {
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-    transition: 0.2s;
+    border-bottom: rgba(0, 0, 0, 0) 6px solid;
 }
 
 #close-button:hover {
     background: var(--button) !important;
-    border-radius: 5px;
-    transition: 0.2s;
 }
 
 #close-button:active {
     background: var(--buttonact) !important;
-    border-radius: 5px;
-    transition: 0.2s;
 }
 
 #restore-button {
@@ -630,4 +606,11 @@ p.icon {
 ::placeholder {
     color: var(--color);
     opacity: 1;
-  }
+    transition: 0.3s;
+}
+
+.showentab {
+    opacity: 1;
+    transition: opacity 0.1s;
+    pointer-events: all;
+}

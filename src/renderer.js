@@ -1,21 +1,39 @@
-var information = document.getElementById('debugCHROME')
-information.innerText = versions.chrome()
+window.gradon = false
 
-var information = document.getElementById('debugELECTRON')
-information.innerText = versions.electron()
+document.getElementById('debugCHROME').innerText = versions.chrome()
 
-var information = document.getElementById('debugNODE')
-information.innerText = versions.node()
+document.getElementById('debugELECTRON').innerText = versions.electron()
+
+document.getElementById('debugNODE').innerText = versions.node()
+
+async function handleModalTest() {
+    for (const modal of document.querySelectorAll(".modal5s")) {
+        handleNotification(modal.id, 5000)
+        await new Promise(resolve => setTimeout(resolve, 5100))
+    }
+
+    for (const modal of document.querySelectorAll(".modal2s")) {
+        handleNotification(modal.id, 2000)
+        await new Promise(resolve => setTimeout(resolve, 2100))
+    }
+}
+window.handleModalTest = handleModalTest
+
+function copy(thing) {
+    navigator.clipboard.writeText(thing)
+    handleNotification('copiedModal', 2000)
+}
+
+window.copy = copy
 
 ipc.handleAdd((event, arg) => {
     var id = arg[0]
     var content = arg[1]
-    console.log(id)
     document.getElementById(id).insertAdjacentHTML("beforeend", content)
 })
 
 codeAdditions.mainAdd.forEach(addition => {
-    document.body.innerHTML += addition
+    document.getElementById("main").innerHTML += addition
 })
 
 codeAdditions.extensions.forEach(extension => {
@@ -34,6 +52,7 @@ codeAdditions.extensions.forEach(extension => {
         var items = []
         var vals = []
         var value = document.getElementById(name + "input").checked
+        console.log(value)
         items.push("enabled")
         vals.push(String(value))
         for (const uuid of Object.keys(codeAdditions.userCFGS)) {
@@ -44,7 +63,7 @@ codeAdditions.extensions.forEach(extension => {
                 vals.push(value)
             }
         }
-        crimAPI.jsonRequest(["setValBulk", `../Extensions/${name}/${information.file}`, items, vals])
+        crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, items, vals])
     })
 })
 
@@ -67,47 +86,24 @@ document.getElementById('funfact').innerHTML = `Fun Fact: ${funfact}`
 
 //! Saving and modals
 
-const savemodal = document.getElementById("savedModal")
-const copymodal = document.getElementById("copiedModal")
-
 var btns = document.getElementsByClassName("savebtn")
-
-var gradon = false;
 
 for (let i = 0; i < btns.length; i++) {
     btns[i].onclick = async function () {
-        if (gradon === false) {
-            gradon = true
-            savemodal.style.display = "block";
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            savemodal.style.display = "none";
-            gradon = false
-        }
+        handleNotification("savingModal", 5000)
     }
 }
 
 document.getElementById("CopyERR").addEventListener("click", async (event) => {
     navigator.clipboard.writeText(window.copyERROR)
-    if (gradon === false) {
-        gradon = true
-        copymodal.style.display = "block";
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        copymodal.style.display = "none";
-        gradon = false
-    }
+    handleNotification("copiedModal", 2000)
 })
 
 var mainCfg = document.getElementById("saveMainCFG")
 
 mainCfg.onclick = async function (e) {
     e.preventDefault()
-    if (gradon === false) {
-        gradon = true
-        savemodal.style.display = "block";
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        savemodal.style.display = "none";
-        gradon = false
-    }
+    handleNotification("savingModal", 5000)
     var information = {
         token: document.getElementById('token').value,
         clientid: document.getElementById('cid').value,
@@ -116,8 +112,14 @@ mainCfg.onclick = async function (e) {
     crimAPI.saveENV(information)
 }
 
+crimAPI.handleNotificationMain((event, arg) => {
+    new Promise(resolve => setTimeout(() => {
+        handleNotification(arg[0], arg[1])
+        resolve()
+    }, arg[2]))
+})
+
 crimAPI.handleVer((event, arg) => {
-    console.log(arg)
     if (arg.replace("\n", "") !== "Open Beta 3") {
         document.getElementById('versionut').innerHTML = `New version found!<br>Current version: Open Beta 3<br>Found version: ${arg}`
     } else {
@@ -129,13 +131,12 @@ function repoLink(thing, link = "https://github.com/SkyoProductions/OfficialCrim
     return link + thing
 }
 
-var finnum = 0
+const exsitent = []
 
 async function handleExtensionData(key, data) {
     return new Promise((resolve, reject) => {
         setTimeout(async () => {
             var info = data[key]
-            console.log(info)
             var authors = info.authors
             var name = info.name
             var id = info.folder
@@ -186,8 +187,14 @@ async function handleExtensionData(key, data) {
                             }
                         }
                         var options = JSON.stringify(optionsobj).replaceAll('"', '&quot;')
-                        console.log(options)
-                        resolve([`<button id="${id}market" class="button appearbtn exbtnid" onClick="openTab('${id}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${id}market`, `<div id="${id}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}')">Download</button></div>`])
+                        if (exsitent.includes(name)) {
+                            var namething = name + "¬"
+                            exsitent.push(namething)
+                        } else {
+                            var namething = name
+                            exsitent.push(namething)
+                        }
+                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
                     }
                     reader.readAsArrayBuffer(blob)
                 })
@@ -199,13 +206,19 @@ async function handleExtensionData(key, data) {
 }
 
 async function getExtensions() {
-    var exts = await axios.get("https://raw.githubusercontent.com/SkyoProductions/OfficialCrimsonRepo/main/all.json", { responseType: "json" })
+    var exts = await axios.get("https://raw.githubusercontent.com/SkyoProductions/OfficialCrimsonRepo/main/all.json", {
+        responseType: "text",
+        headers: {
+            'Content-Type': 'text/plain'
+        }
+    })
+    exts.data = JSON.parse(exts.data)
     for (const key of Object.keys(exts.data)) {
         var extension = await handleExtensionData(key, exts.data)
         try {
             document.getElementById("exloadtxt").remove()
         } catch (err) { }
-        document.getElementById("Market").insertAdjacentHTML("beforeend", extension[0])
+        document.getElementById(extension[3] + "area").insertAdjacentHTML("beforeend", extension[0])
         new Promise(resolve => setTimeout(() => {
             document.getElementById(extension[1]).classList.remove("appearbtn")
             resolve()
@@ -224,3 +237,37 @@ async function getExtensions() {
     }
 }
 getExtensions()
+
+function startBot() {
+    crimAPI.BotStart()
+}
+window.addEventListener('load', function () {
+    var information = crimAPI.cfg
+    document.getElementById("token").defaultValue = information.token
+    document.getElementById("cid").defaultValue = information.clientid
+    document.getElementById("adprefix").defaultValue = information.adminname
+})
+
+window.startBot = startBot
+
+crimAPI.handleGUICFG((event, arg) => {
+    var cfg = JSON.parse(arg)
+    document.getElementById("backgroundmainchange").value = cfg.theme.dark.background.main
+    document.getElementById("backgroundaltchange").value = cfg.theme.dark.background.alt
+    document.getElementById("textmainchange").value = cfg.theme.dark.text.main
+    document.getElementById("textaltchange").value = cfg.theme.dark.text.alt
+    document.getElementById("buttonmainchange").value = cfg.theme.dark.button.main
+    document.getElementById("buttonhovchange").value = cfg.theme.dark.button.hov
+    document.getElementById("buttonactchange").value = cfg.theme.dark.button.act
+    document.getElementById("buttonhovactchange").value = cfg.theme.dark.button.acthov
+
+    document.getElementById("backgroundmainchangel").value = cfg.theme.light.background.main
+    document.getElementById("backgroundaltchangel").value = cfg.theme.light.background.alt
+    document.getElementById("textmainchangel").value = cfg.theme.light.text.main
+    document.getElementById("textaltchangel").value = cfg.theme.light.text.alt
+    document.getElementById("buttonmainchangel").value = cfg.theme.light.button.main
+    document.getElementById("buttonhovchangel").value = cfg.theme.light.button.hov
+    document.getElementById("buttonactchangel").value = cfg.theme.light.button.act
+    document.getElementById("buttonhovactchangel").value = cfg.theme.light.button.acthov
+    loadColors()
+})
