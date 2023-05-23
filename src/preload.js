@@ -7,6 +7,7 @@ function requirePro(thing) {
 }
 
 var cfg = requirePro('../config.json')
+const version = ipcRenderer.sendSync("getFile", "version.txt")
 
 contextBridge.exposeInMainWorld('darkMode', {
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
@@ -49,6 +50,7 @@ contextBridge.exposeInMainWorld('versions', {
     node: () => process.versions.node,
     chrome: () => process.versions.chrome,
     electron: () => process.versions.electron,
+    crimson: () => version
 })
 
 contextBridge.exposeInMainWorld('theme', {
@@ -65,8 +67,6 @@ var defaults = {}
 var libtext = {}
 var islib = {}
 var extensionFiles = ipcRenderer.sendSync("getDir", "../Extensions/")
-
-
 
 extensionFiles.forEach((extension) => {
     var arr = []
