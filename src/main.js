@@ -150,6 +150,10 @@ function createWindow() {
         event.returnValue = fs.readdirSync(arg)
     })
 
+    ipcMain.on('getFile', (event, arg) => {
+        event.returnValue = fs.readFileSync(arg, "utf-8")
+    })
+
     win.on('maximize', () => {
         win.webContents.send("wincontroler", "max")
         isMax = true
@@ -319,13 +323,6 @@ function createWindow() {
     ipcMain.handle('saveState', (event, data) => {
         currentTab = data[0]
         currentOverride = data[1]
-    })
-
-    win.webContents.on('did-finish-load', () => {
-        fs.readFile('../Bot/version.txt', 'utf8', function (err, data) {
-            if (err) { data = "No Version File Found" }
-            win.webContents.executeJavaScript(`document.getElementById("botver").innerHTML = "Bot Version - ${data}";0`)
-        })
     })
     return win
 }

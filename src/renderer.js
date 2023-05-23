@@ -6,6 +6,8 @@ document.getElementById('debugELECTRON').innerText = versions.electron()
 
 document.getElementById('debugNODE').innerText = versions.node()
 
+document.getElementById('guiver').innerText = "Version - " + versions.crimson()
+
 async function handleModalTest() {
     for (const modal of document.querySelectorAll(".modal5s")) {
         handleNotification(modal.id, 5000)
@@ -52,7 +54,6 @@ codeAdditions.extensions.forEach(extension => {
         var items = []
         var vals = []
         var value = document.getElementById(name + "input").checked
-        console.log(value)
         items.push("enabled")
         vals.push(String(value))
         for (const uuid of Object.keys(codeAdditions.userCFGS)) {
@@ -79,7 +80,7 @@ for (var uuid of Object.keys(codeAdditions.userCFGS)) {
     document.getElementById(uuid).defaultValue = codeAdditions.defaults[uuid]
 }
 
-const funfacts = ["CrimsonGUI is written in Electron", "CrimsonGUI had 2 open beta 1s, odd isn't it?", "Crimson <i>will</i> have a mixin like capability", "<b>There will be no beans theme</b>"]
+const funfacts = ["CrimsonGUI is written in Electron", "CrimsonGUI had 2 open beta 1s, odd isn't it?", "Crimson can completely kill your computer if an extension is malicous", "<b>There will be no beans theme</b>"]
 var funfact = funfacts[Math.floor((Math.random() * funfacts.length))]
 
 document.getElementById('funfact').innerHTML = `Fun Fact: ${funfact}`
@@ -120,10 +121,13 @@ crimAPI.handleNotificationMain((event, arg) => {
 })
 
 crimAPI.handleVer((event, arg) => {
-    if (arg.replace("\n", "") !== "Open Beta 3") {
-        document.getElementById('versionut').innerHTML = `New version found!<br>Current version: Open Beta 3<br>Found version: ${arg}`
-    } else {
-        document.getElementById('versionut').innerHTML = "No new versions found."
+    const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1"]
+    if (versionHistory.includes(arg.replace("\n", ""))) {
+        if (versionHistory.indexOf(arg.replace("\n", "")) < versionHistory.indexOf(versions.crimson())) {
+            document.getElementById('versionut').innerHTML = "No new versions found."
+        } else {
+            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${arg}`
+        }
     }
 })
 
