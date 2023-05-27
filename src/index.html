@@ -114,6 +114,10 @@
             <h3>Information</h3>
             <p id="guiver">GUI Version - Loading...</p>
             <p id="funfact">Fun Fact: Not loaded...</p>
+            <h4>Credits:</h4>
+            <p><a onclick="crimAPI.openSite('https://skyoproductions.github.io/developers/devlime')">DevLime</a> - Creator</p>
+            <p><a onclick="crimAPI.openSite('https://questcraft.org/')">QuestCraft</a> - Theme name (and awesome game)</p>
+            <p><a onclick="crimAPI.openSite('https://fontawesome.com/')">Font Awesome</a> - Icons</p>
         </div>
 
         <div id="Options" class="tabcontent">
@@ -133,6 +137,18 @@
         <div id="ColorChanger" class="tabcontent">
             <h3>Theme</h3>
             <button class="button" onclick="openTab('Options')">Go back</button>
+            <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+            <button class="button" onclick="clearColor()">Clear colors</button>
+            <button class="button" onclick="openTab('PreviewColors')">Preview theme</button>
+            <h4>Load and save colors</h4>
+            <button class="button" id="loadcolors" onclick="loadColors(undefined, true)">Save colors</button>
+            <h4>Premade Themes</h4>
+            <button class="button" onclick="loadNeon()">Neon City</button>
+            <button class="button" onclick="loadBAB()">Black and Blue</button>
+            <button class="button" onclick="loadQC()">QuestCraft</button>
+            <button class="button" onclick="loadPP()">Purplish Pink</button>
+            <button class="button" onclick="loadP()">Phoneix</button>
+            <br><br>
             <form onsubmit="return false;">
                 <div id="darkmodecolors">
                     <label for="backgroundmainchange">Background main:</label><br>
@@ -191,12 +207,25 @@
                     <input type="text" id="buttonhovactchangel" name="buttonhovactchangel"
                         placeholder="Enter color..." /><br><br>
                 </div>
-                <p>Change color theme.</p>
-                <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark
-                    Mode</button><br><br>
-                <p>Load and save colors</p>
-                <button class="button" id="loadcolors" onclick="loadColors()">Load colors</button><br><br>
+                <br><br>
             </form>
+        </div>
+
+        <div id="PreviewColors" class="tabcontent">
+            <h3>Preview Colors</h3>
+            <button class="button" onclick="openTab('ColorChanger')">Go back</button>
+            <div class="previewColors">
+                <h4>Main background</h4>
+                <div class="background"></div>
+                <h4>Alt background</h4>
+                <div class="backgroundalt"></div>
+                <h4>Button</h4>
+                <button class="button">Example Button</button>
+                <h4>Main text</h4>
+                <p>Example text</p>
+                <h4>Alt text</h4>
+                <p class="altcolor">Example text</p>
+            </div>
         </div>
 
         <div id="DEBUG" class="tabcontent">
@@ -228,12 +257,13 @@
         </div>
 
         <script src="./renderer.js" type="module"></script>
+        <script src="./themehandler.js"></script>
         <script src="./tabhandler.js"></script>
         <script src="./extensionsearchhandler.js"></script>
         <script src="./windowcontroller.js"></script>
-        <script src="./themehandler.js"></script>
         <script src="./notificationhandler.js"></script>
         <script src="./backgroundhandler.js"></script>
+        <script src="./ultragamermode.js"></script>
     </div>
     <div id="tiles"></div>
     <div id="savingModal" class="modal modal2s">

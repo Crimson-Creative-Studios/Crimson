@@ -259,25 +259,3 @@ window.addEventListener('load', function () {
 })
 
 window.startBot = startBot
-
-crimAPI.handleGUICFG((event, arg) => {
-    var cfg = JSON.parse(arg)
-    document.getElementById("backgroundmainchange").value = cfg.theme.dark.background.main
-    document.getElementById("backgroundaltchange").value = cfg.theme.dark.background.alt
-    document.getElementById("textmainchange").value = cfg.theme.dark.text.main
-    document.getElementById("textaltchange").value = cfg.theme.dark.text.alt
-    document.getElementById("buttonmainchange").value = cfg.theme.dark.button.main
-    document.getElementById("buttonhovchange").value = cfg.theme.dark.button.hov
-    document.getElementById("buttonactchange").value = cfg.theme.dark.button.act
-    document.getElementById("buttonhovactchange").value = cfg.theme.dark.button.acthov
-
-    document.getElementById("backgroundmainchangel").value = cfg.theme.light.background.main
-    document.getElementById("backgroundaltchangel").value = cfg.theme.light.background.alt
-    document.getElementById("textmainchangel").value = cfg.theme.light.text.main
-    document.getElementById("textaltchangel").value = cfg.theme.light.text.alt
-    document.getElementById("buttonmainchangel").value = cfg.theme.light.button.main
-    document.getElementById("buttonhovchangel").value = cfg.theme.light.button.hov
-    document.getElementById("buttonactchangel").value = cfg.theme.light.button.act
-    document.getElementById("buttonhovactchangel").value = cfg.theme.light.button.acthov
-    loadColors()
-})

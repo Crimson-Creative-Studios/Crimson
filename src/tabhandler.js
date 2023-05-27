@@ -34,6 +34,7 @@ async function openTab(tabName, override = null, option = "") {
             old_element.parentNode.replaceChild(new_element, old_element)
         }
         currentMenu = "ErrorFound"
+        currentTab = tabName
         document.getElementById("ErrorFound").classList.add("showentab")
     } else {
         if (currentTab === tabName) {
@@ -119,6 +120,8 @@ async function openTab(tabName, override = null, option = "") {
             if (currentMenu.slice(0, -9) === "PyRun") {
                 key = 'pyrunlogo'
             }
+        } else if (currentMenu === "ColorChanger" || currentMenu === "PreviewColors") {
+            presence = "Customizing the theme!"
         } else {
             var metaname = codeAdditions.metanames[currentMenu]
             presence = `Currently modifing ${metaname}'s settings.`
@@ -143,6 +146,7 @@ async function toggleDarkMode() {
     catch (err) {
         console.log(err)
     }
+    handleChange()
     await new Promise((resolve, reject) => setTimeout(resolve, 100))
 }
 
@@ -154,6 +158,7 @@ async function sysDarkMode() {
     catch (err) {
         console.log(err)
     }
+    handleChange()
     await new Promise((resolve, reject) => setTimeout(resolve, 100))
 }
 
@@ -168,49 +173,9 @@ darkMode.handleDarkChange(async (event, arg) => {
 function handleChange() {
     try {
         var options = JSON.parse(currentOption)
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            document.getElementById("lightmodecolors").style.display = "none"
-            document.getElementById("darkmodecolors").style.display = "block"
-            document.documentElement.style.setProperty('--background', options.dark.background.main)
-            document.documentElement.style.setProperty('--backgroundalt', options.dark.background.alt)
-            document.documentElement.style.setProperty('--button', options.dark.button.main)
-            document.documentElement.style.setProperty('--buttonhov', options.dark.button.hov)
-            document.documentElement.style.setProperty('--buttonact', options.dark.button.act)
-            document.documentElement.style.setProperty('--buttonacthov', options.dark.button.hovact)
-        } else {
-            document.getElementById("lightmodecolors").style.display = "block"
-            document.getElementById("darkmodecolors").style.display = "none"
-            document.documentElement.style.setProperty('--background', options.light.background.main)
-            document.documentElement.style.setProperty('--backgroundalt', options.light.background.alt)
-            document.documentElement.style.setProperty('--button', options.light.button.main)
-            document.documentElement.style.setProperty('--buttonhov', options.light.button.hov)
-            document.documentElement.style.setProperty('--buttonact', options.light.button.act)
-            document.documentElement.style.setProperty('--buttonacthov', options.light.button.hovact)
-        }
+        loadColors(options)
     } catch (err) {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            document.getElementById("lightmodecolors").style.display = "none"
-            document.getElementById("darkmodecolors").style.display = "block"
-            document.documentElement.style.setProperty('--background', document.getElementById("backgroundmainchange").value)
-            document.documentElement.style.setProperty('--backgroundalt', document.getElementById("backgroundaltchange").value)
-            document.documentElement.style.setProperty('--color', document.getElementById("textmainchange").value)
-            document.documentElement.style.setProperty('--coloralt', document.getElementById("textaltchange").value)
-            document.documentElement.style.setProperty('--button', document.getElementById("buttonmainchange").value)
-            document.documentElement.style.setProperty('--buttonhov', document.getElementById("buttonhovchange").value)
-            document.documentElement.style.setProperty('--buttonact', document.getElementById("buttonactchange").value)
-            document.documentElement.style.setProperty('--buttonacthov', document.getElementById("buttonhovactchange").value)
-        } else {
-            document.getElementById("lightmodecolors").style.display = "block"
-            document.getElementById("darkmodecolors").style.display = "none"
-            document.documentElement.style.setProperty('--background', document.getElementById("backgroundmainchangel").value)
-            document.documentElement.style.setProperty('--backgroundalt', document.getElementById("backgroundaltchangel").value)
-            document.documentElement.style.setProperty('--color', document.getElementById("textmainchangel").value)
-            document.documentElement.style.setProperty('--coloralt', document.getElementById("textaltchangel").value)
-            document.documentElement.style.setProperty('--button', document.getElementById("buttonmainchangel").value)
-            document.documentElement.style.setProperty('--buttonhov', document.getElementById("buttonhovchangel").value)
-            document.documentElement.style.setProperty('--buttonact', document.getElementById("buttonactchangel").value)
-            document.documentElement.style.setProperty('--buttonacthov', document.getElementById("buttonhovactchangel").value)
-        }
+        loadColors()
     }
 }
 

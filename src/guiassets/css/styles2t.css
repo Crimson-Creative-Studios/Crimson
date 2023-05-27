@@ -73,6 +73,10 @@ input {
   z-index: 0;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 body {
   background-color: var(--background);
   color: var(--color);
@@ -82,6 +86,38 @@ body {
   overflow-y: hidden;
   overflow-x: hidden;
   height: 100vh;
+}
+
+.altcolor {
+  color: var(--coloralt);
+}
+
+.background {
+  background-color: var(--background);
+  outline: var(--color) 5px solid;
+  width: 100px;
+  height: 100px;
+}
+
+.backgroundalt {
+  background-color: var(--backgroundalt);
+  outline: var(--color) 5px solid;
+  width: 100px;
+  height: 100px;
+}
+
+.previewColors {
+  filter: invert(100%);
+}
+
+.previewColors > * {
+  margin: 5px;
+  margin-top: 5px !important;
+  filter: invert(100%);
+}
+
+.previewColors > p {
+  background-color: var(--background);
 }
 
 img {
@@ -195,7 +231,7 @@ img {
   transform: scale(1.05);
   transition: transform 0.1s, background-color 0.3s;
 }
-.button.active {
+.button:active {
   cursor: pointer;
   background-color: var(--buttonact);
   animation: background-color 0.3s;
@@ -218,13 +254,13 @@ img {
   display: block;
   position: fixed;
   top: 50px;
-  left: 100px;
+  right: 10px;
   padding: 0px 12px;
   border: none;
   border-left: none;
   transition: opacity 0.1s;
   height: 90%;
-  width: 80%;
+  width: calc(100% - 110px);
   overflow-y: scroll;
   opacity: 0;
   pointer-events: none;
@@ -393,12 +429,16 @@ textarea:focus {
 }
 
 ::-webkit-scrollbar {
+  padding-right: 15px;
+  pointer-events: all;
   width: 10px;
 }
 ::-webkit-scrollbar-track {
+  padding-right: 15px;
   background: rgba(0, 0, 0, 0);
 }
 ::-webkit-scrollbar-thumb {
+  padding-right: 15px;
   background: var(--coloralt);
   border-radius: 5px;
   transition: 0.3s;
@@ -587,6 +627,7 @@ p.icon {
   display: grid;
   grid-template-columns: repeat(var(--columns), 1fr);
   grid-template-rows: repeat(var(--rows), 1fr);
+  overflow: visible;
 }
 
 .tile {

@@ -132,7 +132,7 @@ function createWindow() {
     })
 
     win.once('ready-to-show', async () => {
-        var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/guiver.txt")
+        var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/version.txt")
         win.webContents.send("verfind", data.data)
     })
 
@@ -140,10 +140,8 @@ function createWindow() {
         if (isMax) {
             win.webContents.send("wincontroler", "max")
         }
-        var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/guiver.txt")
+        var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/version.txt")
         win.webContents.send("verfind", data.data)
-        var data = fs.readFileSync("guicfg.json", "utf-8")
-        win.webContents.send("guicfgfind", data)
     })
 
     ipcMain.on('getDir', (event, arg) => {
@@ -194,9 +192,7 @@ function createWindow() {
     })
 
     ipcMain.on('require', (event, arg) => {
-        if (arg.startsWith("./") && arg.endsWith(".json")) {
-            event.returnValue = require(arg)
-        } else if (arg.startsWith("../") && arg.endsWith(".json")) {
+        if (arg.endsWith(".json")) {
             try {
                 var thing = require(arg)
                 event.returnValue = thing
@@ -244,6 +240,13 @@ function createWindow() {
             }
         } else if (arg[0] === "setJSON") {
             fs.writeFileSync(arg[1], arg[2])
+        } else if (arg[0] === "setJSONNotStyle") {
+            try {
+                fs.writeFileSync(arg[1], arg[2])
+                win.webContents.send("notificationSend", ["savedModal", 5000, 2000])
+            } catch(err) {
+                win.webContents.send("notificationSend", ["saveFailModal", 5000, 2000])
+            }
         }
         event.returnValue = result
     })
