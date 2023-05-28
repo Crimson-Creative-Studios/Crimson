@@ -220,6 +220,27 @@ function loadP() {
     loadColors()
 }
 
+function loadAmoled() {
+    document.getElementById("backgroundmainchange").value = "#000000"
+    document.getElementById("backgroundaltchange").value = "#000000"
+    document.getElementById("textmainchange").value = ""
+    document.getElementById("textaltchange").value = ""
+    document.getElementById("buttonmainchange").value = ""
+    document.getElementById("buttonhovchange").value = ""
+    document.getElementById("buttonactchange").value = ""
+    document.getElementById("buttonhovactchange").value = ""
+
+    document.getElementById("backgroundmainchangel").value = "#ffffff"
+    document.getElementById("backgroundaltchangel").value = "#ffffff"
+    document.getElementById("textmainchangel").value = ""
+    document.getElementById("textaltchangel").value = ""
+    document.getElementById("buttonmainchangel").value = ""
+    document.getElementById("buttonhovchangel").value = ""
+    document.getElementById("buttonactchangel").value = ""
+    document.getElementById("buttonhovactchangel").value = ""
+    loadColors()
+}
+
 function clearColor() {
     document.getElementById("backgroundmainchange").value = ""
     document.getElementById("backgroundaltchange").value = ""

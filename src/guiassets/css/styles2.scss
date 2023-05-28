@@ -4,8 +4,6 @@
     --button: #cc0c39;
     --buttondark: #a30a2e;
     --buttonlight: #f22152;
-    --grad1: rgba(0, 0, 0, 0);
-    --grad2: rgba(0, 0, 0, 0);
     user-select: none;
 
     @media (prefers-color-scheme: dark) {
@@ -78,6 +76,7 @@ input {
 
 a:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 body {
@@ -711,3 +710,66 @@ p.icon {
 div#tiles.hiddentiles > .tile {
     opacity: 0;
 }
+
+.styled-checkbox {
+    position: absolute;
+    opacity: 0;
+  
+    & + label {
+      position: relative;
+      cursor: pointer;
+      padding: 0;
+    }
+  
+    & + label:before {
+      content: '';
+      margin-right: 10px;
+      display: inline-block;
+      vertical-align: text-top;
+      width: 20px;
+      height: 20px;
+      outline: var(--color) 1px solid;
+      background-color: var(--background);
+      transition: background-color 0.2s;
+    }
+  
+    &:hover + label:before {
+      background-color: var(--button);
+    }
+    
+    &:focus + label:before {
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+    }
+  
+    &:checked + label:before {
+      background-color: var(--buttonhov);
+    }
+    
+    &:disabled + label {
+      color: var(--coloralt);
+      cursor: auto;
+    }
+  
+    &:disabled + label:before {
+      box-shadow: none;
+      background-color: var(--backgroundalt);
+    }
+  
+    &:checked + label:after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 9px;
+      background-color: white;
+      width: 2px;
+      height: 2px;
+      box-shadow: 
+        2px 0 0 white,
+        4px 0 0 white,
+        4px -2px 0 white,
+        4px -4px 0 white,
+        4px -6px 0 white,
+        4px -8px 0 white;
+      transform: rotate(45deg);
+    }
+  }
