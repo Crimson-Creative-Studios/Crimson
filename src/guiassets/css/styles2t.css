@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("fonts.css");
 :root {
   --button: #cc0c39;
@@ -28,28 +29,14 @@
   }
 }
 
-@media (prefers-color-scheme: light) {
-  #close-button .icon {
-    filter: invert(1);
-    transition: 0.3s;
-  }
-  #close-button:hover .icon {
-    filter: invert(0);
-  }
-  #close-button:active .icon {
-    filter: invert(0);
-  }
-  #window-controls .icon {
-    filter: invert(1);
-    transition: 0.3s;
-  }
-}
 .top {
   height: 10%;
   position: fixed;
   top: -23px;
   left: 8px;
   font-size: 14px;
+  pointer-events: none;
+  z-index: -5;
 }
 
 p,
@@ -69,6 +56,7 @@ input {
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
   z-index: 0;
+  transition: filter 0.3s, background-image 0.3s;
 }
 
 a:hover {
@@ -77,7 +65,8 @@ a:hover {
 }
 
 body {
-  background-color: var(--background);
+  background: var(--background);
+  background-size: 100% 100%;
   color: var(--color);
   transition: 0.3s;
   position: relative;
@@ -85,6 +74,13 @@ body {
   overflow-y: hidden;
   overflow-x: hidden;
   height: 100vh;
+  margin: none;
+  padding: none;
+}
+
+#texttitle {
+  pointer-events: none;
+  z-index: -5;
 }
 
 .altcolor {
@@ -92,14 +88,15 @@ body {
 }
 
 .background {
-  background-color: var(--background);
+  background: var(--background);
+  background-size: 100% 100%;
   outline: var(--color) 5px solid;
   width: 100px;
   height: 100px;
 }
 
 .backgroundalt {
-  background-color: var(--backgroundalt);
+  background: var(--backgroundalt);
   outline: var(--color) 5px solid;
   width: 100px;
   height: 100px;
@@ -116,7 +113,7 @@ body {
 }
 
 .previewColors > p {
-  background-color: var(--background);
+  background: var(--background);
 }
 
 img {
@@ -146,7 +143,8 @@ img {
 }
 .tab button {
   border-radius: 15px;
-  background-color: var(--button);
+  background: var(--button);
+  background-size: 100% 100%;
   float: left;
   color: white;
   border: none;
@@ -159,13 +157,16 @@ img {
   transition: opacity 0.3s, background-color 0.3s !important;
 }
 .tab button:hover {
-  background-color: var(--buttonhov);
+  background: var(--buttonhov);
+  background-size: 100% 100%;
 }
 .tab button.active {
-  background-color: var(--buttonact);
+  background: var(--buttonact);
+  background-size: 100% 100%;
 }
 .tab button.active:hover {
-  background-color: var(--buttonacthov);
+  background: var(--buttonacthov);
+  background-size: 100% 100%;
 }
 .tab i {
   font-size: 1.5rem;
@@ -185,7 +186,8 @@ img {
   color: white;
   width: 100%;
   border-radius: 15px;
-  background-color: var(--button);
+  background: var(--button);
+  background-size: 100% 100%;
   float: left;
   border: none;
   outline: none;
@@ -196,13 +198,16 @@ img {
   margin: 5px;
 }
 .tabBottom button:hover {
-  background-color: var(--buttonhov);
+  background: var(--buttonhov);
+  background-size: 100% 100%;
 }
 .tabBottom button.active {
-  background-color: var(--buttonact);
+  background: var(--buttonact);
+  background-size: 100% 100%;
 }
 .tabBottom button.active:hover {
-  background-color: var(--buttonacthov);
+  background: var(--buttonacthov);
+  background-size: 100% 100%;
 }
 .tabBottom i {
   font-size: 1.5rem;
@@ -213,8 +218,8 @@ img {
 }
 
 .button {
-  background-color: var(--button);
-  background-size: 200%;
+  background: var(--button);
+  background-size: 100% 100%;
   border: none;
   color: white;
   padding: 5px 5px 5px 5px;
@@ -225,17 +230,22 @@ img {
 .button:hover {
   cursor: pointer;
   border: none;
-  background-color: var(--buttonhov);
-  animation: background-color 0.3s;
+  background: var(--buttonhov);
+  background-size: 100% 100%;
   transform: scale(1.05);
   transition: transform 0.1s, background-color 0.3s;
 }
 .button:active {
   cursor: pointer;
-  background-color: var(--buttonact);
-  animation: background-color 0.3s;
+  background: var(--buttonact);
+  background-size: 100% 100%;
   animation: bouce 0.2s ease forwards;
   transition: transform 0.05s, background-color 0.3s;
+}
+.button:active:hover {
+  cursor: pointer;
+  background: var(--buttonacthov);
+  background-size: 100% 100%;
 }
 
 @keyframes bouce {
@@ -267,7 +277,7 @@ img {
 
 .console {
   margin-top: 5px;
-  background-color: #202225;
+  background: #202225;
   border-radius: 15px;
   display: block;
   width: 100%;
@@ -299,7 +309,7 @@ img {
   height: 100%;
   min-width: 100%;
   min-height: 100%;
-  background-color: none;
+  background: none;
   z-index: 99999;
   margin: 0 auto;
   pointer-events: none;
@@ -309,7 +319,8 @@ img {
   display: none;
 }
 .modal-content5s {
-  background-color: var(--backgroundalt);
+  background: var(--background);
+  background-size: 200% 200%;
   position: relative;
   margin: 0 auto;
   padding: 20px;
@@ -325,7 +336,8 @@ img {
   --opacity: 1;
 }
 .modal-content2s {
-  background-color: var(--backgroundalt);
+  background: var(--background);
+  background-size: 200% 200%;
   position: relative;
   margin: 0 auto;
   padding: 20px;
@@ -348,10 +360,10 @@ img {
   right: 6px;
   width: 50px;
   height: 50px;
-  background-color: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0);
 }
 .close-button:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 @keyframes appearModal {
@@ -381,7 +393,7 @@ img {
   }
 }
 .disappear5s {
-  background-color: rgba(0, 179, 255, 0.5);
+  background: rgba(0, 179, 255, 0.5);
   position: absolute;
   top: 0px;
   left: -1px;
@@ -392,7 +404,7 @@ img {
 }
 
 .disappear2s {
-  background-color: rgba(0, 179, 255, 0.5);
+  background: rgba(0, 179, 255, 0.5);
   position: absolute;
   top: 0px;
   left: -1px;
@@ -418,7 +430,7 @@ textarea {
   box-shadow: none;
   transition: 0.5s;
   border-radius: 2px;
-  background-color: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0);
   color: var(--color);
   font-family: "DM Mono", monospace;
 }
@@ -449,7 +461,7 @@ textarea:focus {
 
 label {
   font-family: "Rubik", sans-serif;
-  margin: 0 5px 0 5px;
+  margin: 0 5px;
 }
 
 #titlebar {
@@ -459,7 +471,7 @@ label {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   border-bottom: var(--color) 1px solid;
 }
@@ -470,23 +482,6 @@ label {
   pointer-events: none;
   display: grid;
   grid-template-columns: auto 138px;
-}
-
-#window-title {
-  grid-column: 1;
-  display: flex;
-  align-items: center;
-  margin-left: 8px;
-  overflow: hidden;
-  font-family: "Segoe UI", sans-serif;
-  font-size: 12px;
-}
-
-#window-title span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  line-height: 1.5;
 }
 
 #min-button {
@@ -538,7 +533,7 @@ label {
   user-select: none;
   border-radius: 0px;
   border-bottom: rgba(0, 0, 0, 0) 0px solid;
-  transition: background 0.2s, border-bottom 0.2s;
+  transition: background-color 0.2s, border-bottom 0.2s;
 }
 #window-controls .winbutton:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -551,10 +546,12 @@ label {
 
 #close-button:hover {
   background: var(--button) !important;
+  background-size: 100% 100% !important;
 }
 
 #close-button:active {
   background: var(--buttonact) !important;
+  background-size: 100% 100% !important;
 }
 
 #restore-button {
@@ -604,7 +601,7 @@ p.icon {
   }
 }
 ::placeholder {
-  color: var(--color);
+  color: var(--coloralt);
   opacity: 1;
   transition: 0.3s;
 }
@@ -615,7 +612,6 @@ p.icon {
   pointer-events: all;
 }
 
-/* Tiles */
 #tiles {
   height: calc(100vh - 1px);
   width: calc(100vw - 1px);
@@ -636,7 +632,8 @@ p.icon {
 }
 
 .tile:before {
-  background-color: var(--backgroundalt);
+  background: var(--backgroundalt);
+  background-size: 100% 100%;
   transition: background-color 0.3s;
   content: "";
   inset: 1px;
@@ -666,8 +663,8 @@ div#tiles.hiddentiles > .tile {
 }
 .styled-checkbox + label {
   position: relative;
-  cursor: pointer;
   padding: 0;
+  cursor: pointer;
 }
 .styled-checkbox + label:before {
   content: "";
@@ -676,37 +673,44 @@ div#tiles.hiddentiles > .tile {
   vertical-align: text-top;
   width: 20px;
   height: 20px;
-  outline: var(--color) 1px solid;
-  background-color: var(--background);
-  transition: background-color 0.2s;
+  border-color: var(--color);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0);
+  transition: background-color 0.2s, border-color 0.2s;
 }
 .styled-checkbox:hover + label:before {
-  background-color: var(--button);
-}
-.styled-checkbox:focus + label:before {
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.25);
 }
 .styled-checkbox:checked + label:before {
-  background-color: var(--buttonhov);
+  background: rgba(0, 0, 0, 0.5);
+}
+.styled-checkbox:checked:hover + label:before {
+  background: rgba(0, 0, 0, 0.75);
 }
 .styled-checkbox:disabled + label {
   color: var(--coloralt);
-  cursor: auto;
+  cursor: not-allowed;
 }
 .styled-checkbox:disabled + label:before {
   box-shadow: none;
-  background-color: var(--backgroundalt);
+  background: var(--backgroundalt);
 }
-.styled-checkbox:checked + label:after {
-  content: "";
+.styled-checkbox + label:after {
+  content: "✕";
   position: absolute;
-  left: 5px;
-  top: 9px;
-  background-color: white;
+  left: 0;
+  top: -8px;
   width: 2px;
   height: 2px;
-  box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white, 4px -4px 0 white, 4px -6px 0 white, 4px -8px 0 white;
-  transform: rotate(45deg);
+  font-size: 1.7rem;
+  opacity: 0;
+  color: white;
+  transition: opacity 0.1s;
+}
+.styled-checkbox:checked + label:after {
+  opacity: 1;
 }
 
 /*# sourceMappingURL=styles2t.css.map */

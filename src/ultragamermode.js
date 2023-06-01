@@ -49,13 +49,19 @@ const rainbowColors = generateRainbowColors(75)
 var rainbowCurrent = 0
 
 function activateGAMER() {
-    window.setInterval(() => {
-        const index = rainbowCurrent % rainbowColors.length
-        document.getElementById("buttonmainchange").value = rainbowColors[index]
-        document.getElementById("buttonhovchange").value = darkenHexColor(rainbowColors[index], 16)
-        document.getElementById("buttonactchange").value = darkenHexColor(rainbowColors[index], 32)
-        document.getElementById("buttonhovactchange").value = darkenHexColor(rainbowColors[index], 48)
-        loadColors()
-        rainbowCurrent++
-    }, 75)
+    if (window.active) {
+        window.active = false
+        window.clearInterval(window.gamer)
+    } else {
+        window.active = true
+        window.gamer = window.setInterval(() => {
+            const index = rainbowCurrent % rainbowColors.length
+            document.getElementById("buttonmainchange").value = rainbowColors[index]
+            document.getElementById("buttonhovchange").value = darkenHexColor(rainbowColors[index], 30)
+            document.getElementById("buttonactchange").value = darkenHexColor(rainbowColors[index], 60)
+            document.getElementById("buttonhovactchange").value = darkenHexColor(rainbowColors[index], 90)
+            loadColors()
+            rainbowCurrent++
+        }, 75)
+    }
 }

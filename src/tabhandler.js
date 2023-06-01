@@ -67,6 +67,7 @@ async function openTab(tabName, override = null, option = "") {
 
         try {
             document.getElementById(tabName).classList.add("showentab")
+            document.getElementById(tabName).tabIndex = 0
             currentMenu = tabName
         } catch (err) {
             if (tabName.endsWith("markettab")) {

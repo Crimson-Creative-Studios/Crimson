@@ -12,10 +12,6 @@
         <div id="drag-region">
             <div id="window-controls">
 
-                <div class="winbutton" id="restart-button" style="display: none;">
-                    <p class="icon">Restart</p>
-                </div>
-
                 <div class="winbutton" id="min-button">
                     <img class="icon"
                         srcset="icons/min-w-10.png 1x, icons/min-w-12.png 1.25x, icons/min-w-15.png 1.5x, icons/min-w-15.png 1.75x, icons/min-w-20.png 2x, icons/min-w-20.png 2.25x, icons/min-w-24.png 2.5x, icons/min-w-30.png 3x, icons/min-w-30.png 3.5x"
@@ -154,10 +150,6 @@
 
                 document.getElementById('close-button').addEventListener("click", event => {
                     crimAPI.winclose()
-                })
-
-                document.getElementById('restart-button').addEventListener("click", event => {
-                    crimAPI.winrestart()
                 })
 
                 crimAPI.handleWinControl((event, arg) => {

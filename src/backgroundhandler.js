@@ -4,7 +4,7 @@ window.addEventListener("load", (event) => {
     let columns = 0,
         rows = 0
 
-    const createTile = index => {
+    const createTile = (index) => {
         const tile = document.createElement("div")
 
         var delay = Math.floor(Math.random() * 5)

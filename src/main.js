@@ -115,7 +115,7 @@ function createWindow() {
     if (nativeTheme.shouldUseDarkColors) {
         var color = '#2f3136'
     } else {
-        var color = '#F6F8FF'
+        var color = '#FFFFFF'
     }
     const win = new BrowserWindow({
         width: 800,
