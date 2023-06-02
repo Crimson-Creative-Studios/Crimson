@@ -169,7 +169,7 @@ async function handleExtensionData(key, data) {
             var id = info.folder
             var file = info.zip
             var ui = info.ui
-            var logo = await axios.get(`https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${ui.logo}`, { responseType: "arraybuffer" })
+            var logo = await axios.get(`https://github.com/VanquishStudios/OfficialCrimsonRepo/raw/main/${id}/${ui.logo}`, { responseType: "arraybuffer" })
 
             const blob = new Blob([logo.data])
             const url = URL.createObjectURL(blob)
@@ -221,7 +221,7 @@ async function handleExtensionData(key, data) {
                             var namething = name
                             exsitent.push(namething)
                         }
-                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
+                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/VanquishStudios/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
                     }
                     reader.readAsArrayBuffer(blob)
                 })
@@ -256,7 +256,7 @@ async function finishExtensionData(key, data) {
 }
 
 async function getExtensions() {
-    var exts = await axios.get("https://raw.githubusercontent.com/SkyoProductions/OfficialCrimsonRepo/main/all.json", {
+    var exts = await axios.get("https://raw.githubusercontent.com/VanquishStudios/OfficialCrimsonRepo/main/all.json", {
         responseType: "text",
         headers: {
             'Content-Type': 'text/plain'

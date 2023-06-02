@@ -389,7 +389,7 @@ fetch("themepreload.js", { method: "HEAD" })
             script.setAttribute("src", "./themepreload.js")
             setTimeout(() => {
                 document.head.appendChild(script)
-            }, 100)
+            }, 200)
         }
     })
     .catch(error => {
