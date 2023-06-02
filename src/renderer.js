@@ -126,9 +126,9 @@ crimAPI.handleNotificationMain((event, arg) => {
     }, arg[2]))
 })
 
-const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2"]
+const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2", "Version 1"]
 if (!versionHistory.includes(versions.crimson())) {
-    document.getElementById('versionut').innerHTML = `Invalid version found! Version ${versions.crimson()} is not known.`
+    document.getElementById('versionut').innerHTML = `Invalid version found! Local version ${versions.crimson()} is not known. You may want to update to the current latest version (${versions.crimOnline()})`
 } else {
     if (versionHistory.includes(versions.crimOnline().replace("\n", ""))) {
         if (versionHistory.indexOf(versions.crimOnline().replace("\n", "")) <= versionHistory.indexOf(versions.crimson())) {
