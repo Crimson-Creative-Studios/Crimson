@@ -1,12 +1,12 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron')
 var status = ['Currently in the Bot menu', 'bigimg']
 
 function requirePro(thing) {
-    var res = ipcRenderer.sendSync("require", thing)
-    return res
+    return ipcRenderer.sendSync("require", thing)
 }
 
-var cfg = requirePro('../config.json')
+const onlineVersion = ipcRenderer.sendSync("versionGrab", "version.txt")
+const cfg = requirePro('../config.json')
 const version = ipcRenderer.sendSync("getFile", "version.txt")
 
 contextBridge.exposeInMainWorld('darkMode', {
@@ -36,7 +36,8 @@ contextBridge.exposeInMainWorld('crimAPI', {
     onlineRequest: (thing) => ipcRenderer.invoke('onlineRequest', thing),
     extensionDownload: (arg) => ipcRenderer.invoke('extensionDownload', arg),
     handleGUICFG: (callback) => ipcRenderer.on('guicfgfind', callback),
-    handleNotificationMain: (callback) => ipcRenderer.on("notificationSend", callback)
+    handleNotificationMain: (callback) => ipcRenderer.on("notificationSend", callback),
+    guicfg: () => requirePro("./guicfg.json")
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);
@@ -50,7 +51,8 @@ contextBridge.exposeInMainWorld('versions', {
     node: () => process.versions.node,
     chrome: () => process.versions.chrome,
     electron: () => process.versions.electron,
-    crimson: () => version
+    crimson: () => version,
+    crimOnline: () => onlineVersion
 })
 
 contextBridge.exposeInMainWorld('theme', {
@@ -92,16 +94,16 @@ extensionFiles.forEach((extension) => {
         configs.push(`<button id="${metaname}Button" class="button" onclick="openTab('${extension}', 'ConfigurationButton')">${metaname}</button>`)
     }
     if (metadata.type === "library") {
-        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
 
         islib[extension] = true
     } else {
         islib[extension] = false
 
         if (config.enabled === "true") {
-            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br></div>`)
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
         } else {
-            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br></div>`)
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
         }
     }
 

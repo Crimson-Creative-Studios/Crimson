@@ -16,3 +16,4 @@ install.cmd
 *.jar
 dc.js
 developerinstall.cmd
+themepreload.js

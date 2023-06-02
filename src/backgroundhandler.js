@@ -4,7 +4,7 @@ window.addEventListener("load", (event) => {
     let columns = 0,
         rows = 0
 
-    const createTile = index => {
+    const createTile = (index) => {
         const tile = document.createElement("div")
 
         var delay = Math.floor(Math.random() * 5)
@@ -25,8 +25,8 @@ window.addEventListener("load", (event) => {
     const createGrid = () => {
         wrapper.innerHTML = ""
 
-        columns = Math.floor(document.body.clientWidth / 75)
-        rows = Math.floor(document.body.clientHeight / 75)
+        columns = Math.floor(document.body.clientWidth / 100)
+        rows = Math.floor(document.body.clientHeight / 100)
 
         wrapper.style.setProperty("--columns", columns)
         wrapper.style.setProperty("--rows", rows)

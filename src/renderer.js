@@ -8,6 +8,12 @@ document.getElementById('debugNODE').innerText = versions.node()
 
 document.getElementById('guiver').innerText = "Version - " + versions.crimson()
 
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Tab") {
+        e.preventDefault()
+    }
+})
+
 async function handleModalTest() {
     for (const modal of document.querySelectorAll(".modal5s")) {
         handleNotification(modal.id, 5000)
@@ -80,7 +86,7 @@ for (var uuid of Object.keys(codeAdditions.userCFGS)) {
     document.getElementById(uuid).defaultValue = codeAdditions.defaults[uuid]
 }
 
-const funfacts = ["CrimsonGUI is written in Electron", "CrimsonGUI had 2 open beta 1s, odd isn't it?", "Crimson can completely kill your computer if an extension is malicous", "<b>There will be no beans theme</b>"]
+const funfacts = ["CrimsonGUI is written in Electron", "CrimsonGUI had 2 open beta 1s, odd isn't it?", "Crimson can completely kill your computer if an extension is malicous :D", "<b>There will be no beans theme</b>"]
 var funfact = funfacts[Math.floor((Math.random() * funfacts.length))]
 
 document.getElementById('funfact').innerHTML = `Fun Fact: ${funfact}`
@@ -120,28 +126,39 @@ crimAPI.handleNotificationMain((event, arg) => {
     }, arg[2]))
 })
 
-crimAPI.handleVer((event, arg) => {
-    const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2"]
-    if (!versionHistory.includes(versions.crimson())) {
-        document.getElementById('versionut').innerHTML = `Invalid version found! Version ${versions.crimson()} is not known.`
-    } else {
-        if (versionHistory.includes(arg.replace("\n", ""))) {
-            if (versionHistory.indexOf(arg.replace("\n", "")) < versionHistory.indexOf(versions.crimson())) {
-                document.getElementById('versionut').innerHTML = "No new versions found."
-            } else {
-                document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${arg}`
-            }
+const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2"]
+if (!versionHistory.includes(versions.crimson())) {
+    document.getElementById('versionut').innerHTML = `Invalid version found! Version ${versions.crimson()} is not known.`
+} else {
+    if (versionHistory.includes(versions.crimOnline().replace("\n", ""))) {
+        if (versionHistory.indexOf(versions.crimOnline().replace("\n", "")) <= versionHistory.indexOf(versions.crimson())) {
+            document.getElementById('versionut').innerHTML = "No new versions found."
         } else {
-            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${arg}`
+            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${versions.crimOnline()}`
         }
+    } else {
+        document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${versions.crimOnline()}`
     }
-})
-
-function repoLink(thing, link = "https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/") {
-    return link + thing
 }
 
 const exsitent = []
+
+function bytesArrToBase64(arr) {
+    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    const bin = n => n.toString(2).padStart(8, 0)
+    const l = arr.length
+    let result = ''
+
+    for (let i = 0; i <= (l - 1) / 3; i++) {
+        let c1 = i * 3 + 1 >= l
+        let c2 = i * 3 + 2 >= l
+        let chunk = bin(arr[3 * i]) + bin(c1 ? 0 : arr[3 * i + 1]) + bin(c2 ? 0 : arr[3 * i + 2])
+        let r = chunk.match(/.{1,6}/g).map((x, j) => j == 3 && c2 ? '=' : (j == 2 && c1 ? '=' : abc[+('0b' + x)]))
+        result += r.join('')
+    }
+
+    return result
+}
 
 async function handleExtensionData(key, data) {
     return new Promise((resolve, reject) => {
@@ -152,7 +169,7 @@ async function handleExtensionData(key, data) {
             var id = info.folder
             var file = info.zip
             var ui = info.ui
-            var logo = await axios.get(repoLink(`${id}/${ui.logo}`), { responseType: "arraybuffer" })
+            var logo = await axios.get(`https://github.com/VanquishStudios/OfficialCrimsonRepo/raw/main/${id}/${ui.logo}`, { responseType: "arraybuffer" })
 
             const blob = new Blob([logo.data])
             const url = URL.createObjectURL(blob)
@@ -169,7 +186,7 @@ async function handleExtensionData(key, data) {
                     const reader = new FileReader()
                     reader.onload = function () {
                         const resizedArrayBuffer = reader.result
-                        const base64 = btoa(new Uint8Array(resizedArrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                        const base64 = bytesArrToBase64(new Uint8Array(resizedArrayBuffer))
                         var optionsobj = {
                             light: {
                                 background: {
@@ -204,7 +221,7 @@ async function handleExtensionData(key, data) {
                             var namething = name
                             exsitent.push(namething)
                         }
-                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 5px; border-style: solid; border-width: 1px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/SkyoProductions/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
+                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/VanquishStudios/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
                     }
                     reader.readAsArrayBuffer(blob)
                 })
@@ -215,8 +232,31 @@ async function handleExtensionData(key, data) {
     })
 }
 
+async function finishExtensionData(key, data) {
+    var extension = await handleExtensionData(key, data)
+    try {
+        document.getElementById("exloadtxt").remove()
+    } catch (err) { }
+    document.getElementById(extension[3] + "area").insertAdjacentHTML("beforeend", extension[0])
+    new Promise(resolve => setTimeout(() => {
+        document.getElementById(extension[1]).classList.remove("appearbtn")
+        resolve()
+    }, 250))
+    document.getElementById("extensionsHolder").innerHTML += extension[2]
+    var input = document.getElementById("exsearch").value
+    if (input === "") {
+        document.getElementById(extension[1]).style.display = "inline"
+    } else {
+        if (document.getElementById(extension[1]).dataset.search.toLowerCase().startsWith(input.toLowerCase())) {
+            document.getElementById(extension[1]).style.display = "inline"
+        } else {
+            document.getElementById(extension[1]).style.display = "none"
+        }
+    }
+}
+
 async function getExtensions() {
-    var exts = await axios.get("https://raw.githubusercontent.com/SkyoProductions/OfficialCrimsonRepo/main/all.json", {
+    var exts = await axios.get("https://raw.githubusercontent.com/VanquishStudios/OfficialCrimsonRepo/main/all.json", {
         responseType: "text",
         headers: {
             'Content-Type': 'text/plain'
@@ -224,26 +264,7 @@ async function getExtensions() {
     })
     exts.data = JSON.parse(exts.data)
     for (const key of Object.keys(exts.data)) {
-        var extension = await handleExtensionData(key, exts.data)
-        try {
-            document.getElementById("exloadtxt").remove()
-        } catch (err) { }
-        document.getElementById(extension[3] + "area").insertAdjacentHTML("beforeend", extension[0])
-        new Promise(resolve => setTimeout(() => {
-            document.getElementById(extension[1]).classList.remove("appearbtn")
-            resolve()
-        }, 250))
-        document.getElementById("extensionsHolder").innerHTML += extension[2]
-        var input = document.getElementById("exsearch").value
-        if (input === "") {
-            document.getElementById(extension[1]).style.display = "inline"
-        } else {
-            if (document.getElementById(extension[1]).dataset.search.toLowerCase().startsWith(input.toLowerCase())) {
-                document.getElementById(extension[1]).style.display = "inline"
-            } else {
-                document.getElementById(extension[1]).style.display = "none"
-            }
-        }
+        finishExtensionData(key, exts.data)
     }
 }
 getExtensions()
@@ -259,25 +280,3 @@ window.addEventListener('load', function () {
 })
 
 window.startBot = startBot
-
-crimAPI.handleGUICFG((event, arg) => {
-    var cfg = JSON.parse(arg)
-    document.getElementById("backgroundmainchange").value = cfg.theme.dark.background.main
-    document.getElementById("backgroundaltchange").value = cfg.theme.dark.background.alt
-    document.getElementById("textmainchange").value = cfg.theme.dark.text.main
-    document.getElementById("textaltchange").value = cfg.theme.dark.text.alt
-    document.getElementById("buttonmainchange").value = cfg.theme.dark.button.main
-    document.getElementById("buttonhovchange").value = cfg.theme.dark.button.hov
-    document.getElementById("buttonactchange").value = cfg.theme.dark.button.act
-    document.getElementById("buttonhovactchange").value = cfg.theme.dark.button.acthov
-
-    document.getElementById("backgroundmainchangel").value = cfg.theme.light.background.main
-    document.getElementById("backgroundaltchangel").value = cfg.theme.light.background.alt
-    document.getElementById("textmainchangel").value = cfg.theme.light.text.main
-    document.getElementById("textaltchangel").value = cfg.theme.light.text.alt
-    document.getElementById("buttonmainchangel").value = cfg.theme.light.button.main
-    document.getElementById("buttonhovchangel").value = cfg.theme.light.button.hov
-    document.getElementById("buttonactchangel").value = cfg.theme.light.button.act
-    document.getElementById("buttonhovactchangel").value = cfg.theme.light.button.acthov
-    loadColors()
-})

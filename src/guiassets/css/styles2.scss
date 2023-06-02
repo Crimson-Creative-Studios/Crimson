@@ -4,8 +4,8 @@
     --button: #cc0c39;
     --buttondark: #a30a2e;
     --buttonlight: #f22152;
-    --grad1: rgba(0, 0, 0, 0);
-    --grad2: rgba(0, 0, 0, 0);
+    --darkness: 0;
+    --buttontext: #ffffff;
     user-select: none;
 
     @media (prefers-color-scheme: dark) {
@@ -29,32 +29,14 @@
     }
 }
 
-@media (prefers-color-scheme: light) {
-    #close-button .icon {
-        filter: invert(1);
-        transition: 0.3s;
-    }
-
-    #close-button:hover .icon {
-        filter: invert(0);
-    }
-
-    #close-button:active .icon {
-        filter: invert(0);
-    }
-
-    #window-controls .icon {
-        filter: invert(1);
-        transition: 0.3s;
-    }
-}
-
 .top {
     height: 10%;
     position: fixed;
     top: -23px;
     left: 8px;
     font-size: 14px;
+    pointer-events: none;
+    z-index: -5;
 }
 
 p,
@@ -74,10 +56,17 @@ input {
     font-family: 'Poppins', sans-serif;
     box-sizing: border-box;
     z-index: 0;
+    transition: filter 0.3s, background-image 0.3s;
+}
+
+a:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 body {
-    background-color: var(--background);
+    background: var(--background);
+    background-size: 100% 100%;
     color: var(--color);
     transition: 0.3s;
     position: relative;
@@ -85,6 +74,57 @@ body {
     overflow-y: hidden;
     overflow-x: hidden;
     height: 100vh;
+    margin: none;
+    padding: none;
+    z-index: -50;
+}
+
+#darkness {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    height: 150%;
+    width: 150%;
+    z-index: -48;
+    opacity: var(--darkness);
+    background-color: black;
+}
+
+#texttitle {
+    pointer-events: none;
+}
+
+.altcolor {
+    color: var(--coloralt);
+}
+
+.background {
+    background: var(--background);
+    background-size: 100% 100%;
+    outline: var(--color) 5px solid;
+    width: 100px;
+    height: 100px;
+}
+
+.backgroundalt {
+    background: var(--backgroundalt);
+    outline: var(--color) 5px solid;
+    width: 100px;
+    height: 100px;
+}
+
+.previewColors {
+    filter: invert(100%);
+}
+
+.previewColors>* {
+    margin: 5px;
+    margin-top: 5px !important;
+    filter: invert(100%);
+}
+
+.previewColors>p {
+    background: var(--background);
 }
 
 img {
@@ -114,9 +154,10 @@ img {
 
     button {
         border-radius: 15px;
-        background-color: var(--button);
+        background: var(--button);
+        background-size: 100% 100%;
         float: left;
-        color: white;
+        color: var(--buttontext);
         border: none;
         outline: none;
         cursor: pointer;
@@ -127,15 +168,18 @@ img {
         transition: opacity 0.3s, background-color 0.3s !important;
 
         &:hover {
-            background-color: var(--buttonhov);
+            background: var(--buttonhov);
+            background-size: 100% 100%;
         }
-    
+
         &.active {
-            background-color: var(--buttonact);
+            background: var(--buttonact);
+            background-size: 100% 100%;
         }
-    
+
         &.active:hover {
-            background-color: var(--buttonacthov);
+            background: var(--buttonacthov);
+            background-size: 100% 100%;
         }
     }
 
@@ -155,10 +199,11 @@ img {
 
     button {
         display: block;
-        color: white;
+        color: var(--buttontext);
         width: 100%;
         border-radius: 15px;
-        background-color: var(--button);
+        background: var(--button);
+        background-size: 100% 100%;
         float: left;
         border: none;
         outline: none;
@@ -169,15 +214,18 @@ img {
         margin: 5px;
 
         &:hover {
-            background-color: var(--buttonhov);
+            background: var(--buttonhov);
+            background-size: 100% 100%;
         }
 
         &.active {
-            background-color: var(--buttonact);
+            background: var(--buttonact);
+            background-size: 100% 100%;
         }
 
         &.active:hover {
-            background-color: var(--buttonacthov);
+            background: var(--buttonacthov);
+            background-size: 100% 100%;
         }
     }
 
@@ -191,10 +239,10 @@ img {
 }
 
 .button {
-    background-color: var(--button);
-    background-size: 200%;
+    background: var(--button);
+    background-size: 100% 100%;
     border: none;
-    color: white;
+    color: var(--buttontext);
     padding: 5px 5px 5px 5px;
     border-radius: 5px;
     margin-bottom: 5px;
@@ -203,18 +251,24 @@ img {
     &:hover {
         cursor: pointer;
         border: none;
-        background-color: var(--buttonhov);
-        animation: background-color 0.3s;
+        background: var(--buttonhov);
+        background-size: 100% 100%;
         transform: scale(1.05);
         transition: transform 0.1s, background-color 0.3s;
     }
 
-    &.active {
+    &:active {
         cursor: pointer;
-        background-color: var(--buttonact);
-        animation: background-color 0.3s;
+        background: var(--buttonact);
+        background-size: 100% 100%;
         animation: bouce 0.2s ease forwards;
         transition: transform 0.05s, background-color 0.3s;
+    }
+
+    &:active:hover {
+        cursor: pointer;
+        background: var(--buttonacthov);
+        background-size: 100% 100%;
     }
 }
 
@@ -236,13 +290,13 @@ img {
     display: block;
     position: fixed;
     top: 50px;
-    left: 100px;
+    right: 10px;
     padding: 0px 12px;
     border: none;
     border-left: none;
     transition: opacity 0.1s;
     height: 90%;
-    width: 80%;
+    width: calc(100% - 110px);
     overflow-y: scroll;
     opacity: 0;
     pointer-events: none;
@@ -250,7 +304,7 @@ img {
 
 .console {
     margin-top: 5px;
-    background-color: #202225;
+    background: #202225;
     border-radius: 15px;
     display: block;
     width: 100%;
@@ -283,7 +337,7 @@ img {
     height: 100%;
     min-width: 100%;
     min-height: 100%;
-    background-color: none;
+    background: none;
     z-index: 99999;
     margin: 0 auto;
     pointer-events: none;
@@ -294,7 +348,8 @@ img {
     }
 
     &-content5s {
-        background-color: var(--backgroundalt);
+        background: var(--background);
+        background-size: 200% 200%;
         position: relative;
         margin: 0 auto;
         padding: 20px;
@@ -311,7 +366,8 @@ img {
     }
 
     &-content2s {
-        background-color: var(--backgroundalt);
+        background: var(--background);
+        background-size: 200% 200%;
         position: relative;
         margin: 0 auto;
         padding: 20px;
@@ -335,47 +391,47 @@ img {
     right: 6px;
     width: 50px;
     height: 50px;
-    background-color: rgba(0, 0, 0, 0);
+    background: rgba(0, 0, 0, 0);
 
     &:hover {
-        background-color: rgba(0, 0, 0, 0.2);
+        background: rgba(0, 0, 0, 0.2);
     }
 }
 
 @keyframes appearModal {
     0% {
-        opacity: calc(0 *  var(--opacity));
+        opacity: calc(0 * var(--opacity));
         top: -20px;
     }
 
     2.5% {
-        opacity: calc(1 *  var(--opacity));
+        opacity: calc(1 * var(--opacity));
         top: 60px;
     }
 
     7.5% {
-        opacity: calc(1 *  var(--opacity));
+        opacity: calc(1 * var(--opacity));
         top: 40px;
     }
 
     92.5% {
-        opacity: calc(1 *  var(--opacity));
+        opacity: calc(1 * var(--opacity));
         top: 40px;
     }
 
     97.5% {
-        opacity: calc(1 *  var(--opacity));
+        opacity: calc(1 * var(--opacity));
         top: 60px;
     }
 
     100% {
-        opacity: calc(0 *  var(--opacity));
+        opacity: calc(0 * var(--opacity));
         top: -20px;
     }
 }
 
 .disappear5s {
-    background-color: rgba(0, 179, 255, 0.5);
+    background: rgba(0, 179, 255, 0.5);
     position: absolute;
     top: 0px;
     left: -1px;
@@ -386,7 +442,7 @@ img {
 }
 
 .disappear2s {
-    background-color: rgba(0, 179, 255, 0.5);
+    background: rgba(0, 179, 255, 0.5);
     position: absolute;
     top: 0px;
     left: -1px;
@@ -414,7 +470,7 @@ textarea {
     box-shadow: none;
     transition: 0.5s;
     border-radius: 2px;
-    background-color: rgba(0, 0, 0, 0);
+    background: rgba(0, 0, 0, 0);
     color: var(--color);
     font-family: 'DM Mono', monospace;
 
@@ -424,13 +480,17 @@ textarea {
 }
 
 ::-webkit-scrollbar {
+    padding-right: 15px;
+    pointer-events: all;
     width: 10px;
 
     &-track {
+        padding-right: 15px;
         background: rgba(0, 0, 0, 0);
     }
 
     &-thumb {
+        padding-right: 15px;
         background: var(--coloralt);
         border-radius: 5px;
         transition: 0.3s;
@@ -444,7 +504,7 @@ textarea {
 
 label {
     font-family: 'Rubik', sans-serif;
-    margin: 0 5px 0 5px;
+    margin: 0 5px;
 }
 
 #titlebar {
@@ -454,9 +514,10 @@ label {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.2);
     transition: 0.3s;
     border-bottom: var(--color) 1px solid;
+    overflow: hidden;
 
     #drag-region {
         width: 100%;
@@ -466,23 +527,6 @@ label {
         display: grid;
         grid-template-columns: auto 138px;
     }
-}
-
-#window-title {
-    grid-column: 1;
-    display: flex;
-    align-items: center;
-    margin-left: 8px;
-    overflow: hidden;
-    font-family: "Segoe UI", sans-serif;
-    font-size: 12px;
-}
-
-#window-title span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 1.5;
 }
 
 #min-button {
@@ -540,7 +584,7 @@ label {
         user-select: none;
         border-radius: 0px;
         border-bottom: rgba(0, 0, 0, 0) 0px solid;
-        transition: background 0.2s, border-bottom 0.2s;
+        transition: background-color 0.2s, border-bottom 0.2s;
 
         &:hover {
             background: rgba(255, 255, 255, 0.1);
@@ -556,10 +600,12 @@ label {
 
 #close-button:hover {
     background: var(--button) !important;
+    background-size: 100% 100% !important;
 }
 
 #close-button:active {
     background: var(--buttonact) !important;
+    background-size: 100% 100% !important;
 }
 
 #restore-button {
@@ -611,7 +657,7 @@ p.icon {
 }
 
 ::placeholder {
-    color: var(--color);
+    color: var(--coloralt);
     opacity: 1;
     transition: 0.3s;
 }
@@ -622,19 +668,20 @@ p.icon {
     pointer-events: all;
 }
 
-/* Tiles */
+// Tiles
 
 #tiles {
     height: calc(100vh - 1px);
     width: calc(100vw - 1px);
     position: relative;
-    z-index: -1;
+    z-index: -49;
     top: -7px;
     left: -7px;
 
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
     grid-template-rows: repeat(var(--rows), 1fr);
+    overflow: visible;
 }
 
 .tile {
@@ -644,7 +691,8 @@ p.icon {
 }
 
 .tile:before {
-    background-color: var(--backgroundalt);
+    background: var(--backgroundalt);
+    background-size: 100% 100%;
     transition: background-color 0.3s;
     content: "";
     inset: 1px;
@@ -667,6 +715,103 @@ p.icon {
     }
 }
 
-div#tiles.hiddentiles > .tile {
+div#tiles.hiddentiles>.tile {
     opacity: 0;
+}
+
+//Fancy boxes
+
+.styled-checkbox {
+    position: absolute;
+    opacity: 0;
+
+    &+label {
+        position: relative;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    &+label:before {
+        content: '';
+        margin-right: 10px;
+        display: inline-block;
+        vertical-align: text-top;
+        width: 20px;
+        height: 20px;
+        border-color: var(--color);
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 2px;
+        background: rgba(0, 0, 0, 0);
+        transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    &:hover+label:before {
+        background: rgba(0, 0, 0, 0.25);
+    }
+
+    &:checked+label:before {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    &:checked:hover+label:before {
+        background: rgba(0, 0, 0, 0.75);
+    }
+
+    &:disabled+label {
+        color: var(--coloralt);
+        cursor: not-allowed;
+    }
+
+    &:disabled+label:before {
+        box-shadow: none;
+        background: var(--backgroundalt);
+    }
+
+    &+label:after {
+        content: '✕';
+        position: absolute;
+        left: 0;
+        top: -8px;
+        width: 2px;
+        height: 2px;
+        font-size: 1.7rem;
+        opacity: 0;
+        color: white;
+        transition: opacity 0.1s;
+    }
+
+    &:checked+label:after {
+        opacity: 1;
+    }
+}
+
+//Fancy sliders
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 250px;
+    height: 25px;
+    background: rgba(0, 0, 0, 0.5);
+    border-color: var(--coloralt);
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 2px;
+    transition: border-color .3s;
+}
+
+.slider:hover {
+    border-color: var(--color);
+}
+
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 25px;
+    height: 23px;
+    background: var(--color);
+    cursor: pointer;
+}
+
+.slider+label {
+    padding-bottom: 5px;
 }

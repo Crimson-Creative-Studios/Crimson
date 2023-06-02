@@ -31,6 +31,8 @@
                 "act": "",
                 "acthov": ""
             }
-        }
+        },
+        "override": "false",
+        "darkness": "0"
     }
 }
