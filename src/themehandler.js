@@ -49,6 +49,7 @@ function loadColors(options, save = false) {
             document.documentElement.style.setProperty('--buttonacthov', document.getElementById("buttonhovactchangel").value)
         }
     }
+    document.documentElement.style.setProperty('--darkness', String(Number(document.getElementById("darknessControl").value)/100))
     if (save) {
         const guicfg = JSON.stringify({
             theme: {
@@ -84,7 +85,8 @@ function loadColors(options, save = false) {
                         acthov: document.getElementById("buttonhovactchangel").value
                     }
                 },
-                override: String(document.getElementById("extensionThemeOverride").checked)
+                override: String(document.getElementById("extensionThemeOverride").checked),
+                darkness: String(Number(document.getElementById("darknessControl").value)/100)
             }
         }, null, 4)
         handleNotification("savingModal", 5000)
@@ -118,6 +120,7 @@ window.addEventListener("load", () => {
     } else {
         document.getElementById("extensionThemeOverride").checked = false
     }
+    document.getElementById("darknessControl").value = Number(cfg.theme.darkness) * 100
     loadColors()
 })
 
@@ -297,6 +300,7 @@ function loadBB() {
     loadColors()
 }
 
+//images :eyes:
 function loadGradHev() {
     document.getElementById("backgroundmainchange").value = 'url("../backgrounds/gradienthevimg.png")'
     document.getElementById("backgroundaltchange").value = 'transparent'
@@ -318,6 +322,7 @@ function loadGradHev() {
     loadColors()
 }
 
+//beep boop, testing testing
 function loadTT1() {
     document.getElementById("backgroundmainchange").value = 'black'
     document.getElementById("backgroundaltchange").value = "white"

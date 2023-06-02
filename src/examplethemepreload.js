@@ -16,3 +16,18 @@
 
 //!Override
 //document.getElementById("extensionThemeOverride").checked = true
+
+//!Per button changes
+//document.getElementById("OptionsButton").style.setProperty('--button', '')
+//document.getElementById("OptionsButton").style.setProperty('--buttonhov', '')
+//document.getElementById("OptionsButton").style.setProperty('--buttonact', '')
+//document.getElementById("OptionsButton").style.setProperty('--buttonacthov', '')
+
+//!Add to the credits
+//document.getElementById("credits").innerHTML += `<p><a onclick="crimAPI.openSite('https://example.com/')">Example</a> - Example</p>`
+
+//!Change button text inner
+//document.documentElement.style.setProperty('--buttontext', '')
+
+//!Recommended ending to load all colors properly
+//loadColors()

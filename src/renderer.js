@@ -126,22 +126,20 @@ crimAPI.handleNotificationMain((event, arg) => {
     }, arg[2]))
 })
 
-crimAPI.handleVer((event, arg) => {
-    const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2"]
-    if (!versionHistory.includes(versions.crimson())) {
-        document.getElementById('versionut').innerHTML = `Invalid version found! Version ${versions.crimson()} is not known.`
-    } else {
-        if (versionHistory.includes(arg.replace("\n", ""))) {
-            if (versionHistory.indexOf(arg.replace("\n", "")) <= versionHistory.indexOf(versions.crimson())) {
-                document.getElementById('versionut').innerHTML = "No new versions found."
-            } else {
-                document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${arg}`
-            }
+const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2"]
+if (!versionHistory.includes(versions.crimson())) {
+    document.getElementById('versionut').innerHTML = `Invalid version found! Version ${versions.crimson()} is not known.`
+} else {
+    if (versionHistory.includes(versions.crimOnline().replace("\n", ""))) {
+        if (versionHistory.indexOf(versions.crimOnline().replace("\n", "")) <= versionHistory.indexOf(versions.crimson())) {
+            document.getElementById('versionut').innerHTML = "No new versions found."
         } else {
-            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${arg}`
+            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${versions.crimOnline()}`
         }
+    } else {
+        document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${versions.crimOnline()}`
     }
-})
+}
 
 const exsitent = []
 

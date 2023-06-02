@@ -1,12 +1,12 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron')
 var status = ['Currently in the Bot menu', 'bigimg']
 
 function requirePro(thing) {
-    var res = ipcRenderer.sendSync("require", thing)
-    return res
+    return ipcRenderer.sendSync("require", thing)
 }
 
-var cfg = requirePro('../config.json')
+const onlineVersion = ipcRenderer.sendSync("versionGrab", "version.txt")
+const cfg = requirePro('../config.json')
 const version = ipcRenderer.sendSync("getFile", "version.txt")
 
 contextBridge.exposeInMainWorld('darkMode', {
@@ -51,7 +51,8 @@ contextBridge.exposeInMainWorld('versions', {
     node: () => process.versions.node,
     chrome: () => process.versions.chrome,
     electron: () => process.versions.electron,
-    crimson: () => version
+    crimson: () => version,
+    crimOnline: () => onlineVersion
 })
 
 contextBridge.exposeInMainWorld('theme', {

@@ -50,16 +50,16 @@
             <h1 id="texttitle">CrimsonGUI</h1>
         </div>
         <div class="tab">
-            <button id="BotButton" class="tablinks active"
-                onclick="openTab('Home', 'BotButton')"><i class="fa-solid fa-house"></i></button>
+            <button id="BotButton" class="tablinks active" onclick="openTab('Home', 'BotButton')"><i
+                    class="fa-solid fa-house"></i></button>
             <button id="ConfigurationButton" class="tablinks"
                 onclick="openTab('Configuration', 'ConfigurationButton')"><i class="fa-solid fa-wrench"></i></button>
-            <button id="MarketButton" class="tablinks"
-                onclick="openTab('Market', 'MarketButton')"><i class="fa-solid fa-shop"></i></button>
-            <button id="InformationButton" class="tablinks"
-                onclick="openTab('Information', 'InformationButton')"><i class="fa-solid fa-circle-info"></i></button>
-            <button id="DEBUGButton" class="tablinks hidden"
-                onclick="openTab('DEBUG', 'DEBUGButton')"><i class="fa-solid fa-bug"></i></button>
+            <button id="MarketButton" class="tablinks" onclick="openTab('Market', 'MarketButton')"><i
+                    class="fa-solid fa-shop"></i></button>
+            <button id="InformationButton" class="tablinks" onclick="openTab('Information', 'InformationButton')"><i
+                    class="fa-solid fa-circle-info"></i></button>
+            <button id="DEBUGButton" class="tablinks hidden" onclick="openTab('DEBUG', 'DEBUGButton')"><i
+                    class="fa-solid fa-bug"></i></button>
         </div>
 
         <div id="extensionsHolder"></div>
@@ -74,7 +74,7 @@
         <div id="Configuration" class="tabcontent">
             <h3>Configuration menu</h3>
             <button id="CrimsonButton" class="button" onclick="openTab('CrimsonOptions', 'ConfigurationButton')"
-            style="margin-right: 2px;">Crimson</button>
+                style="margin-right: 2px;">Crimson</button>
         </div>
 
         <div id="CrimsonOptions" class="tabcontent">
@@ -119,10 +119,15 @@
             <p id="guiver">GUI Version - Loading...</p>
             <p id="funfact">Fun Fact: Not loaded...</p>
             <h4>Credits:</h4>
-            <p><a onclick="crimAPI.openSite('https://skyoproductions.github.io/developers/devlime')">DevLime</a> - Creator</p>
-            <p><a onclick="crimAPI.openSite('https://example.com/')">Vanquish Studio</a> - Theme name and parent company</p>
-            <p><a onclick="crimAPI.openSite('https://questcraft.org/')">QuestCraft</a> - Theme name (and awesome <span onclick="activateGAMER()">game</span>)</p>
-            <p><a onclick="crimAPI.openSite('https://fontawesome.com/')">Font Awesome</a> - Icons</p>
+            <div id="credits">
+                <p><a onclick="crimAPI.openSite('https://skyoproductions.github.io/developers/devlime')">DevLime</a> -
+                    Creator</p>
+                <p><a onclick="crimAPI.openSite('https://example.com/')">Vanquish Studio</a> - Theme name and parent
+                    company</p>
+                <p><a onclick="crimAPI.openSite('https://questcraft.org/')">QuestCraft</a> - Theme name (and awesome
+                    <span onclick="activateGAMER()">game</span>)</p>
+                <p><a onclick="crimAPI.openSite('https://fontawesome.com/')">Font Awesome</a> - Icons</p>
+            </div>
             <br>
             <br>
         </div>
@@ -149,8 +154,14 @@
             <button class="button" onclick="openTab('PreviewColors')">Preview theme</button>
             <button class="button" onclick="loadColors(undefined, true)">Save theme settings</button>
             <h4>Options</h4>
-            <input class="styled-checkbox" type="checkbox" id="extensionThemeOverride" name="extensionThemeOverride" value="true">
+            <input class="styled-checkbox inputcolorcheck" type="checkbox" id="extensionThemeOverride" name="extensionThemeOverride"
+                value="true">
             <label for="extensionThemeOverride">Always use this theme</label>
+            <br>
+            <br>
+            <input type="range" min="0" max="100" value="0" class="slider inputcolorcheck" id="darknessControl" name="darknessControl">
+            <label for="darknessControl">Background darkness</label>
+            <h4>Darkness</h4>
             <h4>Premade Themes</h4>
             <button class="button" onclick="loadVS()">Vanquish</button>
             <button class="button" onclick="loadGradHev()">Gradient Heaven</button>
@@ -169,27 +180,32 @@
                         placeholder="Enter color..." class="inputcolorcheck" /><br>
 
                     <label for="backgroundaltchange">Background alt:</label><br>
-                    <input type="text" id="backgroundaltchange" name="backgroundaltchange"
-                        placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="backgroundaltchange" name="backgroundaltchange" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="textmainchange">Text color main:</label><br>
-                    <input type="text" id="textmainchange" name="textmainchange" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="textmainchange" name="textmainchange" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="textaltchange">Text color alt:</label><br>
-                    <input type="text" id="textaltchange" name="textaltchange" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="textaltchange" name="textaltchange" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="buttonmainchange">Button main:</label><br>
-                    <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="buttonhovchange">Button hover:</label><br>
-                    <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="buttonactchange">Button active:</label><br>
-                    <input type="text" id="buttonactchange" name="buttonactchange" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="buttonactchange" name="buttonactchange" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="buttonhovactchange">Button hover active:</label><br>
-                    <input type="text" id="buttonhovactchange" name="buttonhovactchange"
-                        placeholder="Enter color..." class="inputcolorcheck" /><br><br>
+                    <input type="text" id="buttonhovactchange" name="buttonhovactchange" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br><br>
                 </div>
                 <div id="lightmodecolors">
                     <label for="backgroundmainchangel">Background main:</label><br>
@@ -201,24 +217,28 @@
                         placeholder="Enter color..." class="inputcolorcheck" /><br>
 
                     <label for="textmainchangel">Text color main:</label><br>
-                    <input type="text" id="textmainchangel" name="textmainchangel" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="textmainchangel" name="textmainchangel" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="textaltchangel">Text color alt:</label><br>
-                    <input type="text" id="textaltchangel" name="textaltchangel" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="textaltchangel" name="textaltchangel" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="buttonmainchangel">Button main:</label><br>
-                    <input type="text" id="buttonmainchangel" name="buttonmainchangel"
-                        placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="buttonmainchangel" name="buttonmainchangel" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="buttonhovchangel">Button hover:</label><br>
-                    <input type="text" id="buttonhovchangel" name="buttonhovchangel" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="buttonhovchangel" name="buttonhovchangel" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="buttonactchangel">Button active:</label><br>
-                    <input type="text" id="buttonactchangel" name="buttonactchangel" placeholder="Enter color..." class="inputcolorcheck" /><br>
+                    <input type="text" id="buttonactchangel" name="buttonactchangel" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br>
 
                     <label for="buttonhovactchangel">Button hover active:</label><br>
-                    <input type="text" id="buttonhovactchangel" name="buttonhovactchangel"
-                        placeholder="Enter color..." class="inputcolorcheck" /><br><br>
+                    <input type="text" id="buttonhovactchangel" name="buttonhovactchangel" placeholder="Enter color..."
+                        class="inputcolorcheck" /><br><br>
                 </div>
                 <br><br>
             </form><br><br>
@@ -254,7 +274,8 @@
                 debug information</button><br><br>
             <button class="button" onclick="handleModalTest()">Test all modals</button>
             <button class="button" onclick="openTab('falseErrorTest')">Test a generic tab fail</button>
-            <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab fail</button><br><br>
+            <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab
+                fail</button><br><br>
         </div>
 
         <div id="ErrorFound" class="tabcontent">
@@ -265,7 +286,8 @@
         </div>
 
         <div class="tabBottom">
-            <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')"><i class="fa-solid fa-gear"></i></button>
+            <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')"><i
+                    class="fa-solid fa-gear"></i></button>
         </div>
 
         <script src="./renderer.js" type="module"></script>
@@ -278,6 +300,7 @@
         <script src="./ultragamermode.js"></script>
     </div>
     <div id="tiles"></div>
+    <div id="darkness"></div>
     <div id="savingModal" class="modal modal2s">
 
         <div class="modal-content2s">

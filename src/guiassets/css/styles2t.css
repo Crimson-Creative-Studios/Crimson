@@ -4,6 +4,8 @@
   --button: #cc0c39;
   --buttondark: #a30a2e;
   --buttonlight: #f22152;
+  --darkness: 0;
+  --buttontext: #ffffff;
   user-select: none;
 }
 @media (prefers-color-scheme: dark) {
@@ -76,11 +78,22 @@ body {
   height: 100vh;
   margin: none;
   padding: none;
+  z-index: -50;
+}
+
+#darkness {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  height: 150%;
+  width: 150%;
+  z-index: -48;
+  opacity: var(--darkness);
+  background-color: black;
 }
 
 #texttitle {
   pointer-events: none;
-  z-index: -5;
 }
 
 .altcolor {
@@ -146,7 +159,7 @@ img {
   background: var(--button);
   background-size: 100% 100%;
   float: left;
-  color: white;
+  color: var(--buttontext);
   border: none;
   outline: none;
   cursor: pointer;
@@ -183,7 +196,7 @@ img {
 }
 .tabBottom button {
   display: block;
-  color: white;
+  color: var(--buttontext);
   width: 100%;
   border-radius: 15px;
   background: var(--button);
@@ -221,7 +234,7 @@ img {
   background: var(--button);
   background-size: 100% 100%;
   border: none;
-  color: white;
+  color: var(--buttontext);
   padding: 5px 5px 5px 5px;
   border-radius: 5px;
   margin-bottom: 5px;
@@ -474,6 +487,7 @@ label {
   background: rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   border-bottom: var(--color) 1px solid;
+  overflow: hidden;
 }
 #titlebar #drag-region {
   width: 100%;
@@ -616,7 +630,7 @@ p.icon {
   height: calc(100vh - 1px);
   width: calc(100vw - 1px);
   position: relative;
-  z-index: -1;
+  z-index: -49;
   top: -7px;
   left: -7px;
   display: grid;
@@ -711,6 +725,35 @@ div#tiles.hiddentiles > .tile {
 }
 .styled-checkbox:checked + label:after {
   opacity: 1;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 250px;
+  height: 25px;
+  background: rgba(0, 0, 0, 0.5);
+  border-color: var(--coloralt);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2px;
+  transition: border-color 0.3s;
+}
+
+.slider:hover {
+  border-color: var(--color);
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 25px;
+  height: 23px;
+  background: var(--color);
+  cursor: pointer;
+}
+
+.slider + label {
+  padding-bottom: 5px;
 }
 
 /*# sourceMappingURL=styles2t.css.map */

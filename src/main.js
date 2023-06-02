@@ -131,17 +131,23 @@ function createWindow() {
         backgroundColor: color,
     })
 
-    win.once('ready-to-show', async () => {
-        var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/version.txt")
-        win.webContents.send("verfind", data.data)
-    })
-
     win.webContents.on('did-start-loading', async () => {
+        delete require.cache[require.resolve('../config.json')]
+        delete require.cache[require.resolve('./guicfg.json')]
+        fs.readdirSync("../Extensions").forEach(extension => {
+            try {
+                delete require.cache[require.resolve(`../Extensions/${extension}/uiconfig.json`)]
+            } catch(err) {}
+            try {
+                delete require.cache[require.resolve(`../Extensions/${extension}/extension.json`)]
+            } catch(err) {}
+            try {
+                delete require.cache[require.resolve(`../Extensions/${extension}/config.json`)]
+            } catch(err) {}
+        })
         if (isMax) {
             win.webContents.send("wincontroler", "max")
         }
-        var data = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/version.txt")
-        win.webContents.send("verfind", data.data)
     })
 
     ipcMain.on('getDir', (event, arg) => {
@@ -150,6 +156,11 @@ function createWindow() {
 
     ipcMain.on('getFile', (event, arg) => {
         event.returnValue = fs.readFileSync(arg, "utf-8")
+    })
+
+    ipcMain.on('versionGrab', async (event, arg) => {
+        const onlineVersion = await axios.get("https://github.com/SkyoProductions/crimson/raw/main/src/version.txt")
+        event.returnValue = onlineVersion.data
     })
 
     win.on('maximize', () => {
@@ -197,7 +208,7 @@ function createWindow() {
                 var thing = require(arg)
                 event.returnValue = thing
             } catch (err) {
-                event.returnValue = null
+                event.returnValue = err
             }
         } else {
             event.returnValue = "Must be a JSON file"
@@ -215,14 +226,14 @@ function createWindow() {
         } else if (arg[0] === "setValBulk") {
             try {
                 result = await setValueJSONBulk(arg[1], arg[2], arg[3])
-            } catch(err) {
+            } catch (err) {
                 result = err
             }
         } else if (arg[0] === "setValBulkNotStyle") {
             try {
                 result = await setValueJSONBulk(arg[1], arg[2], arg[3])
                 win.webContents.send("notificationSend", ["savedModal", 5000, 2000])
-            } catch(err) {
+            } catch (err) {
                 win.webContents.send("notificationSend", ["saveFailModal", 5000, 2000])
             }
         } else if (arg[0] === "getVal") {
@@ -244,7 +255,7 @@ function createWindow() {
             try {
                 fs.writeFileSync(arg[1], arg[2])
                 win.webContents.send("notificationSend", ["savedModal", 5000, 2000])
-            } catch(err) {
+            } catch (err) {
                 win.webContents.send("notificationSend", ["saveFailModal", 5000, 2000])
             }
         }
@@ -255,7 +266,7 @@ function createWindow() {
         try {
             downloadAndUnzip(arg, "../Extensions")
             win.webContents.send("notificationSend", ["downloadedModal", 5000, 2000])
-        } catch(err) {
+        } catch (err) {
             win.webContents.send("notificationSend", ["downloadFailModal", 5000, 2000])
         }
     })

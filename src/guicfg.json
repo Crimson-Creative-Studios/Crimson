@@ -32,6 +32,7 @@
                 "acthov": ""
             }
         },
-        "override": "false"
+        "override": "false",
+        "darkness": "0"
     }
 }
