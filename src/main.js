@@ -159,7 +159,7 @@ function createWindow() {
     })
 
     ipcMain.on('versionGrab', async (event, arg) => {
-        const onlineVersion = await axios.get("https://github.com/VanquishStudios/Crimson/raw/main/src/version.txt")
+        const onlineVersion = await axios.get("https://github.com/Crimson-Creative-Studios/Crimson/raw/main/src/version.txt")
         event.returnValue = onlineVersion.data
     })
 
