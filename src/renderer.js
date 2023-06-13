@@ -20,19 +20,25 @@ async function handleModalTest() {
         await new Promise(resolve => setTimeout(resolve, 5100))
     }
 
-    for (const modal of document.querySelectorAll(".modal2s")) {
-        handleNotification(modal.id, 2000)
-        await new Promise(resolve => setTimeout(resolve, 2100))
+    for (const modal of document.querySelectorAll(".modal3s")) {
+        handleNotification(modal.id, 3000)
+        await new Promise(resolve => setTimeout(resolve, 3100))
     }
 }
 window.handleModalTest = handleModalTest
 
 function copy(thing) {
     navigator.clipboard.writeText(thing)
-    handleNotification('copiedModal', 2000)
+    handleNotification('copiedModal', 3000)
 }
 
 window.copy = copy
+
+function copyDebug() {
+    copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}\n    GUI version: ${versions.crimson()}\n    UUID: ${crimAPI.uuid()}`)
+}
+
+window.copyDebug = copyDebug
 
 ipc.handleAdd((event, arg) => {
     var id = arg[0]

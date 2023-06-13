@@ -40,15 +40,6 @@ const { Player } = require('discord-player')
 const tagsList = []
 
 //*
-//* Standard functions
-//*
-
-//? Version file, for CrimsonGUI
-fs.writeFile("version.txt", "0.7.5", (err) => {
-    if (err) console.logger(err, "error")
-})
-
-//*
 //* Bot set-up
 //*
 

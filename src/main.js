@@ -10,6 +10,26 @@ const path = require('path')
 const fs = require('fs')
 const axios = require('axios')
 const JSZip = require('jszip')
+const net = require('net')
+
+function generateUUID() {
+    var d = new Date().getTime()
+    var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16
+        if (d > 0) {
+            r = (d + r) % 16 | 0
+            d = Math.floor(d / 16)
+        } else {
+            r = (d2 + r) % 16 | 0
+            d2 = Math.floor(d2 / 16)
+        }
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+    })
+}
+
+const uuid = generateUUID()
+
 var globalBot, consolewin
 var isMax = false
 
@@ -137,13 +157,13 @@ function createWindow() {
         fs.readdirSync("../Extensions").forEach(extension => {
             try {
                 delete require.cache[require.resolve(`../Extensions/${extension}/uiconfig.json`)]
-            } catch(err) {}
+            } catch (err) { }
             try {
                 delete require.cache[require.resolve(`../Extensions/${extension}/extension.json`)]
-            } catch(err) {}
+            } catch (err) { }
             try {
                 delete require.cache[require.resolve(`../Extensions/${extension}/config.json`)]
-            } catch(err) {}
+            } catch (err) { }
         })
         if (isMax) {
             win.webContents.send("wincontroler", "max")
@@ -158,9 +178,12 @@ function createWindow() {
         event.returnValue = fs.readFileSync(arg, "utf-8")
     })
 
-    ipcMain.on('versionGrab', async (event, arg) => {
+    ipcMain.on('infoGrab', async (event, arg) => {
         const onlineVersion = await axios.get("https://github.com/Crimson-Creative-Studios/Crimson/raw/main/src/version.txt")
-        event.returnValue = onlineVersion.data
+        event.returnValue = {
+            onlineVersion: onlineVersion.data,
+            uuid: uuid
+        }
     })
 
     win.on('maximize', () => {
@@ -341,15 +364,47 @@ function createWindow() {
     return win
 }
 
+function evalInContext(js, context) {
+    return function () {
+        return eval(js)
+    }.call(context)
+}
+
 app.whenReady().then(async () => {
     globalShortcut.register('CommandOrControl+D+M', () => {
         win.webContents.send("dark-mode:change", null)
     })
     var win = createWindow()
+
+    const server = net.createServer(function (socket) {
+        socket.on('data', (message) => {
+            const messagestr = message.toString()
+            const msgs = messagestr.split("ܛ")
+            for (const msg of msgs) {
+                if (msg !== "") {
+                    if (msg.startsWith(uuid)) {
+                        const info = msg.slice(uuid.length)
+                        evalInContext(info, { win })
+                    }
+                }
+            }
+        })
+    })
+    server.listen(2845, '127.0.0.1')
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow()
         }
+    })
+
+    win.on("closed", () => {
+        try {
+            consolewin.close()
+        } catch (err) { }
+
+        try {
+            globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
+        } catch (err) { }
     })
 })
 

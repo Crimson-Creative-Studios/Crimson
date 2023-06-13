@@ -12,7 +12,7 @@
   :root {
     --background: #2f3136;
     --backgroundalt: #2c2e32;
-    --color: white;
+    --color: #ffffff;
     --coloralt: #c4c4c4;
     --buttonhov: #b80b33;
     --buttonact: #a30a2e;
@@ -21,10 +21,10 @@
 }
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #fff;
-    --backgroundalt: #eee;
+    --background: #ffffff;
+    --backgroundalt: #eeeeee;
     --color: black;
-    --coloralt: #3B3B3B;
+    --coloralt: #3b3b3b;
     --buttonhov: #e80e41;
     --buttonact: #f22152;
     --buttonacthov: #f43d67;
@@ -76,8 +76,6 @@ body {
   overflow-y: hidden;
   overflow-x: hidden;
   height: 100vh;
-  margin: none;
-  padding: none;
   z-index: -50;
 }
 
@@ -348,7 +346,7 @@ img {
   z-index: 99999;
   --opacity: 1;
 }
-.modal-content2s {
+.modal-content3s {
   background: var(--background);
   background-size: 200% 200%;
   position: relative;
@@ -361,7 +359,7 @@ img {
   overflow: hidden;
   opacity: 0;
   transition: opacity 0.3s, border 0.3s, background-color 0.3s, color 0.3s;
-  animation: appearModal 2s;
+  animation: appearModal 3s;
   z-index: 99999;
   --opacity: 1;
 }
@@ -416,7 +414,7 @@ img {
   animation: progressBar 5s;
 }
 
-.disappear2s {
+.disappear3s {
   background: rgba(0, 179, 255, 0.5);
   position: absolute;
   top: 0px;
@@ -424,7 +422,7 @@ img {
   min-height: 5px;
   border-radius: 2px;
   width: calc(100% + 1px);
-  animation: progressBar 2s;
+  animation: progressBar 3s;
 }
 
 @keyframes progressBar {
@@ -652,7 +650,7 @@ p.icon {
   content: "";
   inset: 1px;
   position: absolute;
-  animation: pulse 2.5s infinite;
+  animation: pulse 3s infinite;
   animation-delay: calc(var(--delay) * 1s);
 }
 
@@ -754,6 +752,51 @@ div#tiles.hiddentiles > .tile {
 
 .slider + label {
   padding-bottom: 5px;
+}
+
+#credits img {
+  border-radius: 15px;
+  border: var(--color) 3px solid;
+  margin-top: 15px;
+}
+
+#credits div {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 15px;
+  transition: transform 0.1s;
+  border-bottom: var(--color) 3px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+}
+#credits div:hover {
+  transform: scale(1.01);
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid var(--color);
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 10px;
+}
+
+th {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+td {
+  user-select: all;
+  text-align: center;
+}
+
+.click {
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=styles2t.css.map */

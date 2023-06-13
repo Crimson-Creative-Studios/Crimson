@@ -1,24 +1,24 @@
-function loadColors(options, save = false) {
+function applyColor(el, options) {
     if (options && !document.getElementById("extensionThemeOverride").checked) {
         try {
             if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
                 document.getElementById("lightmodecolors").style.display = "none"
                 document.getElementById("darkmodecolors").style.display = "block"
-                document.documentElement.style.setProperty('--background', options.dark.background.main)
-                document.documentElement.style.setProperty('--backgroundalt', options.dark.background.alt)
-                document.documentElement.style.setProperty('--button', options.dark.button.main)
-                document.documentElement.style.setProperty('--buttonhov', options.dark.button.hov)
-                document.documentElement.style.setProperty('--buttonact', options.dark.button.act)
-                document.documentElement.style.setProperty('--buttonacthov', options.dark.button.hovact)
+                el.style.setProperty('--background', options.dark.background.main)
+                el.style.setProperty('--backgroundalt', options.dark.background.alt)
+                el.style.setProperty('--button', options.dark.button.main)
+                el.style.setProperty('--buttonhov', options.dark.button.hov)
+                el.style.setProperty('--buttonact', options.dark.button.act)
+                el.style.setProperty('--buttonacthov', options.dark.button.hovact)
             } else {
                 document.getElementById("lightmodecolors").style.display = "block"
                 document.getElementById("darkmodecolors").style.display = "none"
-                document.documentElement.style.setProperty('--background', options.light.background.main)
-                document.documentElement.style.setProperty('--backgroundalt', options.light.background.alt)
-                document.documentElement.style.setProperty('--button', options.light.button.main)
-                document.documentElement.style.setProperty('--buttonhov', options.light.button.hov)
-                document.documentElement.style.setProperty('--buttonact', options.light.button.act)
-                document.documentElement.style.setProperty('--buttonacthov', options.light.button.hovact)
+                el.style.setProperty('--background', options.light.background.main)
+                el.style.setProperty('--backgroundalt', options.light.background.alt)
+                el.style.setProperty('--button', options.light.button.main)
+                el.style.setProperty('--buttonhov', options.light.button.hov)
+                el.style.setProperty('--buttonact', options.light.button.act)
+                el.style.setProperty('--buttonacthov', options.light.button.hovact)
             }
             return
         } catch (err) {
@@ -28,28 +28,39 @@ function loadColors(options, save = false) {
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
             document.getElementById("lightmodecolors").style.display = "none"
             document.getElementById("darkmodecolors").style.display = "block"
-            document.documentElement.style.setProperty('--background', document.getElementById("backgroundmainchange").value)
-            document.documentElement.style.setProperty('--backgroundalt', document.getElementById("backgroundaltchange").value)
-            document.documentElement.style.setProperty('--color', document.getElementById("textmainchange").value)
-            document.documentElement.style.setProperty('--coloralt', document.getElementById("textaltchange").value)
-            document.documentElement.style.setProperty('--button', document.getElementById("buttonmainchange").value)
-            document.documentElement.style.setProperty('--buttonhov', document.getElementById("buttonhovchange").value)
-            document.documentElement.style.setProperty('--buttonact', document.getElementById("buttonactchange").value)
-            document.documentElement.style.setProperty('--buttonacthov', document.getElementById("buttonhovactchange").value)
+            el.style.setProperty('--background', document.getElementById("backgroundmainchange").value)
+            el.style.setProperty('--backgroundalt', document.getElementById("backgroundaltchange").value)
+            el.style.setProperty('--color', document.getElementById("textmainchange").value)
+            el.style.setProperty('--coloralt', document.getElementById("textaltchange").value)
+            el.style.setProperty('--button', document.getElementById("buttonmainchange").value)
+            el.style.setProperty('--buttonhov', document.getElementById("buttonhovchange").value)
+            el.style.setProperty('--buttonact', document.getElementById("buttonactchange").value)
+            el.style.setProperty('--buttonacthov', document.getElementById("buttonhovactchange").value)
         } else {
             document.getElementById("lightmodecolors").style.display = "block"
             document.getElementById("darkmodecolors").style.display = "none"
-            document.documentElement.style.setProperty('--background', document.getElementById("backgroundmainchangel").value)
-            document.documentElement.style.setProperty('--backgroundalt', document.getElementById("backgroundaltchangel").value)
-            document.documentElement.style.setProperty('--color', document.getElementById("textmainchangel").value)
-            document.documentElement.style.setProperty('--coloralt', document.getElementById("textaltchangel").value)
-            document.documentElement.style.setProperty('--button', document.getElementById("buttonmainchangel").value)
-            document.documentElement.style.setProperty('--buttonhov', document.getElementById("buttonhovchangel").value)
-            document.documentElement.style.setProperty('--buttonact', document.getElementById("buttonactchangel").value)
-            document.documentElement.style.setProperty('--buttonacthov', document.getElementById("buttonhovactchangel").value)
+            el.style.setProperty('--background', document.getElementById("backgroundmainchangel").value)
+            el.style.setProperty('--backgroundalt', document.getElementById("backgroundaltchangel").value)
+            el.style.setProperty('--color', document.getElementById("textmainchangel").value)
+            el.style.setProperty('--coloralt', document.getElementById("textaltchangel").value)
+            el.style.setProperty('--button', document.getElementById("buttonmainchangel").value)
+            el.style.setProperty('--buttonhov', document.getElementById("buttonhovchangel").value)
+            el.style.setProperty('--buttonact', document.getElementById("buttonactchangel").value)
+            el.style.setProperty('--buttonacthov', document.getElementById("buttonhovactchangel").value)
         }
     }
-    document.documentElement.style.setProperty('--darkness', String(Number(document.getElementById("darknessControl").value)/100))
+}
+
+function loadColors(options, save = false) {
+    if (document.getElementById("element").value) {
+        const elements = document.querySelectorAll(document.getElementById("element").value)
+        for (const element of elements) {
+            applyColor(element, options)
+        }
+    } else {
+        applyColor(document.documentElement, options)
+    }
+    document.documentElement.style.setProperty('--darkness', String(Number(document.getElementById("darknessControl").value) / 1000))
     if (save) {
         const guicfg = JSON.stringify({
             theme: {
@@ -86,7 +97,7 @@ function loadColors(options, save = false) {
                     }
                 },
                 override: String(document.getElementById("extensionThemeOverride").checked),
-                darkness: String(Number(document.getElementById("darknessControl").value)/100)
+                darkness: String(Number(document.getElementById("darknessControl").value) / 1000)
             }
         }, null, 4)
         handleNotification("savingModal", 5000)
@@ -120,12 +131,13 @@ window.addEventListener("load", () => {
     } else {
         document.getElementById("extensionThemeOverride").checked = false
     }
-    document.getElementById("darknessControl").value = Number(cfg.theme.darkness) * 100
+    document.getElementById("darknessControl").value = Number(cfg.theme.darkness) * 1000
     loadColors()
 })
 
 //Best theme is first theme
 function loadNeon() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = "#730073"
     document.getElementById("backgroundaltchange").value = "#6e006e"
     document.getElementById("textmainchange").value = ""
@@ -148,6 +160,7 @@ function loadNeon() {
 
 //Cool color, COLORS WOW
 function loadBAB() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = "#0F64AC"
     document.getElementById("backgroundaltchange").value = "#0a5391"
     document.getElementById("textmainchange").value = ""
@@ -170,6 +183,7 @@ function loadBAB() {
 
 //QuestCraft is BestCraft
 function loadQC() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = "#503624"
     document.getElementById("backgroundaltchange").value = "#4d3322"
     document.getElementById("textmainchange").value = ""
@@ -192,6 +206,7 @@ function loadQC() {
 
 //hehe, pp
 function loadPP() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = "#7a2370"
     document.getElementById("backgroundaltchange").value = "#75216c"
     document.getElementById("textmainchange").value = ""
@@ -214,6 +229,7 @@ function loadPP() {
 
 //birb
 function loadP() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = "#106f75"
     document.getElementById("backgroundaltchange").value = "#0c5c69"
     document.getElementById("textmainchange").value = ""
@@ -236,6 +252,7 @@ function loadP() {
 
 //Discord moment
 function loadAmoled() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = "#000000"
     document.getElementById("backgroundaltchange").value = "#000000"
     document.getElementById("textmainchange").value = ""
@@ -258,6 +275,7 @@ function loadAmoled() {
 
 //Visual studio :waaaa:
 function loadVS() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = "#293462"
     document.getElementById("backgroundaltchange").value = "#242e59"
     document.getElementById("textmainchange").value = ""
@@ -280,6 +298,7 @@ function loadVS() {
 
 //Skyo Productions reference?!
 function loadBB() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = "#0084b8"
     document.getElementById("backgroundaltchange").value = "#0079a8"
     document.getElementById("textmainchange").value = ""
@@ -302,6 +321,7 @@ function loadBB() {
 
 //images :eyes:
 function loadGradHev() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = 'url("../backgrounds/gradienthevimg.png")'
     document.getElementById("backgroundaltchange").value = 'transparent'
     document.getElementById("textmainchange").value = ""
@@ -324,6 +344,7 @@ function loadGradHev() {
 
 //beep boop, testing testing
 function loadTT1() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = 'black'
     document.getElementById("backgroundaltchange").value = "white"
     document.getElementById("textmainchange").value = "white"
@@ -346,6 +367,7 @@ function loadTT1() {
 
 //nothing left, gone, HEHEHEHA
 function clearColor() {
+    document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = ""
     document.getElementById("backgroundaltchange").value = ""
     document.getElementById("textmainchange").value = ""
@@ -364,19 +386,20 @@ function clearColor() {
     document.getElementById("buttonactchangel").value = ""
     document.getElementById("buttonhovactchangel").value = ""
     loadColors()
+
+    for (const thing of document.querySelectorAll("*")) {
+        thing.style.setProperty('--background', "")
+        thing.style.setProperty('--backgroundalt', "")
+        thing.style.setProperty('--color', "")
+        thing.style.setProperty('--coloralt', "")
+        thing.style.setProperty('--button', "")
+        thing.style.setProperty('--buttonhov', "")
+        thing.style.setProperty('--buttonact', "")
+        thing.style.setProperty('--buttonacthov', "")
+    }
 }
 
 window.loadColors = loadColors
-const inputs = document.getElementsByClassName("inputcolorcheck")
-
-Array.from(inputs).forEach(inputText => {
-    const chkevnts = ["oninput", "onpaste", "oncopy", "oncut"]
-
-    for (evnt in chkevnts) {
-        inputText.setAttribute(chkevnts[evnt], 'loadColors()')
-    }
-})
-
 const crinsom = Math.floor(Math.random() * 100)
 if (crinsom === 73) {
     document.getElementById("texttitle").innerHTML = "CrinsomGUI"

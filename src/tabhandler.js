@@ -5,6 +5,7 @@ var currentMode = null
 var custom = false
 
 async function openTab(tabName, override = null, option = "") {
+    loadColors()
     if (tabName.startsWith("falseErrorTest")) {
         tabcontent = document.getElementsByClassName("tabcontent")
         for (i = 0; i < tabcontent.length; i++) {

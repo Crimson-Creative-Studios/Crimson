@@ -11,4 +11,5 @@ crimAPI.handleWinControl((event, arg) => {
     } else {
         document.body.classList.remove('maximized')
     }
+    createGrid()
 })
