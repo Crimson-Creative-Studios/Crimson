@@ -180,9 +180,11 @@ function createWindow() {
 
     ipcMain.on('infoGrab', async (event, arg) => {
         const onlineVersion = await axios.get("https://github.com/Crimson-Creative-Studios/Crimson/raw/main/src/version.txt")
+        const themes = await fs.promises.readdir("./themes")
         event.returnValue = {
             onlineVersion: onlineVersion.data,
-            uuid: uuid
+            uuid: uuid,
+            themes: themes
         }
     })
 
@@ -255,9 +257,9 @@ function createWindow() {
         } else if (arg[0] === "setValBulkNotStyle") {
             try {
                 result = await setValueJSONBulk(arg[1], arg[2], arg[3])
-                win.webContents.send("notificationSend", ["savedModal", 5000, 2000])
+                win.webContents.send("notificationSend", ["savedModal", 5000, 3000])
             } catch (err) {
-                win.webContents.send("notificationSend", ["saveFailModal", 5000, 2000])
+                win.webContents.send("notificationSend", ["saveFailModal", 5000, 3000])
             }
         } else if (arg[0] === "getVal") {
             if (arg[3] === "speed") {
@@ -277,9 +279,9 @@ function createWindow() {
         } else if (arg[0] === "setJSONNotStyle") {
             try {
                 fs.writeFileSync(arg[1], arg[2])
-                win.webContents.send("notificationSend", ["savedModal", 5000, 2000])
+                win.webContents.send("notificationSend", ["savedModal", 5000, 3000])
             } catch (err) {
-                win.webContents.send("notificationSend", ["saveFailModal", 5000, 2000])
+                win.webContents.send("notificationSend", ["saveFailModal", 5000, 3000])
             }
         }
         event.returnValue = result

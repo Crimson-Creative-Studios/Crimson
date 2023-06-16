@@ -5,7 +5,7 @@ function requirePro(thing) {
     return ipcRenderer.sendSync("require", thing)
 }
 
-const {onlineVersion, uuid} = ipcRenderer.sendSync("infoGrab", "version.txt")
+const {onlineVersion, uuid, themes} = ipcRenderer.sendSync("infoGrab")
 const cfg = requirePro('../config.json')
 const version = ipcRenderer.sendSync("getFile", "version.txt")
 
@@ -38,7 +38,8 @@ contextBridge.exposeInMainWorld('crimAPI', {
     handleGUICFG: (callback) => ipcRenderer.on('guicfgfind', callback),
     handleNotificationMain: (callback) => ipcRenderer.on("notificationSend", callback),
     guicfg: () => requirePro("./guicfg.json"),
-    uuid: () => uuid
+    uuid: () => uuid,
+    themes: () => themes
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);

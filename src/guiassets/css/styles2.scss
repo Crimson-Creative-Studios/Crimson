@@ -1,32 +1,17 @@
 @import url('fonts.css');
 
 :root {
-    --button: #cc0c39;
-    --buttondark: #a30a2e;
-    --buttonlight: #f22152;
     --darkness: 0;
     --buttontext: #ffffff;
+    --background: #2f3136;
+    --backgroundalt: #2c2e32;
+    --color: #ffffff;
+    --coloralt: #c4c4c4;
+    --button: #cc0c39;
+    --buttonhov: #b80b33;
+    --buttonact: #a30a2e;
+    --buttonacthov: #8f0828;
     user-select: none;
-
-    @media (prefers-color-scheme: dark) {
-        --background: #2f3136;
-        --backgroundalt: #2c2e32;
-        --color: #ffffff;
-        --coloralt: #c4c4c4;
-        --buttonhov: #b80b33;
-        --buttonact: #a30a2e;
-        --buttonacthov: #8f0828;
-    }
-
-    @media (prefers-color-scheme: light) {
-        --background: #ffffff;
-        --backgroundalt: #eeeeee;
-        --color: black;
-        --coloralt: #3b3b3b;
-        --buttonhov: #e80e41;
-        --buttonact: #f22152;
-        --buttonacthov: #f43d67;
-    }
 }
 
 .top {
@@ -37,6 +22,7 @@
     font-size: 14px;
     pointer-events: none;
     z-index: -5;
+    color: var(--color);
 }
 
 p,
@@ -135,8 +121,8 @@ img {
 }
 
 ::selection {
-    color: black;
-    background: #33F3C6;
+    color: var(--color);
+    background: var(--button);
 }
 
 .tab {
@@ -345,7 +331,7 @@ img {
         display: none;
     }
 
-    &-content5s {
+    &-content {
         background: var(--background);
         background-size: 200% 200%;
         position: relative;
@@ -358,27 +344,16 @@ img {
         overflow: hidden;
         opacity: 0;
         transition: opacity 0.3s, border 0.3s, background-color 0.3s, color 0.3s;
-        animation: appearModal 5s;
         z-index: 99999;
         --opacity: 1;
     }
 
+    &-content5s {
+        animation: appearModal 5s;
+    }
+
     &-content3s {
-        background: var(--background);
-        background-size: 200% 200%;
-        position: relative;
-        margin: 0 auto;
-        padding: 20px;
-        border: 1px solid var(--color);
-        width: clamp(100px, 65%, 800px);
-        color: var(--color);
-        border-radius: 12px;
-        overflow: hidden;
-        opacity: 0;
-        transition: opacity 0.3s, border 0.3s, background-color 0.3s, color 0.3s;
         animation: appearModal 3s;
-        z-index: 99999;
-        --opacity: 1;
     }
 }
 
@@ -842,7 +817,8 @@ table {
     width: 100%;
 }
 
-th, td {
+th,
+td {
     border: 1px solid var(--color);
     background-color: rgba(0, 0, 0, 0.25);
     padding: 10px;

@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'" />
-    <title>CrimsonGUI</title>
     <link href="guiassets/css/styles2t.css" rel="stylesheet">
     <link href="guiassets/fontawesome/css/fontawesome.css" rel="stylesheet">
     <link href="guiassets/fontawesome/css/brands.css" rel="stylesheet">
@@ -49,7 +48,7 @@
         <div class="top">
             <h1 id="texttitle">CrimsonGUI</h1>
         </div>
-        
+
         <div class="tab">
             <button id="BotButton" class="tablinks active" onclick="openTab('Home', 'BotButton')">
                 <i class="fa-solid fa-house"></i>
@@ -162,10 +161,6 @@
 
         <div id="Options" class="tabcontent">
             <h3>Options</h3>
-            <p>Current theme: <strong id="theme-source">System</strong></p>
-            <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle dark mode</button>
-            <button id="reset-to-system" class="button" onclick="sysDarkMode()">Reset to system theme</button>
-            <br>
             <button class="button" onclick="openTab('ColorChanger')">Change theme</button>
             <button class="button" onclick="toggleBG()">Toggle background</button>
             <br>
@@ -177,10 +172,9 @@
         <div id="ColorChanger" class="tabcontent">
             <h3>Theme</h3>
             <button class="button" onclick="openTab('Options')">Go back</button>
-            <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle dark mode</button>
             <button class="button" onclick="clearColor()">Reset to default</button>
             <button class="button" onclick="openTab('PreviewColors')">Preview theme</button>
-            <button class="button" onclick="loadColors(undefined, true)">Save theme settings</button>
+            <button class="button" onclick="saveGUISettings()">Save</button>
             <h4>Options</h4>
             <input class="styled-checkbox inputcolorcheck" type="checkbox" id="extensionThemeOverride"
                 name="extensionThemeOverride" value="true">
@@ -190,79 +184,45 @@
             <input type="range" min="0" max="1000" value="0" class="slider inputcolorcheck" id="darknessControl"
                 name="darknessControl" oninput="loadColors()">
             <label for="darknessControl">Background darkness</label>
-            <h4>Darkness</h4>
-            <h4>Premade Themes</h4>
-            <button class="button" onclick="loadVS()">Vanquish</button>
-            <button class="button" onclick="loadGradHev()">Gradient Heaven</button>
-            <button class="button" onclick="loadNeon()">Neon City</button>
-            <button class="button" onclick="loadBAB()">Black and Blue</button>
-            <button class="button" onclick="loadQC()">QuestCraft</button>
-            <button class="button" onclick="loadPP()">Purplish Pink</button>
-            <button class="button" onclick="loadP()">Phoneix</button>
-            <button class="button" onclick="loadAmoled()">Amoled</button>
-            <button class="button" onclick="loadBB()" title="In memory of SkyoProductions">Blazy Blue</button>
+            <h4>Themes</h4>
+            <div id="themesBTNHolder">
+            </div>
             <br><br>
             <form onsubmit="return false;">
-                <div id="darkmodecolors">
-                    <label for="backgroundmainchange">Background main:</label><br>
-                    <input type="text" id="backgroundmainchange" name="backgroundmainchange"
-                        placeholder="#2f3136" /><br>
+                <div id="changeColorsDev" style="display: none;">
+                    <div>
+                        <label for="backgroundmainchange">Background main:</label><br>
+                        <input type="text" id="backgroundmainchange" name="backgroundmainchange"
+                            placeholder="#2f3136" /><br>
 
-                    <label for="backgroundaltchange">Background alt:</label><br>
-                    <input type="text" id="backgroundaltchange" name="backgroundaltchange" placeholder="#2c2e32" /><br>
+                        <label for="backgroundaltchange">Background alt:</label><br>
+                        <input type="text" id="backgroundaltchange" name="backgroundaltchange"
+                            placeholder="#2c2e32" /><br>
 
-                    <label for="textmainchange">Text color main:</label><br>
-                    <input type="text" id="textmainchange" name="textmainchange" placeholder="#ffffff" /><br>
+                        <label for="textmainchange">Text color main:</label><br>
+                        <input type="text" id="textmainchange" name="textmainchange" placeholder="#ffffff" /><br>
 
-                    <label for="textaltchange">Text color alt:</label><br>
-                    <input type="text" id="textaltchange" name="textaltchange" placeholder="#c4c4c4" /><br>
+                        <label for="textaltchange">Text color alt:</label><br>
+                        <input type="text" id="textaltchange" name="textaltchange" placeholder="#c4c4c4" /><br>
 
-                    <label for="buttonmainchange">Button main:</label><br>
-                    <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="#cc0c39" /><br>
+                        <label for="buttonmainchange">Button main:</label><br>
+                        <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="#cc0c39" /><br>
 
-                    <label for="buttonhovchange">Button hover:</label><br>
-                    <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="#b80b33" /><br>
+                        <label for="buttonhovchange">Button hover:</label><br>
+                        <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="#b80b33" /><br>
 
-                    <label for="buttonactchange">Button active:</label><br>
-                    <input type="text" id="buttonactchange" name="buttonactchange" placeholder="#a30a2e" /><br>
+                        <label for="buttonactchange">Button active:</label><br>
+                        <input type="text" id="buttonactchange" name="buttonactchange" placeholder="#a30a2e" /><br>
 
-                    <label for="buttonhovactchange">Button hover active:</label><br>
-                    <input type="text" id="buttonhovactchange" name="buttonhovactchange"
-                        placeholder="#8f0828" /><br><br>
+                        <label for="buttonhovactchange">Button hover active:</label><br>
+                        <input type="text" id="buttonhovactchange" name="buttonhovactchange"
+                            placeholder="#8f0828" /><br><br>
+                    </div>
+                    <label for="element">Element: <span class="click" onclick="openTab('InfoElement')"><i
+                                class="fa-solid fa-circle-info"></i></span></label>
+                    <input type="text" id="element" name="element" placeholder="Everything" />
+                    <button class="button" onclick="loadColors()">Load colors for element</button>
                 </div>
-                <div id="lightmodecolors">
-                    <label for="backgroundmainchangel">Background main:</label><br>
-                    <input type="text" id="backgroundmainchangel" name="backgroundmainchangel"
-                        placeholder="#ffffff" /><br>
-
-                    <label for="backgroundaltchangel">Background alt:</label><br>
-                    <input type="text" id="backgroundaltchangel" name="backgroundaltchangel"
-                        placeholder="#eeeeee" /><br>
-
-                    <label for="textmainchangel">Text color main:</label><br>
-                    <input type="text" id="textmainchangel" name="textmainchangel" placeholder="#000000" /><br>
-
-                    <label for="textaltchangel">Text color alt:</label><br>
-                    <input type="text" id="textaltchangel" name="textaltchangel" placeholder="#3b3b3b" /><br>
-
-                    <label for="buttonmainchangel">Button main:</label><br>
-                    <input type="text" id="buttonmainchangel" name="buttonmainchangel" placeholder="#cc0c39" /><br>
-
-                    <label for="buttonhovchangel">Button hover:</label><br>
-                    <input type="text" id="buttonhovchangel" name="buttonhovchangel" placeholder="#e80e41" /><br>
-
-                    <label for="buttonactchangel">Button active:</label><br>
-                    <input type="text" id="buttonactchangel" name="buttonactchangel" placeholder="#f22152" /><br>
-
-                    <label for="buttonhovactchangel">Button hover active:</label><br>
-                    <input type="text" id="buttonhovactchangel" name="buttonhovactchangel"
-                        placeholder="#f43d67" /><br><br>
-                </div>
-                <label for="element">Element: <span class="click" onclick="openTab('InfoElement')"><i
-                            class="fa-solid fa-circle-info"></i></span></label><br>
-                <input type="text" id="element" name="element" placeholder="Everything" /><br>
-                <br><br>
-                <button class="button" onclick="loadColors()">Load colors for element</button>
             </form><br><br>
         </div>
 
@@ -304,6 +264,10 @@
                         <td>Options Button</td>
                         <td>#OptionsButton</td>
                     </tr>
+                    <tr>
+                        <td>Every button</td>
+                        <td>.button</td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -343,6 +307,7 @@
             <button class="button" onclick="openTab('falseErrorTest')">Test a generic tab fail</button>
             <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab
                 fail</button><br><br>
+            <button class="button" onclick="if (document.getElementById('changeColorsDev').style.display === 'none') { document.getElementById('changeColorsDev').style.display = 'block' } else { document.getElementById('changeColorsDev').style.display = 'none' }">Toggle Color Changer</button>
         </div>
 
         <div id="ErrorFound" class="tabcontent">
@@ -371,7 +336,7 @@
     <div id="darkness"></div>
     <div id="savingModal" class="modal modal3s">
 
-        <div class="modal-content3s">
+        <div class="modal-content3s modal-content">
             <div class="disappear3s"></div>
             <p>Saving settings...</p>
             <button class="button close-button">𐌢</button>
@@ -381,7 +346,7 @@
 
     <div id="savedModal" class="modal modal5s">
 
-        <div class="modal-content5s">
+        <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Successfully saved settings...</p>
             <button class="button close-button">𐌢</button>
@@ -391,7 +356,7 @@
 
     <div id="saveFailModal" class="modal modal5s">
 
-        <div class="modal-content5s">
+        <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Something went wrong while saving...</p>
             <button class="button close-button">𐌢</button>
@@ -401,7 +366,7 @@
 
     <div id="downloadingModal" class="modal modal3s">
 
-        <div class="modal-content3s">
+        <div class="modal-content3s modal-content">
             <div class="disappear3s"></div>
             <p>Downloading extension...</p>
             <button class="button close-button">𐌢</button>
@@ -411,7 +376,7 @@
 
     <div id="downloadedModal" class="modal modal5s">
 
-        <div class="modal-content5s">
+        <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Successfully downloaded extension...</p>
             <button class="button close-button">𐌢</button>
@@ -421,7 +386,7 @@
 
     <div id="downloadFailModal" class="modal modal5s">
 
-        <div class="modal-content5s">
+        <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Something went wrong while downloading...</p>
             <button class="button close-button">𐌢</button>
@@ -431,7 +396,7 @@
 
     <div id="copiedModal" class="modal modal3s">
 
-        <div class="modal-content3s">
+        <div class="modal-content3s modal-content">
             <div class="disappear3s"></div>
             <p>Copied to clipboard...</p>
             <button class="button close-button">𐌢</button>

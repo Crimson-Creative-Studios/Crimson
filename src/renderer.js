@@ -14,6 +14,12 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
+function toggleVis(thing) {
+    document.getElementById(thing).classList.toggle("hidden")
+}
+
+window.toggleVis = toggleVis
+
 async function handleModalTest() {
     for (const modal of document.querySelectorAll(".modal5s")) {
         handleNotification(modal.id, 5000)
