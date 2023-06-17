@@ -4,15 +4,15 @@ document.getElementById("backgroundmainchange").value = "#000000"
 document.getElementById("backgroundaltchange").value = "transparent"
 document.getElementById("textmainchange").value = "white"
 document.getElementById("textaltchange").value = "#c4c4c4"
-document.getElementById("buttonmainchange").value = "#000000"
-document.getElementById("buttonhovchange").value = "#222222"
-document.getElementById("buttonactchange").value = "#444444"
-document.getElementById("buttonhovactchange").value = "#666666"
+document.getElementById("buttonmainchange").value = "#ffffff"
+document.getElementById("buttonhovchange").value = "#dddddd"
+document.getElementById("buttonactchange").value = "#bbbbbb"
+document.getElementById("buttonhovactchange").value = "#999999"
 
-document.getElementById("buttonhovactchange").style.border = ""
+document.getElementById("buttonhovactchange").style.setProperty
 
 function hightlight(el) {
-    el.style.border = "1px solid var(--color)"
+    el.style.setProperty("--buttontext", "#000000")
 }
 
 for (const thing of document.querySelectorAll(".button")) {

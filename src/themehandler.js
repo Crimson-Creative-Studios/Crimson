@@ -48,7 +48,11 @@ function loadColors(options) {
 
 function clearColor() {
     themeNow = ""
-    document.getElementById("texttitle").innerHTML = "CrimsonGUI"
+    if (iscrinsom) {
+        document.getElementById("texttitle").innerHTML = "CrinsomGUI"
+    } else {
+        document.getElementById("texttitle").innerHTML = "CrimsonGUI"
+    }
     document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = ""
     document.getElementById("backgroundaltchange").value = ""
@@ -61,7 +65,7 @@ function clearColor() {
     loadColors()
 
     for (const thing of document.querySelectorAll("*")) {
-        if (!thing.classList.contains("tile") && thing.id !== "tiles") {
+        if (!thing.classList.contains("tile") && thing.id !== "tiles" && thing.id !== "changeColorsDev") {
             thing.setAttribute("style", "")
         }
 
@@ -76,9 +80,11 @@ function clearColor() {
 }
 
 window.loadColors = loadColors
-const crinsom = Math.floor(Math.random() * 100)
-if (crinsom === 73) {
+const crinsom = Math.floor(Math.random() * 50)
+var iscrinsom = false
+if (crinsom === 1) {
     document.getElementById("texttitle").innerHTML = "CrinsomGUI"
+    iscrinsom = true
 }
 
 function changeWinText() {
