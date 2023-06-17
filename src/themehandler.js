@@ -48,6 +48,7 @@ function loadColors(options) {
 
 function clearColor() {
     themeNow = ""
+    document.getElementById("texttitle").innerHTML = "CrimsonGUI"
     document.getElementById("element").value = ""
     document.getElementById("backgroundmainchange").value = ""
     document.getElementById("backgroundaltchange").value = ""
@@ -60,14 +61,17 @@ function clearColor() {
     loadColors()
 
     for (const thing of document.querySelectorAll("*")) {
-        thing.style.setProperty('--background', "")
-        thing.style.setProperty('--backgroundalt', "")
-        thing.style.setProperty('--color', "")
-        thing.style.setProperty('--coloralt', "")
-        thing.style.setProperty('--button', "")
-        thing.style.setProperty('--buttonhov', "")
-        thing.style.setProperty('--buttonact', "")
-        thing.style.setProperty('--buttonacthov', "")
+        if (!thing.classList.contains("tile") && thing.id !== "tiles") {
+            thing.setAttribute("style", "")
+        }
+
+        if (thing.classList.contains("exbtnid")) {
+            thing.setAttribute("style", "width: 120px; height: 135px; display: inline;")
+        }
+
+        if (thing.classList.contains("eximgbtn")) {
+            thing.setAttribute("style", "border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;")
+        }
     }
 }
 
