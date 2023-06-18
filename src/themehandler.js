@@ -44,6 +44,7 @@ function loadColors(options) {
         applyColor(document.documentElement, options)
     }
     document.documentElement.style.setProperty('--darkness', String(Number(document.getElementById("darknessControl").value) / 1000))
+    document.title = document.getElementById("texttitle").innerHTML
 }
 
 function clearColor() {
