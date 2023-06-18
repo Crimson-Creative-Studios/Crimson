@@ -247,6 +247,7 @@ async function handleExtensionData(key, data) {
 async function finishExtensionData(key, data) {
     var extension = await handleExtensionData(key, data)
     try {
+        document.getElementById("exloadtxt").innerHTML = ""
         document.getElementById("exloadtxt").remove()
     } catch (err) { }
     document.getElementById(extension[3] + "area").insertAdjacentHTML("beforeend", extension[0])

@@ -773,4 +773,28 @@ td {
   cursor: pointer;
 }
 
+.custom-loader {
+  width: 69px;
+  height: 12px;
+  display: grid;
+}
+.custom-loader:before, .custom-loader:after {
+  content: "";
+  grid-area: 1/1;
+  background: radial-gradient(farthest-side, var(--color) 90%, rgba(0, 0, 0, 0)) left, radial-gradient(farthest-side, var(--color) 90%, rgba(0, 0, 0, 0)) right;
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  animation: d2 1.5s infinite;
+}
+.custom-loader:after {
+  margin: 0 19px;
+  animation-direction: reverse;
+}
+
+@keyframes d2 {
+  80%, 100% {
+    transform: rotate(0.5turn);
+  }
+}
+
 /*# sourceMappingURL=styles2t.css.map */

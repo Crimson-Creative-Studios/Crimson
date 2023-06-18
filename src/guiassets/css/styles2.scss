@@ -837,3 +837,36 @@ td {
 .click {
     cursor: pointer;
 }
+
+//Loading animation
+
+.custom-loader {
+    width: 69px;
+    height: 12px;
+    display: grid;
+
+    &:before,
+    &:after {
+        content: "";
+        grid-area: 1/1;
+        background:
+            radial-gradient(farthest-side, var(--color) 90%, #0000) left,
+            radial-gradient(farthest-side, var(--color) 90%, #0000) right;
+        background-size: 12px 12px;
+        background-repeat: no-repeat;
+        animation: d2 1.5s infinite;
+    }
+
+    &:after {
+        margin: 0 19px;
+        animation-direction: reverse;
+    }
+}
+
+@keyframes d2 {
+
+    80%,
+    100% {
+        transform: rotate(.5turn)
+    }
+}
