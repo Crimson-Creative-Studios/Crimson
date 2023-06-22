@@ -171,7 +171,11 @@ function createWindow() {
     })
 
     ipcMain.on('getDir', (event, arg) => {
-        event.returnValue = fs.readdirSync(arg)
+        try {
+            event.returnValue = fs.readdirSync(arg)
+        } catch(err) {
+            event.returnValue = []
+        }
     })
 
     ipcMain.on('getFile', (event, arg) => {

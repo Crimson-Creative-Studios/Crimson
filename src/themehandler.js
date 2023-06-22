@@ -1,4 +1,5 @@
 var themeNow = ""
+var animations = []
 
 function applyColor(el, options) {
     if (options && !document.getElementById("extensionThemeOverride").checked) {
@@ -48,6 +49,13 @@ function loadColors(options) {
 }
 
 function clearColor() {
+    window.onmousemove = undefined
+    window.onmousedown = undefined
+    animations.forEach( clearInterval )
+    animations = []
+    try {
+        script.remove()
+    } catch(err) {}
     themeNow = ""
     if (iscrinsom) {
         document.getElementById("texttitle").innerHTML = "CrinsomGUI"
@@ -94,8 +102,10 @@ function changeWinText() {
     }, 200)
 }
 
+var script
+
 function addTheme(name) {
-    const script = document.createElement("script")
+    script = document.createElement("script")
     script.setAttribute("src", "./themes/"+name)
     script.onload = () => {
         themeNow = name
