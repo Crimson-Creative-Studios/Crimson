@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'" />
-    <title>CrimsonGUI</title>
-    <link rel="stylesheet" href="guiassets/css/styles2t.css">
+    <link href="guiassets/css/styles2t.css" rel="stylesheet">
     <link href="guiassets/fontawesome/css/fontawesome.css" rel="stylesheet">
     <link href="guiassets/fontawesome/css/brands.css" rel="stylesheet">
     <link href="guiassets/fontawesome/css/solid.css" rel="stylesheet">
@@ -49,17 +48,27 @@
         <div class="top">
             <h1 id="texttitle">CrimsonGUI</h1>
         </div>
+
         <div class="tab">
-            <button id="BotButton" class="tablinks active" onclick="openTab('Home', 'BotButton')"><i
-                    class="fa-solid fa-house"></i></button>
-            <button id="ConfigurationButton" class="tablinks"
-                onclick="openTab('Configuration', 'ConfigurationButton')"><i class="fa-solid fa-wrench"></i></button>
-            <button id="MarketButton" class="tablinks" onclick="openTab('Market', 'MarketButton')"><i
-                    class="fa-solid fa-shop"></i></button>
-            <button id="InformationButton" class="tablinks" onclick="openTab('Information', 'InformationButton')"><i
-                    class="fa-solid fa-circle-info"></i></button>
-            <button id="DEBUGButton" class="tablinks hidden" onclick="openTab('DEBUG', 'DEBUGButton')"><i
-                    class="fa-solid fa-bug"></i></button>
+            <button id="BotButton" class="tablinks active" onclick="openTab('Home', 'BotButton')">
+                <i class="fa-solid fa-house"></i>
+            </button>
+
+            <button id="ConfigurationButton" class="tablinks" onclick="openTab('Configuration', 'ConfigurationButton')">
+                <i class="fa-solid fa-wrench"></i>
+            </button>
+
+            <button id="MarketButton" class="tablinks" onclick="openTab('Market', 'MarketButton')">
+                <i class="fa-solid fa-shop"></i>
+            </button>
+
+            <button id="InformationButton" class="tablinks" onclick="openTab('Information', 'InformationButton')">
+                <i class="fa-solid fa-circle-info"></i>
+            </button>
+
+            <button id="DEBUGButton" class="tablinks hidden" onclick="openTab('DEBUG', 'DEBUGButton')">
+                <i class="fa-solid fa-bug"></i>
+            </button>
         </div>
 
         <div id="extensionsHolder"></div>
@@ -99,13 +108,19 @@
                 <input type="text" id="exsearch" name="exsearch" placeholder="Enter search..."
                     onchange="handleInputChange(this.value)" onkeyup="this.onchange()" onpaste="this.onchange()"
                     oninput="this.onchange()" />
+                    <br><br>
                 <button id="toggleofficial" class="button" onclick="toggleOfficial()">Toggle Official
                     Extensions</button>
                 <button id="toggleunofficial" class="button" onclick="toggleUnofficial()">Toggle Unofficial
                     Extensions</button>
             </form>
             <p>Find extensions for Crimson</p>
-            <p id="exloadtxt">Loading extensions...<br>Give me a second...</p>
+            <div id="exloadtxt">
+                <p>Loading extensions...<br>Give me a second...</p>
+                <br>
+                <div class="custom-loader"></div>
+                <br>
+            </div>
             <h4 id="officialtext">Official</h4>
             <div id="officialarea"></div>
             <h4 id="unofficialtext">Unofficial</h4>
@@ -120,13 +135,31 @@
             <p id="funfact">Fun Fact: Not loaded...</p>
             <h4>Credits:</h4>
             <div id="credits">
-                <p><a onclick="crimAPI.openSite('https://skyoproductions.github.io/developers/devlime')">DiveaLism</a> -
-                    Creator</p>
-                <p><a onclick="crimAPI.openSite('https://vanquishstudios.github.io/')">Vanquish Studio</a> - Theme name and parent
-                    company</p>
-                <p><a onclick="crimAPI.openSite('https://questcraft.org/')">QuestCraft</a> - Theme name (and awesome
-                    <span onclick="activateGAMER()">game</span>)</p>
-                <p><a onclick="crimAPI.openSite('https://fontawesome.com/')">Font Awesome</a> - Icons</p>
+                <div onclick="crimAPI.openSite('https://github.com/DiveaLism')">
+                    <img src="guiassets/icons/divealism.png" width="100" height="100">
+                    <p>Divea - Creator</p>
+                </div>
+                <br>
+                <div onclick="crimAPI.openSite('https://github.com/Crimson-Creative-Studios')">
+                    <img src="guiassets/icons/ccs.png" width="100" height="100">
+                    <p>Crimson Creative Studios - Parent company</p>
+                </div>
+                <br>
+                <div onclick="crimAPI.openSite('https://github.com/VanquishStudios')">
+                    <img src="guiassets/icons/vanquish.png" width="100" height="100">
+                    <p>Vanquish Studios - Partner company</p>
+                </div>
+                <br>
+                <div onclick="crimAPI.openSite('https://questcraft.org')">
+                    <img src="guiassets/icons/qc.png" width="100" height="100">
+                    <p>QuestCraft - Theme name (and awesome game)</p>
+                </div>
+                <br>
+                <div onclick="crimAPI.openSite('https://fontawesome.com')">
+                    <img src="guiassets/icons/fa.png" width="100" height="100">
+                    <p>Font Awesome - Icons</p>
+                </div>
+                <br>
             </div>
             <br>
             <br>
@@ -134,114 +167,119 @@
 
         <div id="Options" class="tabcontent">
             <h3>Options</h3>
-            <p>Current theme: <strong id="theme-source">System</strong></p>
-            <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-            <button id="reset-to-system" class="button" onclick="sysDarkMode()">Reset to System Theme</button>
-            <br>
             <button class="button" onclick="openTab('ColorChanger')">Change theme</button>
-            <button class="button" onclick="toggleBG()">Toggle background</button>
             <br>
             <br>
             <br>
-            <button class="button" onclick="toggleVis('DEBUGButton')">Toggle Debug Menu Button</button><br><br>
+            <button class="button" onclick="toggleVis('DEBUGButton')">Toggle debug menu button</button><br><br>
         </div>
 
         <div id="ColorChanger" class="tabcontent">
             <h3>Theme</h3>
             <button class="button" onclick="openTab('Options')">Go back</button>
-            <button id="toggle-dark-mode" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-            <button class="button" onclick="clearColor()">Clear colors</button>
+            <button class="button" onclick="toggleBG()">Toggle background</button>
+            <button class="button" onclick="clearColor()">Reset to default</button>
             <button class="button" onclick="openTab('PreviewColors')">Preview theme</button>
-            <button class="button" onclick="loadColors(undefined, true)">Save theme settings</button>
+            <button class="button" onclick="saveGUISettings()">Save</button>
             <h4>Options</h4>
-            <input class="styled-checkbox inputcolorcheck" type="checkbox" id="extensionThemeOverride" name="extensionThemeOverride"
-                value="true">
+            <input class="styled-checkbox inputcolorcheck" type="checkbox" id="extensionThemeOverride"
+                name="extensionThemeOverride" value="true">
             <label for="extensionThemeOverride">Always use this theme</label>
             <br>
             <br>
-            <input type="range" min="0" max="100" value="0" class="slider inputcolorcheck" id="darknessControl" name="darknessControl">
+            <input type="range" min="0" max="1000" value="0" class="slider inputcolorcheck" id="darknessControl"
+                name="darknessControl" oninput="loadColors()">
             <label for="darknessControl">Background darkness</label>
-            <h4>Darkness</h4>
-            <h4>Premade Themes</h4>
-            <button class="button" onclick="loadVS()">Vanquish</button>
-            <button class="button" onclick="loadGradHev()">Gradient Heaven</button>
-            <button class="button" onclick="loadNeon()">Neon City</button>
-            <button class="button" onclick="loadBAB()">Black and Blue</button>
-            <button class="button" onclick="loadQC()">QuestCraft</button>
-            <button class="button" onclick="loadPP()">Purplish Pink</button>
-            <button class="button" onclick="loadP()">Phoneix</button>
-            <button class="button" onclick="loadAmoled()">Amoled</button>
-            <button class="button" onclick="loadBB()" title="In memory of SkyoProductions">Blazy Blue</button>
+            <h4>Themes</h4>
+            <div id="themesBTNHolder">
+            </div>
             <br><br>
             <form onsubmit="return false;">
-                <div id="darkmodecolors">
-                    <label for="backgroundmainchange">Background main:</label><br>
-                    <input type="text" id="backgroundmainchange" name="backgroundmainchange"
-                        placeholder="Enter color..." class="inputcolorcheck" /><br>
+                <div id="changeColorsDev" style="display: none;">
+                    <div>
+                        <label for="backgroundmainchange">Background main:</label><br>
+                        <input type="text" id="backgroundmainchange" name="backgroundmainchange"
+                            placeholder="#2f3136" /><br>
 
-                    <label for="backgroundaltchange">Background alt:</label><br>
-                    <input type="text" id="backgroundaltchange" name="backgroundaltchange" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
+                        <label for="backgroundaltchange">Background alt:</label><br>
+                        <input type="text" id="backgroundaltchange" name="backgroundaltchange"
+                            placeholder="#2c2e32" /><br>
 
-                    <label for="textmainchange">Text color main:</label><br>
-                    <input type="text" id="textmainchange" name="textmainchange" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
+                        <label for="textmainchange">Text color main:</label><br>
+                        <input type="text" id="textmainchange" name="textmainchange" placeholder="#ffffff" /><br>
 
-                    <label for="textaltchange">Text color alt:</label><br>
-                    <input type="text" id="textaltchange" name="textaltchange" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
+                        <label for="textaltchange">Text color alt:</label><br>
+                        <input type="text" id="textaltchange" name="textaltchange" placeholder="#c4c4c4" /><br>
 
-                    <label for="buttonmainchange">Button main:</label><br>
-                    <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
+                        <label for="buttonmainchange">Button main:</label><br>
+                        <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="#cc0c39" /><br>
 
-                    <label for="buttonhovchange">Button hover:</label><br>
-                    <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
+                        <label for="buttonhovchange">Button hover:</label><br>
+                        <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="#b80b33" /><br>
 
-                    <label for="buttonactchange">Button active:</label><br>
-                    <input type="text" id="buttonactchange" name="buttonactchange" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
+                        <label for="buttonactchange">Button active:</label><br>
+                        <input type="text" id="buttonactchange" name="buttonactchange" placeholder="#a30a2e" /><br>
 
-                    <label for="buttonhovactchange">Button hover active:</label><br>
-                    <input type="text" id="buttonhovactchange" name="buttonhovactchange" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br><br>
+                        <label for="buttonhovactchange">Button hover active:</label><br>
+                        <input type="text" id="buttonhovactchange" name="buttonhovactchange"
+                            placeholder="#8f0828" /><br><br>
+                    </div>
+                    <label for="element">Element: <span class="click" onclick="openTab('InfoElement')"><i
+                                class="fa-solid fa-circle-info"></i></span></label>
+                    <input type="text" id="element" name="element" placeholder="Everything" />
+                    <button class="button" onclick="loadColors()">Load colors for element</button>
                 </div>
-                <div id="lightmodecolors">
-                    <label for="backgroundmainchangel">Background main:</label><br>
-                    <input type="text" id="backgroundmainchangel" name="backgroundmainchangel"
-                        placeholder="Enter color..." class="inputcolorcheck" /><br>
-
-                    <label for="backgroundaltchangel">Background alt:</label><br>
-                    <input type="text" id="backgroundaltchangel" name="backgroundaltchangel"
-                        placeholder="Enter color..." class="inputcolorcheck" /><br>
-
-                    <label for="textmainchangel">Text color main:</label><br>
-                    <input type="text" id="textmainchangel" name="textmainchangel" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
-
-                    <label for="textaltchangel">Text color alt:</label><br>
-                    <input type="text" id="textaltchangel" name="textaltchangel" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
-
-                    <label for="buttonmainchangel">Button main:</label><br>
-                    <input type="text" id="buttonmainchangel" name="buttonmainchangel" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
-
-                    <label for="buttonhovchangel">Button hover:</label><br>
-                    <input type="text" id="buttonhovchangel" name="buttonhovchangel" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
-
-                    <label for="buttonactchangel">Button active:</label><br>
-                    <input type="text" id="buttonactchangel" name="buttonactchangel" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br>
-
-                    <label for="buttonhovactchangel">Button hover active:</label><br>
-                    <input type="text" id="buttonhovactchangel" name="buttonhovactchangel" placeholder="Enter color..."
-                        class="inputcolorcheck" /><br><br>
-                </div>
-                <br><br>
             </form><br><br>
+        </div>
+
+        <div id="InfoElement" class="tabcontent">
+            <h3>What does this mean?</h3>
+            <button class="button" onclick="openTab('ColorChanger')">Go back</button>
+            <p>The element box can be used to select a certain element, for example if you wanted to modify the Options
+                Button, you would put in "#OptionsButton" as that's the ID for the element, here is a table of elements
+                below:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Home Button</td>
+                        <td>#BotButton</td>
+                    </tr>
+                    <tr>
+                        <td>Config Button</td>
+                        <td>#ConfigurationButton</td>
+                    </tr>
+                    <tr>
+                        <td>Market Button</td>
+                        <td>#MarketButton</td>
+                    </tr>
+                    <tr>
+                        <td>Info Button</td>
+                        <td>#InformationButton</td>
+                    </tr>
+                    <tr>
+                        <td>Debug Button</td>
+                        <td>#DEBUGButton</td>
+                    </tr>
+                    <tr>
+                        <td>Options Button</td>
+                        <td>#OptionsButton</td>
+                    </tr>
+                    <tr>
+                        <td>Every button</td>
+                        <td>.button</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>For the more techinal people here, this box uses a CSS selector which means you can select multiple
+                things using classes, for example, all buttons that aren't at the side have a class called "button" so
+                you can put in ".button" and select all of them.</p>
         </div>
 
         <div id="PreviewColors" class="tabcontent">
@@ -262,20 +300,22 @@
         </div>
 
         <div id="DEBUG" class="tabcontent">
-            <h3>Debug Menu</h3>
+            <h3 onclick="activateGAMER()">Debug Menu</h3>
             <h4 onclick="document.documentElement.style.setProperty('filter', 'blur(0px)')">Chrome Version:</h4>
             <p id="debugCHROME"></p>
             <h4 onclick="document.documentElement.style.setProperty('filter', 'blur(2px)')">Electron Version:</h4>
             <p id="debugELECTRON"></p>
             <h4 onclick="document.documentElement.style.setProperty('filter', 'blur(5px)')">Node Version:</h4>
             <p id="debugNODE"></p>
-            <button class="button"
-                onclick="copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}\n    GUI version: Open Beta 4`)">Copy
+            <button class="button" onclick="copyDebug()">Copy
                 debug information</button><br><br>
             <button class="button" onclick="handleModalTest()">Test all modals</button>
             <button class="button" onclick="openTab('falseErrorTest')">Test a generic tab fail</button>
             <button class="button" onclick="openTab('falseErrorTestmarkettab')">Test an online extension tab
                 fail</button><br><br>
+            <button class="button"
+                onclick="if (document.getElementById('changeColorsDev').style.display === 'none') { document.getElementById('changeColorsDev').style.display = 'block' } else { document.getElementById('changeColorsDev').style.display = 'none' }">Toggle
+                Color Changer</button>
         </div>
 
         <div id="ErrorFound" class="tabcontent">
@@ -286,8 +326,9 @@
         </div>
 
         <div class="tabBottom">
-            <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')"><i
-                    class="fa-solid fa-gear"></i></button>
+            <button id="OptionsButton" class="tablinks" onclick="openTab('Options', 'OptionsButton')">
+                <i class="fa-solid fa-gear"></i>
+            </button>
         </div>
 
         <script src="./renderer.js" type="module"></script>
@@ -301,10 +342,10 @@
     </div>
     <div id="tiles"></div>
     <div id="darkness"></div>
-    <div id="savingModal" class="modal modal2s">
+    <div id="savingModal" class="modal modal3s">
 
-        <div class="modal-content2s">
-            <div class="disappear2s"></div>
+        <div class="modal-content3s modal-content">
+            <div class="disappear3s"></div>
             <p>Saving settings...</p>
             <button class="button close-button">𐌢</button>
         </div>
@@ -313,7 +354,7 @@
 
     <div id="savedModal" class="modal modal5s">
 
-        <div class="modal-content5s">
+        <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Successfully saved settings...</p>
             <button class="button close-button">𐌢</button>
@@ -323,7 +364,7 @@
 
     <div id="saveFailModal" class="modal modal5s">
 
-        <div class="modal-content5s">
+        <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Something went wrong while saving...</p>
             <button class="button close-button">𐌢</button>
@@ -331,10 +372,10 @@
 
     </div>
 
-    <div id="downloadingModal" class="modal modal2s">
+    <div id="downloadingModal" class="modal modal3s">
 
-        <div class="modal-content2s">
-            <div class="disappear2s"></div>
+        <div class="modal-content3s modal-content">
+            <div class="disappear3s"></div>
             <p>Downloading extension...</p>
             <button class="button close-button">𐌢</button>
         </div>
@@ -343,7 +384,7 @@
 
     <div id="downloadedModal" class="modal modal5s">
 
-        <div class="modal-content5s">
+        <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Successfully downloaded extension...</p>
             <button class="button close-button">𐌢</button>
@@ -353,7 +394,7 @@
 
     <div id="downloadFailModal" class="modal modal5s">
 
-        <div class="modal-content5s">
+        <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Something went wrong while downloading...</p>
             <button class="button close-button">𐌢</button>
@@ -361,10 +402,10 @@
 
     </div>
 
-    <div id="copiedModal" class="modal modal2s">
+    <div id="copiedModal" class="modal modal3s">
 
-        <div class="modal-content2s">
-            <div class="disappear2s"></div>
+        <div class="modal-content3s modal-content">
+            <div class="disappear3s"></div>
             <p>Copied to clipboard...</p>
             <button class="button close-button">𐌢</button>
         </div>

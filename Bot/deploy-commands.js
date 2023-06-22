@@ -10,7 +10,7 @@ async function deploy(guilds) {
         var commandFiles = null
         try {
             commandFiles = await fs.promises.readdir('./commands/')
-        } catch(err) {
+        } catch (err) {
             commandFiles = []
         }
         var extensions = null
@@ -36,7 +36,7 @@ async function deploy(guilds) {
                             var command = require(`../Extensions/${extension}/triggers/commands/${file}`)
                             try {
                                 commands.push(command.data.toJSON())
-                            } catch(err) {
+                            } catch (err) {
                                 commands.push(command.data)
                             }
                         }

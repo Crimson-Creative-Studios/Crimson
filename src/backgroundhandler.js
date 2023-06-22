@@ -36,6 +36,8 @@ window.addEventListener("load", (event) => {
 
     createGrid()
 
+    window.createGrid = createGrid
+
     window.onresize = () => createGrid()
 })
 

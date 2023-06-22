@@ -5,6 +5,7 @@ var currentMode = null
 var custom = false
 
 async function openTab(tabName, override = null, option = "") {
+    loadColors()
     if (tabName.startsWith("falseErrorTest")) {
         tabcontent = document.getElementsByClassName("tabcontent")
         for (i = 0; i < tabcontent.length; i++) {
@@ -138,38 +139,6 @@ async function openTab(tabName, override = null, option = "") {
         crimAPI.rcpChange([presence, key])
     }
 }
-
-async function toggleDarkMode() {
-    try {
-        currentMode = await window.darkMode.toggle()
-        document.getElementById('theme-source').innerHTML = currentMode ? 'Dark' : 'Light'
-    }
-    catch (err) {
-        console.log(err)
-    }
-    handleChange()
-    await new Promise((resolve, reject) => setTimeout(resolve, 100))
-}
-
-async function sysDarkMode() {
-    try {
-        currentMode = await window.darkMode.system()
-        document.getElementById('theme-source').innerHTML = 'System'
-    }
-    catch (err) {
-        console.log(err)
-    }
-    handleChange()
-    await new Promise((resolve, reject) => setTimeout(resolve, 100))
-}
-
-async function toggleVis(id) {
-    document.getElementById(id).classList.toggle("hidden")
-}
-
-darkMode.handleDarkChange(async (event, arg) => {
-    toggleDarkMode()
-})
 
 function handleChange() {
     try {

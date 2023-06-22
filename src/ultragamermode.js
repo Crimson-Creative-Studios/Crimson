@@ -45,6 +45,8 @@ function darkenHexColor(hexColor, amount) {
     return darkenedHexColor
 }
 
+window.darkenHexColor = darkenHexColor
+
 const rainbowColors = generateRainbowColors(75)
 var rainbowCurrent = 0
 
@@ -56,10 +58,13 @@ function activateGAMER() {
         window.active = true
         window.gamer = window.setInterval(() => {
             const index = rainbowCurrent % rainbowColors.length
-            document.getElementById("buttonmainchange").value = rainbowColors[index]
-            document.getElementById("buttonhovchange").value = darkenHexColor(rainbowColors[index], 30)
-            document.getElementById("buttonactchange").value = darkenHexColor(rainbowColors[index], 60)
-            document.getElementById("buttonhovactchange").value = darkenHexColor(rainbowColors[index], 90)
+            document.getElementById("element").value = ""
+            document.getElementById("backgroundmainchange").value = rainbowColors[index]
+            document.getElementById("backgroundaltchange").value = darkenHexColor(rainbowColors[index], 5)
+            document.getElementById("buttonmainchange").value = darkenHexColor(rainbowColors[index], 30)
+            document.getElementById("buttonhovchange").value = darkenHexColor(rainbowColors[index], 60)
+            document.getElementById("buttonactchange").value = darkenHexColor(rainbowColors[index], 90)
+            document.getElementById("buttonhovactchange").value = darkenHexColor(rainbowColors[index], 120)
             loadColors()
             rainbowCurrent++
         }, 75)

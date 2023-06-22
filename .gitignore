@@ -1,19 +1,16 @@
-*.env
 Extensions
 node_modules
 .vscode
-build
 dist
 .git
 .idea
 app.spec
-*.build
 config.json
 package.json
 package-lock.json
-CrimsonGUI.cmd
-install.cmd
 *.jar
 dc.js
-developerinstall.cmd
-themepreload.js
+DevTools
+Dev Edition.js
+guicfg.json
+Test Theme*

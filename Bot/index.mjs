@@ -17,11 +17,7 @@ const {
     Collection,
     Events,
     GatewayIntentBits,
-    EmbedBuilder,
     ActivityType,
-    inlineCode,
-    ActionRowBuilder,
-    StringSelectMenuBuilder,
 } = require("discord.js")
 const net = require('net')
 const config = require("../config.json")
@@ -38,15 +34,6 @@ const { Player } = require('discord-player')
 
 //? Tag command list for ez tag commands
 const tagsList = []
-
-//*
-//* Standard functions
-//*
-
-//? Version file, for CrimsonGUI
-fs.writeFile("version.txt", "0.7.5", (err) => {
-    if (err) console.logger(err, "error")
-})
 
 //*
 //* Bot set-up
@@ -152,7 +139,7 @@ function resolvePath(extension, file) {
 var commandFiles = null
 try {
     commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".js"))
-} catch(err) {
+} catch (err) {
     commandFiles = []
 }
 var extensions = null
@@ -245,8 +232,7 @@ function sendDataToExtension(extension, data) {
         var commandFilesExtension = null
         var workflows = null
         try {
-            commandFilesExtension = fs
-                .readdirSync(`../Extensions/${extension}/triggers/commands/`)
+            commandFilesExtension = fs.readdirSync(`../Extensions/${extension}/triggers/commands/`)
                 .filter((file) => file.endsWith(".js"))
         } catch (err) {
             commandFilesExtension = []
@@ -264,7 +250,7 @@ function sendDataToExtension(extension, data) {
             if ("execute" in command) {
                 try {
                     client.commands.set(command.data.name, command)
-                } catch(err) {
+                } catch (err) {
                     client.commands.set(command.name, command)
                 }
             } else {

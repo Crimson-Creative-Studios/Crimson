@@ -14,25 +14,37 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
+function toggleVis(thing) {
+    document.getElementById(thing).classList.toggle("hidden")
+}
+
+window.toggleVis = toggleVis
+
 async function handleModalTest() {
     for (const modal of document.querySelectorAll(".modal5s")) {
         handleNotification(modal.id, 5000)
         await new Promise(resolve => setTimeout(resolve, 5100))
     }
 
-    for (const modal of document.querySelectorAll(".modal2s")) {
-        handleNotification(modal.id, 2000)
-        await new Promise(resolve => setTimeout(resolve, 2100))
+    for (const modal of document.querySelectorAll(".modal3s")) {
+        handleNotification(modal.id, 3000)
+        await new Promise(resolve => setTimeout(resolve, 3100))
     }
 }
 window.handleModalTest = handleModalTest
 
 function copy(thing) {
     navigator.clipboard.writeText(thing)
-    handleNotification('copiedModal', 2000)
+    handleNotification('copiedModal', 3000)
 }
 
 window.copy = copy
+
+function copyDebug() {
+    copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}\n    GUI version: ${versions.crimson()}\n    UUID: ${crimAPI.uuid()}`)
+}
+
+window.copyDebug = copyDebug
 
 ipc.handleAdd((event, arg) => {
     var id = arg[0]
@@ -221,7 +233,7 @@ async function handleExtensionData(key, data) {
                             var namething = name
                             exsitent.push(namething)
                         }
-                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
+                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img class="eximgbtn" style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
                     }
                     reader.readAsArrayBuffer(blob)
                 })
