@@ -411,7 +411,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
             console.logger(error, "error")
             await interaction.reply({
                 content:
-                    "Uh oh, something went wrong! See the console for more information.",
+                    "Uh oh, something went wrong! Contact the owner of the bot.",
                 ephemeral: true,
             })
         }

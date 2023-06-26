@@ -4,6 +4,14 @@ var currentOption = null
 var currentMode = null
 var custom = false
 
+function attemptColorLoad() {
+    try {
+        loadColors(JSON.parse(currentOption))
+    } catch(err) {
+        loadColors()
+    }
+}
+
 async function openTab(tabName, override = null, option = "") {
     loadColors()
     if (tabName.startsWith("falseErrorTest")) {
@@ -39,7 +47,7 @@ async function openTab(tabName, override = null, option = "") {
         document.getElementById("ErrorFound").classList.add("showentab")
     } else {
         if (currentTab === tabName) {
-            handleChange()
+            attemptColorLoad()
             return
         }
         currentTab = tabName
@@ -47,7 +55,7 @@ async function openTab(tabName, override = null, option = "") {
         currentOption = option
         var i, tabcontent, tablinks, presence
         var key = 'bigimg'
-        handleChange()
+        attemptColorLoad()
 
         try {
             if (!document.getElementById(override).classList.contains("active")) {
@@ -139,16 +147,3 @@ async function openTab(tabName, override = null, option = "") {
         crimAPI.rcpChange([presence, key])
     }
 }
-
-function handleChange() {
-    try {
-        var options = JSON.parse(currentOption)
-        loadColors(options)
-    } catch (err) {
-        loadColors()
-    }
-}
-
-handleChange()
-
-window.matchMedia("(prefers-color-scheme: dark)").addListener(handleChange)
