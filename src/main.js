@@ -428,7 +428,8 @@ app.on('will-quit', () => {
     globalShortcut.unregisterAll()
 })
 
-ipcMain.handle('OpenConsole', (event, args) => {
+ipcMain.handle('OpenConsole', async (event, args) => {
+    delete require.cache[require.resolve('./guicfg.json')]
     consolewin = consoleWindow()
 
     consolewin.on("closed", () => {

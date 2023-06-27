@@ -9,13 +9,6 @@ const {onlineVersion, uuid, themes} = ipcRenderer.sendSync("infoGrab")
 const cfg = requirePro('../config.json')
 const version = ipcRenderer.sendSync("getFile", "version.txt")
 
-contextBridge.exposeInMainWorld('darkMode', {
-    toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
-    system: () => ipcRenderer.invoke('dark-mode:system'),
-    get: () => ipcRenderer.invoke('dark-mode:get'),
-    handleDarkChange: (callback) => ipcRenderer.on('dark-mode:change', callback)
-})
-
 contextBridge.exposeInMainWorld('crimAPI', {
     rcpChange: (args) => {
         status[0] = args[0]
@@ -39,7 +32,8 @@ contextBridge.exposeInMainWorld('crimAPI', {
     handleNotificationMain: (callback) => ipcRenderer.on("notificationSend", callback),
     guicfg: () => requirePro("./guicfg.json"),
     uuid: () => uuid,
-    themes: () => themes
+    themes: () => themes,
+    handleThemeData: (callback) => ipcRenderer.on('grabThemeData', callback),
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);

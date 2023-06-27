@@ -140,5 +140,7 @@ function saveGUISettings() {
         override: document.getElementById("extensionThemeOverride").checked
     }
     handleNotification("savingModal", 3000)
-    crimAPI.jsonRequest(["setJSONNotStyle", "guicfg.json", JSON.stringify(options)])
+    try {
+        crimAPI.jsonRequest(["setJSONNotStyle", "guicfg.json", JSON.stringify(options)])
+    } catch(err) {}
 }
