@@ -30,7 +30,7 @@ function generateUUID() {
 
 const uuid = generateUUID()
 
-var globalBot, consolewin
+var globalBot, consolewin, win
 var isMax = false
 
 const downloadAndUnzip = async (zipUrl, unzipPath) => {
@@ -173,7 +173,7 @@ function createWindow() {
     ipcMain.on('getDir', (event, arg) => {
         try {
             event.returnValue = fs.readdirSync(arg)
-        } catch(err) {
+        } catch (err) {
             event.returnValue = []
         }
     })
@@ -341,24 +341,6 @@ function createWindow() {
         client.updatePresence(status)
     })
 
-    ipcMain.handle('dark-mode:toggle', () => {
-        if (nativeTheme.shouldUseDarkColors) {
-            nativeTheme.themeSource = 'light'
-        } else {
-            nativeTheme.themeSource = 'dark'
-        }
-        return nativeTheme.shouldUseDarkColors
-    })
-
-    ipcMain.handle('dark-mode:get', () => {
-        return nativeTheme.shouldUseDarkColors
-    })
-
-    ipcMain.handle('dark-mode:system', () => {
-        nativeTheme.themeSource = 'system'
-        return nativeTheme.shouldUseDarkColors
-    })
-
     ipcMain.on('message', (event, data) => {
         console.log('Received message:', data)
     })
@@ -380,7 +362,7 @@ app.whenReady().then(async () => {
     globalShortcut.register('CommandOrControl+D+M', () => {
         win.webContents.send("dark-mode:change", null)
     })
-    var win = createWindow()
+    win = createWindow()
 
     const server = net.createServer(function (socket) {
         socket.on('data', (message) => {
@@ -428,9 +410,22 @@ app.on('will-quit', () => {
     globalShortcut.unregisterAll()
 })
 
+ipcMain.handle('sendThemeData', (event, arg) => {
+    try {
+        consolewin.webContents.send("winguicfg", arg)
+        consolewin.webContents.on('did-finish-load', function () {
+            consolewin.webContents.send("winguicfg", arg)
+        })
+    } catch (err) { }
+})
+
 ipcMain.handle('OpenConsole', async (event, args) => {
-    delete require.cache[require.resolve('./guicfg.json')]
     consolewin = consoleWindow()
+    win.webContents.send("grabThemeData", null)
+
+    consolewin.webContents.on('did-start-loading', async () => {
+        win.webContents.send("grabThemeData", null)
+    })
 
     consolewin.on("closed", () => {
         try {

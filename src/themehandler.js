@@ -1,5 +1,6 @@
 var themeNow = ""
 var animations = []
+var guicfg = crimAPI.guicfg()
 
 function applyColor(el, options) {
     if (options && !document.getElementById("extensionThemeOverride").checked) {
@@ -109,18 +110,26 @@ function addTheme(name) {
     script.setAttribute("src", "./themes/"+name)
     script.onload = () => {
         themeNow = name
+        var guioptions = {
+            theme: themeNow,
+            darkness: document.getElementById("darknessControl").value,
+            override: document.getElementById("extensionThemeOverride").checked
+        }
+        try {
+            crimAPI.sendThemeData(guioptions)
+        } catch(err) {}
     }
     document.head.appendChild(script)
 }
 
 window.onload = () => {
-    if (crimAPI.guicfg().theme) {
-        addTheme(crimAPI.guicfg().theme)
+    if (guicfg.theme) {
+        addTheme(guicfg.theme)
     }
-    if (crimAPI.guicfg().darkness) {
-        document.documentElement.style.setProperty('--darkness', String(Number(crimAPI.guicfg().darkness) / 1000))
+    if (guicfg.darkness) {
+        document.documentElement.style.setProperty('--darkness', String(Number(guicfg.darkness) / 1000))
     }
-    if (crimAPI.guicfg().override) {
+    if (guicfg.override) {
         document.getElementById("extensionThemeOverride").checked = true
     }
 

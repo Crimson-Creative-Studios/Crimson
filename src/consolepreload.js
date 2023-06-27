@@ -1,12 +1,13 @@
 const { contextBridge, ipcRenderer } = require('electron')
 const {onlineVersion, uuid, themes} = ipcRenderer.sendSync("infoGrab")
-
-function requirePro(thing) {
-    return ipcRenderer.sendSync("require", thing)
+var guicfg = {
+    theme: "",
+    darkness: "0",
+    override: false
 }
 
 contextBridge.exposeInMainWorld('crimAPI', {
-    guicfg: () => requirePro("./guicfg.json"),
+    guicfg: () => guicfg,
     BotStart: (arg) => ipcRenderer.invoke('BotStart', arg),
     BotStop: (arg) => ipcRenderer.invoke('BotStop', arg),
     BotRC: (arg) => ipcRenderer.invoke('BotRC', arg),
@@ -19,5 +20,5 @@ contextBridge.exposeInMainWorld('crimAPI', {
     winrestart: () => ipcRenderer.send('wincontrol', "conrestart"),
     handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback),
     themes: () => themes,
-    themeHandle: (callback) => ipcRenderer.on("themeHandle", callback),
+    handleThemeData: (callback) => ipcRenderer.on('winguicfg', callback)
 })
