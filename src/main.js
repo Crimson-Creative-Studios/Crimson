@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut } = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 const { spawn } = require('child_process')
 const client = require('discord-rich-presence')('1056199295168159814')
 client.updatePresence({
