@@ -357,9 +357,6 @@ function evalInContext(js, context) {
 }
 
 app.whenReady().then(async () => {
-    globalShortcut.register('CommandOrControl+D+M', () => {
-        win.webContents.send("dark-mode:change", null)
-    })
     win = createWindow()
 
     const server = net.createServer((socket) => {
