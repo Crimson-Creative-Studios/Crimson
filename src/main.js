@@ -351,7 +351,7 @@ function createWindow() {
 }
 
 function evalInContext(js, context) {
-    return () => {
+    return function() {
         return eval(js)
     }.call(context)
 }
