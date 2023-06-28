@@ -11,6 +11,7 @@
     --buttonhov: #b80b33;
     --buttonact: #a30a2e;
     --buttonacthov: #8f0828;
+    --cnslbg: #202225;
     user-select: none;
 }
 
@@ -289,7 +290,7 @@ img {
 
 .console {
     margin-top: 5px;
-    background: #202225;
+    background: var(--cnslbg);
     border-radius: 15px;
     display: block;
     width: 100%;
@@ -298,20 +299,18 @@ img {
     min-height: 94.5%;
     overflow-y: scroll;
     pointer-events: auto;
+    transition: background-color 0.3s, border 0.3s;
 
     h4,
     p {
         margin-left: 10px;
+        color: inherit;
     }
 }
 
 .typeoutput {
     font-size: smaller;
     user-select: text;
-}
-
-.white {
-    color: #fff;
 }
 
 .modal {

@@ -105,8 +105,8 @@
         <button class="startBot button" onclick="checkRC()" style="display: inline-block">Refresh Commands</button>
         <button class="startBot button" onclick="resetCNSL()" style="display: inline-block">Clear Output</button>
         <div class="console" id="cnsl">
-            <h4 class="white">Output Window</h4>
-            <p class="typeoutput white"></p>
+            <h4>Output Window</h4>
+            <p class="typeoutput"></p>
         </div>
         <script>
             crimAPI.handleThemeData((event, arg) => {
@@ -146,12 +146,12 @@
             }
 
             function resetCNSL() {
-                document.getElementById("cnsl").innerHTML = '<h4 class="white">Output Window</h4><p class="typeoutput white"></p>'
+                document.getElementById("cnsl").innerHTML = '<h4>Output Window</h4><p class="typeoutput"></p>'
             }
 
             function checkStart() {
                 if (online === true) {
-                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is online, cannot start.</h4><p class="typeoutput white"></p>')
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is online, cannot start.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {
                     crimAPI.BotStart()
@@ -161,7 +161,7 @@
 
             function checkEnd() {
                 if (online === false) {
-                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot stop.</h4><p class="typeoutput white"></p>')
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is offline, cannot stop.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {
                     crimAPI.BotStop()
@@ -171,7 +171,7 @@
 
             function checkRC() {
                 if (online === false) {
-                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot refresh.</h4><p class="typeoutput white"></p>')
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is offline, cannot refresh.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {
                     crimAPI.BotRC()
@@ -186,7 +186,7 @@
             })
 
             crimAPI.term((event, arg) => {
-                document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot Process Stopped</h4><p class="typeoutput white"></p>')
+                document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot Process Stopped</h4><p class="typeoutput"></p>')
                 scrollDown()
                 online = false
             })

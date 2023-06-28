@@ -1,5 +1,4 @@
 clearColor()
-
 document.getElementById("element").value = ""
 document.getElementById("backgroundmainchange").value = "#000000"
 document.getElementById("backgroundaltchange").value = "#000000"
@@ -9,4 +8,5 @@ document.getElementById("buttonmainchange").value = ""
 document.getElementById("buttonhovchange").value = ""
 document.getElementById("buttonactchange").value = ""
 document.getElementById("buttonhovactchange").value = ""
+document.documentElement.style.setProperty("--cnslbg", "var(--background)")
 loadColors()

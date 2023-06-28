@@ -9,13 +9,13 @@ client.updatePresence({
 const path = require('path')
 const fs = require('fs')
 const axios = require('axios')
-const JSZip = require('jszip')
 const net = require('net')
+const { downloadAndUnzip } = require("../sharedResources/downloadExtension")
 
 function generateUUID() {
     var d = new Date().getTime()
     var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
         var r = Math.random() * 16
         if (d > 0) {
             r = (d + r) % 16 | 0
@@ -32,17 +32,6 @@ const uuid = generateUUID()
 
 var globalBot, consolewin, win
 var isMax = false
-
-const downloadAndUnzip = async (zipUrl, unzipPath) => {
-    const response = await axios.get(zipUrl, { responseType: 'arraybuffer' })
-    const zip = await JSZip.loadAsync(response.data)
-    await Promise.all(Object.keys(zip.files).map(async (fileName) => {
-        const content = await zip.files[fileName].async('nodebuffer')
-        const filePath = path.join(unzipPath, fileName)
-        fs.mkdirSync(path.dirname(filePath), { recursive: true })
-        fs.writeFileSync(filePath, content)
-    }))
-}
 
 async function getValueJSON(file, value) {
     var json = null
@@ -362,7 +351,7 @@ function createWindow() {
 }
 
 function evalInContext(js, context) {
-    return function () {
+    return () => {
         return eval(js)
     }.call(context)
 }
@@ -373,7 +362,7 @@ app.whenReady().then(async () => {
     })
     win = createWindow()
 
-    const server = net.createServer(function (socket) {
+    const server = net.createServer((socket) => {
         socket.on('data', (message) => {
             const messagestr = message.toString()
             const msgs = messagestr.split("ܛ")
@@ -388,7 +377,7 @@ app.whenReady().then(async () => {
         })
     })
     server.listen(2845, '127.0.0.1')
-    app.on('activate', function () {
+    app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow()
         }
@@ -405,13 +394,13 @@ app.whenReady().then(async () => {
     })
 })
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
 })
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', (err) => {
     console.log(err)
 })
 
@@ -422,7 +411,7 @@ app.on('will-quit', () => {
 ipcMain.handle('sendThemeData', (event, arg) => {
     try {
         consolewin.webContents.send("winguicfg", arg)
-        consolewin.webContents.on('did-finish-load', function () {
+        consolewin.webContents.on('did-finish-load', () => {
             consolewin.webContents.send("winguicfg", arg)
         })
     } catch (err) { }
@@ -477,7 +466,7 @@ ipcMain.handle('BotRC', (event, arg) => {
     globalBot.stdin.write(JSON.stringify({ type: 'RC' }) + '\n')
 })
 
-process.on('exit', function () {
+process.on('exit', () => {
     try {
         globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
     } catch (err) { }

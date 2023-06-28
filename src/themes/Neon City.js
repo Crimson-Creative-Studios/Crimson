@@ -8,4 +8,5 @@ document.getElementById("buttonmainchange").value = "#00a3a3"
 document.getElementById("buttonhovchange").value = "#008c8c"
 document.getElementById("buttonactchange").value = "#007a7a"
 document.getElementById("buttonhovactchange").value = "#006363"
+document.documentElement.style.setProperty("--cnslbg", "var(--button)")
 loadColors()
