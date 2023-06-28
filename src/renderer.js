@@ -1,12 +1,12 @@
 window.gradon = false
 
-document.getElementById('debugCHROME').innerText = versions.chrome()
+document.getElementById('debugCHROME').innerText = crimAPI.versions.chrome()
 
-document.getElementById('debugELECTRON').innerText = versions.electron()
+document.getElementById('debugELECTRON').innerText = crimAPI.versions.electron()
 
-document.getElementById('debugNODE').innerText = versions.node()
+document.getElementById('debugNODE').innerText = crimAPI.versions.node()
 
-document.getElementById('guiver').innerText = "Version - " + versions.crimson()
+document.getElementById('guiver').innerText = "Version - " + crimAPI.versions.crimson()
 
 function toggleVis(thing) {
     document.getElementById(thing).classList.toggle("hidden")
@@ -35,12 +35,17 @@ function copy(thing) {
 window.copy = copy
 
 function copyDebug() {
-    copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}\n    GUI version: ${versions.crimson()}\n    UUID: ${crimAPI.uuid()}`)
+    copy(`Debug information:
+    Chrome version: ${crimAPI.versions.chrome()}
+    Electron version: ${crimAPI.versions.electron()}
+    Node version: ${crimAPI.versions.node()}
+    GUI version: ${crimAPI.versions.crimson()}
+    UUID: ${crimAPI.uuid()}`)
 }
 
 window.copyDebug = copyDebug
 
-ipc.handleAdd((event, arg) => {
+crimAPI.handleAdd((event, arg) => {
     var id = arg[0]
     var content = arg[1]
     document.getElementById(id).insertAdjacentHTML("beforeend", content)
@@ -133,17 +138,17 @@ crimAPI.handleNotificationMain((event, arg) => {
 })
 
 const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2", "Version 1", "Version 1.1"]
-if (!versionHistory.includes(versions.crimson())) {
-    document.getElementById('versionut').innerHTML = `Invalid version found! Local version ${versions.crimson()} is not known. You may want to update to the current latest version (${versions.crimOnline()})`
+if (!versionHistory.includes(crimAPI.versions.crimson())) {
+    document.getElementById('versionut').innerHTML = `Invalid version found! Local version ${crimAPI.versions.crimson()} is not known. You may want to update to the current latest version (${crimAPIversions.crimOnline()})`
 } else {
-    if (versionHistory.includes(versions.crimOnline().replace("\n", ""))) {
-        if (versionHistory.indexOf(versions.crimOnline().replace("\n", "")) <= versionHistory.indexOf(versions.crimson())) {
+    if (versionHistory.includes(crimAPI.versions.crimOnline().replace("\n", ""))) {
+        if (versionHistory.indexOf(crimAPI.versions.crimOnline().replace("\n", "")) <= versionHistory.indexOf(crimAPI.versions.crimson())) {
             document.getElementById('versionut').innerHTML = "No new versions found."
         } else {
-            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${versions.crimOnline()}`
+            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${crimAPI.versions.crimson()}<br>Found version: ${crimAPI.versions.crimOnline()}`
         }
     } else {
-        document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${versions.crimOnline()}`
+        document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${crimAPI.versions.crimson()}<br>Found version: ${crimAPI.versions.crimOnline()}`
     }
 }
 

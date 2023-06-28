@@ -35,26 +35,15 @@ contextBridge.exposeInMainWorld('crimAPI', {
     themes: () => themes,
     handleThemeData: (callback) => ipcRenderer.on('grabThemeData', callback),
     sendThemeData: (arg) => ipcRenderer.invoke('sendThemeData', arg),
-    show: () => ipcRenderer.invoke('showWin', 'main')
-})
-
-contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);
-
-contextBridge.exposeInMainWorld('ipc', {
+    show: () => ipcRenderer.invoke('showWin', 'main'),
     handleAdd: (callback) => ipcRenderer.on('add', callback),
-    debugMode: (callback) => ipcRenderer.on('--DEBUG--', callback)
-})
-
-contextBridge.exposeInMainWorld('versions', {
-    node: () => process.versions.node,
-    chrome: () => process.versions.chrome,
-    electron: () => process.versions.electron,
-    crimson: () => version,
-    crimOnline: () => onlineVersion
-})
-
-contextBridge.exposeInMainWorld('theme', {
-    current: process.versions.mode,
+    versions: {
+        node: () => process.versions.node,
+        chrome: () => process.versions.chrome,
+        electron: () => process.versions.electron,
+        crimson: () => version,
+        crimOnline: () => onlineVersion
+    },
 })
 
 var mainAdditions = []
