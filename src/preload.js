@@ -34,7 +34,8 @@ contextBridge.exposeInMainWorld('crimAPI', {
     uuid: () => uuid,
     themes: () => themes,
     handleThemeData: (callback) => ipcRenderer.on('grabThemeData', callback),
-    sendThemeData: (arg) => ipcRenderer.invoke('sendThemeData', arg)
+    sendThemeData: (arg) => ipcRenderer.invoke('sendThemeData', arg),
+    show: () => ipcRenderer.invoke('showWin', 'main')
 })
 
 contextBridge.exposeInMainWorld('ipcRenderer', ipcRenderer);

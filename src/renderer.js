@@ -8,12 +8,6 @@ document.getElementById('debugNODE').innerText = versions.node()
 
 document.getElementById('guiver').innerText = "Version - " + versions.crimson()
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === "Tab") {
-        e.preventDefault()
-    }
-})
-
 function toggleVis(thing) {
     document.getElementById(thing).classList.toggle("hidden")
 }

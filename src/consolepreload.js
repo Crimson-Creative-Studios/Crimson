@@ -20,5 +20,6 @@ contextBridge.exposeInMainWorld('crimAPI', {
     winrestart: () => ipcRenderer.send('wincontrol', "conrestart"),
     handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback),
     themes: () => themes,
-    handleThemeData: (callback) => ipcRenderer.on('winguicfg', callback)
+    handleThemeData: (callback) => ipcRenderer.on('winguicfg', callback),
+    show: () => ipcRenderer.invoke('showWin', 'cnsl')
 })

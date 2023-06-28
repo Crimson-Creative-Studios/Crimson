@@ -87,6 +87,15 @@ function clearColor() {
             thing.setAttribute("style", "border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;")
         }
     }
+
+    var guioptions = {
+        theme: themeNow,
+        darkness: document.getElementById("darknessControl").value,
+        override: document.getElementById("extensionThemeOverride").checked
+    }
+    try {
+        crimAPI.sendThemeData(guioptions)
+    } catch(err) {}
 }
 
 window.loadColors = loadColors
@@ -140,6 +149,8 @@ window.onload = () => {
         button.innerHTML = theme.slice(0, -3)
         document.getElementById("themesBTNHolder").insertAdjacentHTML("beforeend", button.outerHTML)
     }
+
+    crimAPI.show()
 }
 
 function saveGUISettings() {

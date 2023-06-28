@@ -110,6 +110,7 @@ function consoleWindow() {
             preload: path.join(__dirname, 'consolepreload.js'),
         },
         show: false,
+        backgroundColor: "#2f3136"
     })
     console.once('ready-to-show', () => {
         console.show()
@@ -132,23 +133,19 @@ function consoleWindow() {
 }
 
 function createWindow() {
-    if (nativeTheme.shouldUseDarkColors) {
-        var color = '#2f3136'
-    } else {
-        var color = '#FFFFFF'
-    }
     const win = new BrowserWindow({
         width: 800,
         height: 600,
         minWidth: 800,
         minHeight: 450,
         frame: false,
+        show: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             devTools: true
         },
         icon: __dirname + '/guiassets/crimsonsimplelogolarge.ico',
-        backgroundColor: color,
+        backgroundColor: "#2f3136",
     })
 
     win.webContents.on('did-start-loading', async () => {
@@ -167,6 +164,18 @@ function createWindow() {
         })
         if (isMax) {
             win.webContents.send("wincontroler", "max")
+        }
+    })
+
+    ipcMain.handle('showWin', (event, arg) => {
+        if (arg === "main") {
+            try {
+                win.show()
+            } catch(err) {}
+        } else if (arg === "cnsl") {
+            try {
+                consolewin.show()
+            } catch(err) {}
         }
     })
 
