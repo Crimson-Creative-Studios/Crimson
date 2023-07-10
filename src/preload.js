@@ -8,6 +8,7 @@ function requirePro(thing) {
 const {onlineVersion, uuid, themes} = ipcRenderer.sendSync("infoGrab")
 const cfg = requirePro('../config.json')
 const version = ipcRenderer.sendSync("getFile", "version.txt")
+const channelData = ipcRenderer.sendSync("channelCollect", null)
 
 contextBridge.exposeInMainWorld('crimAPI', {
     rcpChange: (args) => {
@@ -44,6 +45,7 @@ contextBridge.exposeInMainWorld('crimAPI', {
         crimson: () => version,
         crimOnline: () => onlineVersion
     },
+    channelData: () => channelData
 })
 
 var mainAdditions = []
@@ -99,7 +101,7 @@ extensionFiles.forEach((extension) => {
         try {
             for (const thing of Object.keys(uicfg)) {
                 var information = uicfg[thing]
-                if (thing !== "$LIBRARYMETA" && thing !== "$BUTTONS" && thing !== "$UI") {
+                if (thing !== "$LIBRARYMETA" && thing !== "$BUTTONS" && thing !== "$UI" && !thing.startsWith("CHNLSEL-")) {
                     userCFGS[information.uuid] = {
                         item: information.item,
                         file: information.file,
@@ -138,6 +140,36 @@ extensionFiles.forEach((extension) => {
                         buttontext: doctext,
                         buttonlink: doclink
                     }
+                } else if (thing.startsWith("CHNLSEL-")) {
+                    userCFGS[information.uuid] = {
+                        item: information.item,
+                        file: information.file,
+                        extension: extension
+                    }
+                    /*arr.push(`<selectmenu class="custom-select">
+                    <div slot="button">
+                      <span class="label">${information.metaname}</span>
+                      <span behavior="selected-value" slot="selected-value"></span>
+                      <button behavior="button"></button>
+                    </div>
+                    <div slot="listbox">
+                      <div popup behavior="listbox">
+                        <div class="section">
+                          <h3>Flowers</h3>
+                          <option>Rose</option>
+                          <option>Lily</option>
+                          <option>Orchid</option>
+                          <option>Tulip</option>
+                        </div>
+                        <div class="section">
+                          <h3>Trees</h3>
+                          <option>Weeping willow</option>
+                          <option>Dragon tree</option>
+                          <option>Giant sequoia</option>
+                        </div>
+                      </div>
+                    </div>
+                  </selectmenu><br><br>`)*/
                 }
             }
         } catch (err) { errs.push(err) }

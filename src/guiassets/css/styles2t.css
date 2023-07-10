@@ -798,5 +798,33 @@ td {
     transform: rotate(0.5turn);
   }
 }
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  opacity: 0;
+  position: absolute;
+  background-color: var(--backgroundalt);
+  min-width: 160px;
+  z-index: 1;
+  transition: opacity 0.1s;
+}
+
+.dropdown-content a {
+  color: var(--color);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.show {
+  opacity: 1;
+}
 
 /*# sourceMappingURL=styles2t.css.map */

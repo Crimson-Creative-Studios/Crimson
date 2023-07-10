@@ -125,6 +125,7 @@ const server = net.createServer((socket) => {
 
 server.on('error', (err) => {
     console.logger(`IPC Error for Extensions: ${err}`, "error")
+    console.logger("If the error message is 'Error: listen EADDRINUSE: address already in use :::3000' then that means there is another application using the port, this could be another process of Crimson!", "hint")
 })
 
 server.listen(3000, () => { })
@@ -191,6 +192,7 @@ extensions.forEach((extension) => {
                 __dirname,
                 extension,
                 extensions,
+                guilds: client.guilds.cache,
                 resolvePath: (thing, ext = extension) =>
                     resolvePath(ext, thing),
             }

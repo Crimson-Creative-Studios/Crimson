@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
+const { Client, GatewayIntentBits, Events, TextChannel } = require("discord.js")
 const { spawn } = require('child_process')
 const client = require('discord-rich-presence')('1056199295168159814')
 client.updatePresence({
@@ -160,11 +161,11 @@ function createWindow() {
         if (arg === "main") {
             try {
                 win.show()
-            } catch(err) {}
+            } catch (err) { }
         } else if (arg === "cnsl") {
             try {
                 consolewin.show()
-            } catch(err) {}
+            } catch (err) { }
         }
     })
 
@@ -174,6 +175,47 @@ function createWindow() {
         } catch (err) {
             event.returnValue = []
         }
+    })
+
+    ipcMain.on('channelCollect', (event, arg) => {
+        const bot = new Client({
+            intents: [
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.MessageContent,
+                GatewayIntentBits.GuildMembers,
+                GatewayIntentBits.GuildVoiceStates
+            ],
+        })
+        bot.once(Events.ClientReady, async (c) => {
+            bot.user.setActivity(`for channels`, { type: ActivityType.Watching })
+            bot.user.setStatus("idle")
+            const data = {}
+            const allchannels = bot.guilds.channels
+            for (const channel of allchannels.values()) {
+                if (channel instanceof TextChannel) {
+                    if (data[channel.guild.id] === undefined) {
+                        data[channel.guild.id] = {
+                            channels: [],
+                            icon: channel.guild.iconURL(),
+                            name: channel.guild.name
+                        }
+                    }
+                    data[channel.guild.id].channels.push({
+                        id: channel.id,
+                        name: channel.name
+                    })
+                }
+            }
+            event.returnValue = data
+        })
+        bot.on(Events.InteractionCreate, async (interaction) => {
+            try {
+                await interaction.reply("The bot is currently fetching channels and is not online")
+            } catch(err) {}
+        })
+        const {token} = require("../config.json")
+        bot.login(token)
     })
 
     ipcMain.on('getFile', (event, arg) => {
@@ -351,7 +393,7 @@ function createWindow() {
 }
 
 function evalInContext(js, context) {
-    return function() {
+    return function () {
         return eval(js)
     }.call(context)
 }
