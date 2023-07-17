@@ -827,4 +827,161 @@ td {
   opacity: 1;
 }
 
+.select {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color);
+  border-radius: 10px;
+  z-index: 5;
+}
+.select-wrapper {
+  position: relative;
+  user-select: none;
+  width: 100%;
+  z-index: 5;
+}
+.select__trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--color);
+  height: 60px;
+  line-height: 60px;
+  background: var(--background);
+  cursor: pointer;
+  border-radius: 10px;
+  z-index: 5;
+}
+
+.custom-options {
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  border: 1px solid var(--color);
+  border-top: 0;
+  border-radius: 10px;
+  background: var(--background);
+  transition: all 0.5s;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 7;
+}
+
+.select.open .custom-options {
+  display: block;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.custom-option {
+  position: relative;
+  display: flex;
+  padding: 0 22px 0 22px;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--color);
+  line-height: 60px;
+  cursor: pointer;
+  transition: all 0.5s;
+  align-items: center;
+  justify-content: center;
+  z-index: 7;
+  border: 0px solid var(--color);
+}
+.custom-option:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.custom-option.selected {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.custom-option.selected:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.custom-option * {
+  margin-right: 5px;
+}
+.custom-option img {
+  border-radius: 35%;
+}
+
+.disabled-option:hover {
+  cursor: auto;
+  background-color: rgba(0, 0, 0, 0);
+}
+.disabled-option.selected {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.big-option {
+  font-size: 2rem;
+  font-weight: bold;
+  border: solid 2px var(--color);
+  border-radius: 10px;
+}
+
+.arrow {
+  position: relative;
+  height: 15px;
+  width: 15px;
+}
+.arrow::before, .arrow::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  width: 0.15rem;
+  height: 100%;
+  transition: all 0.5s;
+}
+.arrow::before {
+  left: -5px;
+  transform: rotate(45deg);
+  background-color: var(--color);
+}
+.arrow::after {
+  left: 5px;
+  transform: rotate(-45deg);
+  background-color: var(--color);
+}
+
+.open .arrow::before {
+  left: -5px;
+  transform: rotate(-45deg);
+}
+.open .arrow::after {
+  left: 5px;
+  transform: rotate(45deg);
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.default-guild {
+  color: var(--color);
+  width: 32px;
+  height: 32px;
+  border-radius: 35%;
+  background: var(--background);
+  border: 1px solid var(--color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.default-guild > * {
+  margin-left: 5px;
+}
+
 /*# sourceMappingURL=styles2t.css.map */

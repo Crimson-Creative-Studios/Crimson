@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron')
-const {onlineVersion, uuid, themes} = ipcRenderer.sendSync("infoGrab")
+const {onlineVersion, themes} = ipcRenderer.sendSync("infoGrab")
+const version = ipcRenderer.sendSync("getFile", "version.txt")
 var guicfg = {
     theme: "",
     darkness: "0",
@@ -21,5 +22,12 @@ contextBridge.exposeInMainWorld('crimAPI', {
     handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback),
     themes: () => themes,
     handleThemeData: (callback) => ipcRenderer.on('winguicfg', callback),
-    show: () => ipcRenderer.invoke('showWin', 'cnsl')
+    show: () => ipcRenderer.invoke('showWin', 'cnsl'),
+    versions: {
+        node: () => process.versions.node,
+        chrome: () => process.versions.chrome,
+        electron: () => process.versions.electron,
+        crimson: () => version,
+        crimOnline: () => onlineVersion
+    },
 })

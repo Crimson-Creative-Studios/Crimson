@@ -195,6 +195,7 @@ extensions.forEach((extension) => {
                 guilds: client.guilds.cache,
                 resolvePath: (thing, ext = extension) =>
                     resolvePath(ext, thing),
+                setInterval: setInterval
             }
             vm.createContext(sandbox)
             vm.runInContext(`const net = require('net')
@@ -230,6 +231,7 @@ function sendDataToExtension(extension, data) {
 }`+ code, sandbox)
         } catch (err) {
             console.logger(`${metadata.name} ran into an error running the index.js file, it may not exist`, "warn")
+            console.logger(err, "error")
         }
         var commandFilesExtension = null
         var workflows = null
@@ -410,7 +412,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         try {
             await command.execute(interaction, client)
         } catch (error) {
-            console.logger(error, "error")
+            console.logger(error, "raw")
             await interaction.reply({
                 content:
                     "Uh oh, something went wrong! Contact the owner of the bot.",
@@ -425,12 +427,12 @@ client.on(Events.MessageCreate, async message => {
     for (const i of tagsList) {
         if (i.tag instanceof Array) {
             for (const j of i.tag) {
-                if (message.toString().startsWith(j + " ")) {
+                if (message.toString().startsWith(j)) {
                     i.function(message, i.tag.indexOf(j))
                 }
             }
         }
-        if (message.toString().startsWith(i.tag + " ")) {
+        if (message.toString().startsWith(i.tag)) {
             i.function(message)
         }
     }

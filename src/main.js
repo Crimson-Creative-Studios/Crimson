@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
-const { Client, GatewayIntentBits, Events, TextChannel } = require("discord.js")
+const { Client, GatewayIntentBits, Events, TextChannel, Role } = require("discord.js")
 const { spawn } = require('child_process')
 const client = require('discord-rich-presence')('1056199295168159814')
 client.updatePresence({
@@ -12,6 +12,7 @@ const fs = require('fs')
 const axios = require('axios')
 const net = require('net')
 const { downloadAndUnzip } = require("../sharedResources/downloadExtension")
+const { token } = require("../config.json")
 
 function generateUUID() {
     var d = new Date().getTime()
@@ -129,7 +130,6 @@ function createWindow() {
         minWidth: 800,
         minHeight: 450,
         frame: false,
-        show: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             devTools: true
@@ -177,45 +177,61 @@ function createWindow() {
         }
     })
 
-    ipcMain.on('channelCollect', (event, arg) => {
-        const bot = new Client({
-            intents: [
-                GatewayIntentBits.Guilds,
-                GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.MessageContent,
-                GatewayIntentBits.GuildMembers,
-                GatewayIntentBits.GuildVoiceStates
-            ],
-        })
-        bot.once(Events.ClientReady, async (c) => {
-            bot.user.setActivity(`for channels`, { type: ActivityType.Watching })
-            bot.user.setStatus("idle")
-            const data = {}
-            const allchannels = bot.guilds.channels
-            for (const channel of allchannels.values()) {
-                if (channel instanceof TextChannel) {
-                    if (data[channel.guild.id] === undefined) {
-                        data[channel.guild.id] = {
+    ipcMain.on('botInfoCollect', (event, arg) => {
+        try {
+            const bot = new Client({
+                intents: [
+                    GatewayIntentBits.Guilds,
+                    GatewayIntentBits.GuildMessages,
+                    GatewayIntentBits.MessageContent,
+                    GatewayIntentBits.GuildMembers,
+                    GatewayIntentBits.GuildVoiceStates
+                ],
+            })
+            bot.once(Events.ClientReady, async (c) => {
+                const data = {}
+                const allchannels = []
+                c.guilds.cache.forEach((guild) => {
+                    if (data[guild.id] === undefined) {
+                        data[guild.id] = {
                             channels: [],
-                            icon: channel.guild.iconURL(),
-                            name: channel.guild.name
+                            roles: [],
+                            icon: guild.iconURL({ size: 32 }),
+                            name: guild.name,
                         }
                     }
-                    data[channel.guild.id].channels.push({
-                        id: channel.id,
-                        name: channel.name
+                    guild.channels.cache.forEach((channel) => {
+                        if (channel instanceof TextChannel) {
+                            data[guild.id].channels.push({
+                                id: channel.id,
+                                name: channel.name
+                            })
+                        }
                     })
-                }
-            }
-            event.returnValue = data
-        })
-        bot.on(Events.InteractionCreate, async (interaction) => {
-            try {
-                await interaction.reply("The bot is currently fetching channels and is not online")
-            } catch(err) {}
-        })
-        const {token} = require("../config.json")
-        bot.login(token)
+
+                    guild.roles.cache.forEach((role) => {
+                        if (role instanceof Role) {
+                            if (role.name !== "@everyone") {
+                                data[guild.id].roles.push({
+                                    id: role.id,
+                                    name: role.name
+                                })
+                            }
+                        }
+                    })
+                })
+                event.returnValue = data
+                bot.destroy()
+            })
+            bot.on(Events.InteractionCreate, async (interaction) => {
+                try {
+                    await interaction.reply("The bot is currently fetching channels and is not online")
+                } catch (err) { }
+            })
+            bot.login(token)
+        } catch (err) {
+            event.returnValue = {}
+        }
     })
 
     ipcMain.on('getFile', (event, arg) => {
@@ -368,7 +384,6 @@ function createWindow() {
         }
     })
 
-    win.loadFile(path.join(__dirname, 'index.html'))
     win.setMenuBarVisibility(false)
     win.webContents.setZoomFactor(1.0)
 
@@ -400,6 +415,9 @@ function evalInContext(js, context) {
 
 app.whenReady().then(async () => {
     win = createWindow()
+
+    win.loadFile(path.join(__dirname, 'loading.html'))
+    setTimeout(() => win.loadFile(path.join(__dirname, 'index.html')), 4000)
 
     const server = net.createServer((socket) => {
         socket.on('data', (message) => {

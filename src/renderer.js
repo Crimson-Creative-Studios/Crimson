@@ -68,20 +68,25 @@ codeAdditions.extensions.forEach(extension => {
     }
     document.getElementById(name).insertAdjacentHTML("beforeend", '<br><br><br><br>')
     document.getElementById(name + "save").addEventListener('click', () => {
-        var items = []
-        var vals = []
-        var value = document.getElementById(name + "input").checked
-        items.push("enabled")
-        vals.push(String(value))
+        var value = String(document.getElementById(name + "input").checked)
+        var item = "enabled"
+        crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/config.json`, [item], [value]])
         for (const uuid of Object.keys(codeAdditions.userCFGS)) {
             var information = codeAdditions.userCFGS[uuid]
-            if (information.extension === name) {
-                var value = document.getElementById(uuid).value
-                items.push(information.item)
-                vals.push(value)
+            if (information.type === "CHNSEL" || information.type === "ROLESEL") {
+                if (information.extension === name) {
+                    var value = document.getElementById(uuid).dataset.currentval
+                    var item = information.item
+                }
+                crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, [item], [value]])
+            } else {
+                if (information.extension === name) {
+                    var value = document.getElementById(uuid).value
+                    var item = information.item
+                }
+                crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, [item], [value]])
             }
         }
-        crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, items, vals])
     })
 })
 
@@ -93,8 +98,26 @@ codeAdditions.errs.forEach(err => {
     console.log(err)
 })
 
-for (var uuid of Object.keys(codeAdditions.userCFGS)) {
-    document.getElementById(uuid).defaultValue = codeAdditions.defaults[uuid]
+for (const uuid of Object.keys(codeAdditions.userCFGS)) {
+    if (document.getElementById(uuid).dataset.currentval === undefined) {
+        document.getElementById(uuid).defaultValue = codeAdditions.defaults[uuid]
+    } else {
+        document.getElementById(uuid).dataset.currentval = codeAdditions.defaults[uuid]
+        var channelFound = false
+        for (const option of document.getElementById(uuid).querySelector(".select").querySelector(".custom-options").children) {
+            if (option.dataset.value === codeAdditions.defaults[uuid]) {
+                const val = option.dataset.value
+                const guild = option.dataset.guildname
+                option.parentElement.parentElement.parentElement.dataset.currentval = val
+                option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML + " - " + guild
+                option.classList.add("selected")
+                channelFound = true
+            }
+        }
+        if (!channelFound) {
+            document.getElementById(uuid).querySelector(".select").querySelector(".select__trigger").querySelector("span").innerHTML = "Data not found."
+        }
+    }
 }
 
 const funfacts = ["CrimsonGUI is written in Electron", "CrimsonGUI had 2 open beta 1s, odd isn't it?", "Crimson can completely kill your computer if an extension is malicous :D", "<b>There will be no beans theme</b>"]
