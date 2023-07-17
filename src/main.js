@@ -190,7 +190,6 @@ function createWindow() {
             })
             bot.once(Events.ClientReady, async (c) => {
                 const data = {}
-                const allchannels = []
                 c.guilds.cache.forEach((guild) => {
                     if (data[guild.id] === undefined) {
                         data[guild.id] = {
