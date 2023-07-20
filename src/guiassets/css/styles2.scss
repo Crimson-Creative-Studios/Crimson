@@ -147,10 +147,17 @@ img {
         outline: none;
         cursor: pointer;
         padding: 14px 16px;
-        width: 100%;
+        width: 69px;
+        max-width: 69px;
+        height: 69px;
+        max-height: 69px; //nice
         display: block;
         margin: 5px;
-        transition: opacity 0.3s, background-color 0.3s, color 0.3s !important;
+        transition: opacity 0.3s, background-color 0.3s, margin-left 0.3s, color 0.3s !important;
+
+        & > * {
+            font-size: 2rem;
+        }
 
         &:hover {
             background: var(--buttonhov);
@@ -160,6 +167,7 @@ img {
         &.active {
             background: var(--buttonact);
             background-size: 100% 100%;
+            margin-left: 20px;
         }
 
         &.active:hover {
@@ -169,7 +177,7 @@ img {
     }
 
     i {
-        font-size: 1.5rem;
+        font-size: 2rem;
     }
 }
 
@@ -177,7 +185,6 @@ img {
     border: none;
     width: 80px;
     border-radius: 15px;
-    overflow: hidden;
     position: fixed;
     left: 8px;
     bottom: 8px;
@@ -185,7 +192,10 @@ img {
     button {
         display: block;
         color: var(--buttontext);
-        width: 100%;
+        width: 69px;
+        max-width: 69px;
+        height: 69px;
+        max-height: 69px;
         border-radius: 15px;
         background: var(--button);
         background-size: 100% 100%;
@@ -197,6 +207,11 @@ img {
         transition: 0.3s;
         text-align: center;
         margin: 5px;
+        transition: opacity 0.3s, background-color 0.3s, color 0.3s !important;
+
+        & > * {
+            transform: rotate(0deg);
+        }
 
         &:hover {
             background: var(--buttonhov);
@@ -206,6 +221,10 @@ img {
         &.active {
             background: var(--buttonact);
             background-size: 100% 100%;
+
+            & > * {
+                transform: rotate(180deg);
+            }
         }
 
         &.active:hover {
@@ -215,12 +234,37 @@ img {
     }
 
     i {
-        font-size: 1.5rem;
+        font-size: 2rem;
+        transition: transform 0.2s ease-in-out;
+        display: inline-block;
     }
 }
 
-#OptionsButton {
-    width: 75px;
+#ConfigurationButton {
+    & {
+        & > * {
+            transform: rotate(0deg);
+            transition: transform 0.2s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: rotate(360deg);
+            animation: wrenchSpin 0.5s;
+        }
+    }
+}
+
+@keyframes wrenchSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(-45deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .button {
@@ -276,7 +320,7 @@ img {
     display: block;
     position: fixed;
     top: 50px;
-    right: 10px;
+    right: 5px;
     padding: 0px 12px;
     border: none;
     border-left: none;

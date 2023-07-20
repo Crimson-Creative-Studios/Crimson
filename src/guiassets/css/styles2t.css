@@ -147,10 +147,16 @@ img {
   outline: none;
   cursor: pointer;
   padding: 14px 16px;
-  width: 100%;
+  width: 69px;
+  max-width: 69px;
+  height: 69px;
+  max-height: 69px;
   display: block;
   margin: 5px;
-  transition: opacity 0.3s, background-color 0.3s, color 0.3s !important;
+  transition: opacity 0.3s, background-color 0.3s, margin-left 0.3s, color 0.3s !important;
+}
+.tab button > * {
+  font-size: 2rem;
 }
 .tab button:hover {
   background: var(--buttonhov);
@@ -159,20 +165,20 @@ img {
 .tab button.active {
   background: var(--buttonact);
   background-size: 100% 100%;
+  margin-left: 20px;
 }
 .tab button.active:hover {
   background: var(--buttonacthov);
   background-size: 100% 100%;
 }
 .tab i {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .tabBottom {
   border: none;
   width: 80px;
   border-radius: 15px;
-  overflow: hidden;
   position: fixed;
   left: 8px;
   bottom: 8px;
@@ -180,7 +186,10 @@ img {
 .tabBottom button {
   display: block;
   color: var(--buttontext);
-  width: 100%;
+  width: 69px;
+  max-width: 69px;
+  height: 69px;
+  max-height: 69px;
   border-radius: 15px;
   background: var(--button);
   background-size: 100% 100%;
@@ -192,6 +201,10 @@ img {
   transition: 0.3s;
   text-align: center;
   margin: 5px;
+  transition: opacity 0.3s, background-color 0.3s, color 0.3s !important;
+}
+.tabBottom button > * {
+  transform: rotate(0deg);
 }
 .tabBottom button:hover {
   background: var(--buttonhov);
@@ -201,18 +214,39 @@ img {
   background: var(--buttonact);
   background-size: 100% 100%;
 }
+.tabBottom button.active > * {
+  transform: rotate(180deg);
+}
 .tabBottom button.active:hover {
   background: var(--buttonacthov);
   background-size: 100% 100%;
 }
 .tabBottom i {
-  font-size: 1.5rem;
+  font-size: 2rem;
+  transition: transform 0.2s ease-in-out;
+  display: inline-block;
 }
 
-#OptionsButton {
-  width: 75px;
+#ConfigurationButton > * {
+  transform: rotate(0deg);
+  transition: transform 0.2s;
+}
+#ConfigurationButton.active > * {
+  transform: rotate(360deg);
+  animation: wrenchSpin 0.5s;
 }
 
+@keyframes wrenchSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-45deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .button {
   background: var(--button);
   background-size: 100% 100%;
@@ -260,7 +294,7 @@ img {
   display: block;
   position: fixed;
   top: 50px;
-  right: 10px;
+  right: 5px;
   padding: 0px 12px;
   border: none;
   border-left: none;
