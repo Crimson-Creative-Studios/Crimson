@@ -177,7 +177,7 @@ img {
     }
 
     i {
-        font-size: 2rem;
+        font-size: 1.75rem;
     }
 }
 
@@ -234,7 +234,7 @@ img {
     }
 
     i {
-        font-size: 2rem;
+        font-size: 1.75rem;
         transition: transform 0.2s ease-in-out;
         display: inline-block;
     }
@@ -261,6 +261,60 @@ img {
     }
     50% {
         transform: rotate(-45deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#MarketButton, #BotButton, #InformationButton, #SpecialButton {
+    & {
+        & > * {
+            transform: scale(1);
+            transition: transform 0.2s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: scale(1);
+            animation: buttonAnimation 0.5s;
+        }
+    }
+}
+
+@keyframes buttonAnimation {
+    from {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+#DEBUGButton {
+    & {
+        & > * {
+            transform: rotate(0deg);
+            transition: transform 0.2s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: rotate(360deg);
+            animation: debugButtonAnimation 0.5s;
+        }
+    }
+}
+
+@keyframes debugButtonAnimation {
+    from {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(-127deg);
     }
     to {
         transform: rotate(360deg);
