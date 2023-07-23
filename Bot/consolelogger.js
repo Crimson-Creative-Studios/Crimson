@@ -1,7 +1,7 @@
-var logger = function logger(info, type) {
-    function log(info) {
-        console.log(info)
-    }
+
+const br = ""
+
+function formatDate() {
     var hour = new Date().getHours()
     var minutes = new Date().getMinutes()
     var seconds = new Date().getSeconds()
@@ -14,45 +14,90 @@ var logger = function logger(info, type) {
     var day = new Date().getDay()
     let dayWord = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     var dayOfWeek = dayWord[day]
-    var br = ""
-
-    if (type === "info") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Info ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "warn") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Warn ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "error") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Error ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "hint") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Hint ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "action") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | User Action ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "logCommand") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Logger Command ] ${info}${br}`)
-
-    } else if (type === "start") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Start-Up ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "raw") {
-        log(info)
-        log(br)
-        log(br)
-
-    } else {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} ] ${info}${br}`)
-        log(br)
-    }
-
+    return `${dayOfWeek} | ${hour}:${minutes}:${seconds}`
 }
 
-module.exports.logger = logger
+function info(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`\x1b[32m[ ${formatDate()} | Info ] ${prntStr}${br}\x1b[0m`)
+    console.log(br)
+}
+
+function warn(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`\x1b[33m[ ${formatDate()} | Warn ] ${prntStr}${br}\x1b[0m`)
+    console.log(br)
+}
+
+function error(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`\x1b[31m[ ${formatDate()} | Error ] ${prntStr}${br}\x1b[0m`)
+    console.log(br)
+}
+
+function hint(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`\x1b[35m[ ${formatDate()} | Hint ] ${prntStr}${br}\x1b[0m`)
+    console.log(br)
+}
+
+function action(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`\x1b[36m[ ${formatDate()} | User Action ] ${prntStr}${br}\x1b[0m`)
+    console.log(br)
+}
+
+function logCmd(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`\x1b[36m[ ${formatDate()} | Log Command ] ${prntStr}${br}\x1b[0m`)
+    console.log(br)
+}
+
+function start(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`\x1b[34m[ ${formatDate()} | Start ] ${prntStr}${br}\x1b[0m`)
+    console.log(br)
+}
+
+function raw(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(prntStr)
+    console.log(br)
+    console.log(br)
+}
+
+module.exports = {
+    info,
+    warn,
+    error,
+    hint,
+    action,
+    logCmd,
+    start,
+    raw,
+    err: error
+}

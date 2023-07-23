@@ -12,7 +12,7 @@ crimAPI.handleWinControl(async (event, arg) => {
         document.body.classList.remove('maximized')
     }
 
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise(resolve => setTimeout(resolve, 180))
 
     createGrid()
 })

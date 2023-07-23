@@ -83,16 +83,16 @@ extensionFiles.forEach((extension) => {
         configs.push(`<button id="${metaname}Button" class="button" onclick="openTab('${extension}', 'ConfigurationButton')">${metaname}</button>`)
     }
     if (metadata.type === "library") {
-        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><p>${metadata.des ?? "No provided description!"}</p><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
+        mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><p>${metadata.des ?? "No provided description!"}</p><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')"><i class="fa-solid fa-square-caret-left"></i> Go back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true" disabled="true" checked><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
 
         islib[extension] = true
     } else {
         islib[extension] = false
 
         if (config.enabled === "true") {
-            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><p>${metadata.des ?? "No provided description!"}</p><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><p>${metadata.des ?? "No provided description!"}</p><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')"><i class="fa-solid fa-square-caret-left"></i> Go back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true" checked><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
         } else {
-            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><p>${metadata.des ?? "No provided description!"}</p><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
+            mainAdditions.push(`<div class="tabcontent" id="${extension}"><h3>${metaname} Options</h3><p>${metadata.des ?? "No provided description!"}</p><button class="button" onclick="openTab('Configuration', 'ConfigurationButton')"><i class="fa-solid fa-square-caret-left"></i> Go back</button><br><br><input class="styled-checkbox" type="checkbox" id="${extension}input" name="${extension}input" value="true"><label for="${extension}input">Is enabled?</label><br><br><br></div>`)
         }
     }
 
@@ -158,7 +158,7 @@ extensionFiles.forEach((extension) => {
                         }
                         values += `<span class="custom-option disabled-option big-option" data-value="0">${icon}${guild.name}</span>`
                         for (const role of guild.roles) {
-                            values += `<span class="custom-option" data-value="${role.id}" data-guildname="${guild.name}">${role.name}</span>`
+                            values += `<span class="custom-option" data-value="${role.id}" data-guildname="${guild.name}"><div class="role-dot" style="--rcolor: ${role.color};"></div>${role.name}</span>`
                         }
                     }
                     arr.push(`<h3>${information.metaname}</h4><div id="${information.uuid}" class="select-wrapper" data-currentval="0">

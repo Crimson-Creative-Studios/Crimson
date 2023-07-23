@@ -5,7 +5,7 @@ const config = require('../config.json')
 
 async function deploy(guilds) {
     try {
-        console.logger("Started refreshing all application commands.", "start")
+        console.start("Started refreshing all application commands.")
         const commands = []
         var commandFiles = null
         try {
@@ -42,7 +42,7 @@ async function deploy(guilds) {
                         }
                     }
                 } catch (err) {
-                    console.logger(`${metadata.name} has no application commands.`, "start")
+                    console.start(`${metadata.name} has no application commands.`)
                 }
             }
         }
@@ -62,14 +62,14 @@ async function deploy(guilds) {
                     { body: commands },
                 )
             })
-            console.logger(`Successfully refreshed all application commands.`, "start")
+            console.start(`Successfully refreshed all application commands.`)
             return true
         } catch (err) {
-            console.logger(err, "error")
+            console.err(err)
             return false
         }
     } catch (err) {
-        console.logger(err, "error")
+        console.err(err)
     }
 }
 

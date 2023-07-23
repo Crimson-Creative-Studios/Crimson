@@ -25,8 +25,8 @@ window.addEventListener("load", (event) => {
     const createGrid = () => {
         wrapper.innerHTML = ""
 
-        columns = Math.floor(document.body.clientWidth / 100)
-        rows = Math.floor(document.body.clientHeight / 100)
+        columns = Math.floor(document.body.clientWidth / 95)
+        rows = Math.floor(document.body.clientHeight / 95)
 
         wrapper.style.setProperty("--columns", columns)
         wrapper.style.setProperty("--rows", rows)

@@ -26,7 +26,6 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const clients = {}
 const vm = require("vm")
-const { Player } = require('discord-player')
 
 //*
 //* Global vars/consts
@@ -50,31 +49,11 @@ var client = new Client({
     ],
 })
 
-var player = new Player(client)
-
-player.on('connectionCreate', (queue) => {
-    queue.connection.voiceConnection.on('stateChange', (oldState, newState) => {
-        const oldNetworking = Reflect.get(oldState, 'networking')
-        const newNetworking = Reflect.get(newState, 'networking')
-
-        const networkStateChangeHandler = (oldNetworkState, newNetworkState) => {
-            const newUdp = Reflect.get(newNetworkState, 'udp')
-            clearInterval(newUdp?.keepAliveInterval)
-        }
-
-        oldNetworking?.off('stateChange', networkStateChangeHandler)
-        newNetworking?.on('stateChange', networkStateChangeHandler)
-    })
-})
-
 //? When client is ready do some logging and cleaning and setup users
 client.once(Events.ClientReady, async (c) => {
     client.user.setActivity(`over the server`, { type: ActivityType.Watching })
     client.user.setStatus("online")
-    console.logger(
-        `The bot is now online! Running bot as ${c.user.tag}`,
-        "start"
-    )
+    console.start(`The bot is now online! Running bot as ${c.user.tag}`)
     command.deploy(client.guilds.cache)
 })
 
@@ -115,7 +94,7 @@ const server = net.createServer((socket) => {
                     }
                 } catch (err) {
                     if (data !== "") {
-                        console.logger("Data was found that was invalid", "warn")
+                        console.warn("Data was found that was invalid")
                     }
                 }
             }
@@ -124,8 +103,8 @@ const server = net.createServer((socket) => {
 })
 
 server.on('error', (err) => {
-    console.logger(`IPC Error for Extensions: ${err}`, "error")
-    console.logger("If the error message is 'Error: listen EADDRINUSE: address already in use :::3000' then that means there is another application using the port, this could be another process of Crimson!", "hint")
+    console.error(`IPC Error for Extensions: ${err}`)
+    console.hint("If the error message is 'Error: listen EADDRINUSE: address already in use :::3000' then that means there is another application using the port, this could be another process of Crimson!")
 })
 
 server.listen(3000, () => { })
@@ -176,10 +155,7 @@ extensions.forEach((extension) => {
         }
     }
     if (extensionstate === "enabled") {
-        console.logger(
-            `Loading ${metadata.name} by ${metadata.authors}...`,
-            "start"
-        )
+        console.start(`Loading ${metadata.name} by ${metadata.authors}...`)
         try {
             var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
             const sandbox = {
@@ -201,7 +177,7 @@ extensions.forEach((extension) => {
             vm.runInContext(`const net = require('net')
 
 const extensionHandler = net.createConnection({ port: 3000 }, () => {
-    console.logger('Successfully loaded ${metadata.name}', "start")
+    console.start('Successfully loaded ${metadata.name}')
 })
 
 function sendData(data) {
@@ -230,8 +206,8 @@ function sendDataToExtension(extension, data) {
     }))
 }`+ code, sandbox)
         } catch (err) {
-            console.logger(`${metadata.name} ran into an error running the index.js file, it may not exist`, "warn")
-            console.logger(err, "error")
+            console.warn(`${metadata.name} ran into an error running the index.js file, it may not exist`)
+            console.err(err)
         }
         var commandFilesExtension = null
         var workflows = null
@@ -258,10 +234,7 @@ function sendDataToExtension(extension, data) {
                     client.commands.set(command.name, command)
                 }
             } else {
-                console.logger(
-                    `The command at ${filePath} is missing a required "execute" property.`,
-                    "warn"
-                )
+                console.warn(`The command at ${filePath} is missing a required "execute" property.`)
             }
         }
 
@@ -374,8 +347,8 @@ function sendDataToExtension(extension, data) {
             try {
                 vm.runInContext(filebuilder, context)
             } catch (err) {
-                console.logger(`Failed to run workflow from ${extension}, file "${workflow}" may have errors!`, "error")
-                console.logger(err, "error")
+                console.err(`Failed to run workflow from ${extension}, file "${workflow}" may have errors!`)
+                console.err(err)
             }
         }
     }
@@ -386,10 +359,7 @@ for (const file of commandFiles) {
     if ("data" in command && "execute" in command) {
         client.commands.set(command.data.name, command)
     } else {
-        console.logger(
-            `The command at ./commands/${file} is missing a required "data" or "execute" property.`,
-            "warn"
-        )
+        console.warn(`The command at ./commands/${file} is missing a required "data" or "execute" property.`)
     }
 }
 
@@ -403,16 +373,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const command = interaction.client.commands.get(interaction.commandName)
 
         if (!command) {
-            console.logger(
-                `No command matching ${interaction.commandName} was found.`,
-                "error"
-            )
+            console.err(`No command matching ${interaction.commandName} was found.`)
             return
         }
         try {
             await command.execute(interaction, client)
         } catch (error) {
-            console.logger(error, "raw")
+            console.err(error)
             await interaction.reply({
                 content:
                     "Uh oh, something went wrong! Contact the owner of the bot.",

@@ -76,7 +76,11 @@ function clearColor() {
 
     for (const thing of document.querySelectorAll("*")) {
         if (!thing.classList.contains("tile") && thing.id !== "tiles" && thing.id !== "changeColorsDev") {
-            thing.setAttribute("style", "")
+            if (thing.classList.contains("role-dot")) {
+                thing.setAttribute("style", `--rcolor: ${getComputedStyle(thing).getPropertyValue("--rcolor")};`)
+            } else {
+                thing.setAttribute("style", "")
+            }
         }
 
         if (thing.classList.contains("exbtnid")) {
@@ -86,6 +90,8 @@ function clearColor() {
         if (thing.classList.contains("eximgbtn")) {
             thing.setAttribute("style", "border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;")
         }
+
+
     }
 
     var guioptions = {

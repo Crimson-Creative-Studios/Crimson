@@ -33,7 +33,7 @@ function generateUUID() {
 const uuid = generateUUID()
 
 var globalBot, consolewin, win
-var isMax = false
+var isMax = false, conIsMax = false
 
 async function getValueJSON(file, value) {
     var json = null
@@ -91,8 +91,8 @@ async function setValueJSONBulk(file, value, data) {
 
 function consoleWindow() {
     const console = new BrowserWindow({
-        width: 800,
-        height: 800,
+        width: 1000,
+        height: 1000,
         minWidth: 800,
         minHeight: 800,
         frame: false,
@@ -107,14 +107,20 @@ function consoleWindow() {
         console.show()
     })
 
+    console.webContents.on('did-start-loading', async () => {
+        if (conIsMax) {
+            console.webContents.send("wincontroler", "max")
+        }
+    })
+
     console.on('maximize', () => {
         console.webContents.send("wincontroler", "max")
-        isMax = true
+        conIsMax = true
     })
 
     console.on('unmaximize', () => {
         console.webContents.send("wincontroler", "unmax")
-        isMax = false
+        conIsMax = false
     })
 
     console.loadFile(path.join(__dirname, 'console.html'))
@@ -211,9 +217,15 @@ function createWindow() {
                     guild.roles.cache.forEach((role) => {
                         if (role instanceof Role) {
                             if (role.name !== "@everyone") {
+                                if (!role.hexColor || role.hexColor === "#000000") {
+                                    var color = "transparent"
+                                } else {
+                                    var color = role.hexColor
+                                }
                                 data[guild.id].roles.push({
                                     id: role.id,
-                                    name: role.name
+                                    name: role.name,
+                                    color: color
                                 })
                             }
                         }
@@ -488,6 +500,15 @@ ipcMain.handle('OpenConsole', async (event, args) => {
     })
 })
 
+function removeColorCode(text) {
+    const colors = ["[34m", "[32m", "[33m", "[31m", "[35m", "[36m", "[0m"]
+    var txt = text
+    for (const color of colors) {
+        txt = txt.replaceAll(color, "")
+    }
+    return txt
+} 
+
 ipcMain.handle('BotStart', (event, arg) => {
     console.log("Bot Started")
     globalBot = spawn('node', [__dirname + '\\..\\Bot\\index.mjs', "--gui"], { cwd: '..\\Bot', shell: true, stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
@@ -496,19 +517,12 @@ ipcMain.handle('BotStart', (event, arg) => {
         if (data === 'STPSCD') {
             consolewin.webContents.send('STP')
         } else if (data.startsWith("prompt:")) { } else {
-            consolewin.webContents.send('botstdout', data.replaceAll("\n", "<br>"))
+            consolewin.webContents.send('botstdout', removeColorCode(data.replaceAll("\n", "<br>")))
         }
     })
     globalBot.stderr.setEncoding('utf8')
     globalBot.stderr.on('data', (data) => {
         consolewin.webContents.send('botstdout', data)
-        try {
-            globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
-        } finally {
-            try {
-                consolewin.webContents.send('STP')
-            } catch (err) { }
-        }
     })
     globalBot.stdin.setEncoding('utf-8')
 })

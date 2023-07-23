@@ -62,7 +62,7 @@ codeAdditions.extensions.forEach(extension => {
     for (const item of extensionList) {
         document.getElementById(name).insertAdjacentHTML("beforeend", item)
     }
-    document.getElementById(name).insertAdjacentHTML("beforeend", '<button id="' + name + 'save" class="button savebtn">Save Settings</button><br>')
+    document.getElementById(name).insertAdjacentHTML("beforeend", '<button id="' + name + 'save" class="button savebtn"><i class="fa-solid fa-floppy-disk"></i> Save settings</button><br>')
     if (codeAdditions.islib[extension]) {
         document.getElementById(name).insertAdjacentHTML("beforeend", `<p>${codeAdditions.libtext[extension].text}</p><button class="button" onclick="crimAPI.openSite('${codeAdditions.libtext[extension].buttonlink}')">${codeAdditions.libtext[extension].buttontext}</button>`)
     }
@@ -110,6 +110,11 @@ for (const uuid of Object.keys(codeAdditions.userCFGS)) {
                 const guild = option.dataset.guildname
                 option.parentElement.parentElement.parentElement.dataset.currentval = val
                 option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML + " - " + guild
+                for (const child of option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").childNodes) {
+                    if (child.nodeName === "DIV") {
+                        child.remove()
+                    }
+                }
                 option.classList.add("selected")
                 channelFound = true
             }

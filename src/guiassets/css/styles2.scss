@@ -123,7 +123,7 @@ img {
 
 ::selection {
     color: var(--color);
-    background: var(--button);
+    background: var(--buttonact);
 }
 
 .tab {
@@ -191,6 +191,7 @@ img {
 
     button {
         display: block;
+        position: relative;
         color: var(--buttontext);
         width: 69px;
         max-width: 69px;
@@ -210,7 +211,8 @@ img {
         transition: opacity 0.3s, background-color 0.3s, color 0.3s !important;
 
         & > * {
-            transform: rotate(0deg);
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.3s;
         }
 
         &:hover {
@@ -223,7 +225,9 @@ img {
             background-size: 100% 100%;
 
             & > * {
-                transform: rotate(180deg);
+                transform: scale(1.2);
+                animation: slowSpin 15s infinite linear;
+                animation-delay: 0.3s;
             }
         }
 
@@ -235,39 +239,47 @@ img {
 
     i {
         font-size: 1.75rem;
-        transition: transform 0.2s ease-in-out;
         display: inline-block;
+    }
+}
+
+@keyframes slowSpin {
+    0% {
+       transform: rotate(0deg) scale(1.2);
+    }
+    100% {
+        transform: rotate(360deg) scale(1.2);
     }
 }
 
 #ConfigurationButton {
     & {
         & > * {
-            transform: rotate(0deg);
+            transform: rotate(0deg) scale(1);
             transition: transform 0.2s;
         }
     }
     &.active {
         & > * {
-            transform: rotate(360deg);
-            animation: wrenchSpin 0.5s;
+            transform: rotate(360deg) scale(1.2);
+            animation: wrenchButtonAnimation 0.5s;
         }
     }
 }
 
-@keyframes wrenchSpin {
+@keyframes wrenchButtonAnimation {
     from {
-        transform: rotate(0deg);
+        transform: rotate(0deg) scale(1);
     }
     50% {
-        transform: rotate(-45deg);
+        transform: rotate(-45deg) scale(0.8);
     }
     to {
-        transform: rotate(360deg);
+        transform: rotate(360deg) scale(1.2);
     }
 }
 
-#MarketButton, #BotButton, #InformationButton, #SpecialButton {
+#MarketButton {
     & {
         & > * {
             transform: scale(1);
@@ -276,48 +288,138 @@ img {
     }
     &.active {
         & > * {
-            transform: scale(1);
-            animation: buttonAnimation 0.5s;
+            transform: scale(1.2);
+            animation: marketButtonAnimation 0.3s;
         }
     }
 }
 
-@keyframes buttonAnimation {
+@keyframes marketButtonAnimation {
     from {
         transform: scale(1);
     }
     50% {
-        transform: scale(1.2);
+        transform: scale(0.8);
     }
     to {
-        transform: scale(1);
+        transform: scale(1.2);
+    }
+}
+
+#UltraButton {
+    & {
+        & > div {
+            transform: scale(1) translate(0, 0);
+            transition: transform 0.2s;
+
+            & > .rocket-fire {
+                opacity: 0;
+                position: absolute;
+                left: 2px;
+                top: 3px;
+                transition: opacity 0.3s;
+                font-size: 13px;
+                transform: rotate(235deg) scale(1) translate(0, 0);
+                transition: transform 0.2s, opacity 0.2s;
+            }
+
+            & > .rocket {
+                position: absolute;
+                top: -14px;
+                left: 4px;
+            }
+        }
+    }
+    &.active {
+        & > div {
+            transform: scale(1.2) translate(0, 0);
+            animation: ultraButtonAnimation 0.5s;
+
+            & > .rocket-fire {
+                transform: rotate(235deg) scale(1.2) translate(0, 0);
+                opacity: 1;
+            }
+        }
+    }
+}
+
+@keyframes ultraButtonAnimation {
+    0% {
+        transform: scale(1) translate(-10px, 10px);
+    }
+    50% {
+        transform: scale(1) translate(5px, -15px);
+    }
+    100% {
+        transform: scale(1.2) translate(0, 0);
+    }
+}
+
+#BotButton {
+    & {
+        & > * {
+            transform: scale(1);
+            transition: transform 0.2s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: scale(-1.2, 1.2);
+            animation: botButtonAnimation 0.5s;
+        }
+    }
+}
+
+@keyframes botButtonAnimation {
+    0% {
+        transform: scale(1, 1);
+    }
+    50% {
+        transform: scale(-1, 1);
+    }
+    100% {
+        transform: scale(-1.2, 1.2);
+    }
+}
+
+#InformationButton {
+    & {
+        & > * {
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.5s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: rotate(180deg) scale(-1.2);
+        }
     }
 }
 
 #DEBUGButton {
     & {
         & > * {
-            transform: rotate(0deg);
+            transform: rotate(0deg) scale(1);
             transition: transform 0.2s;
         }
     }
     &.active {
         & > * {
-            transform: rotate(360deg);
-            animation: debugButtonAnimation 0.5s;
+            transform: rotate(360deg) scale(1.2);
+            animation: debugButtonAnimation 1s;
         }
     }
 }
 
 @keyframes debugButtonAnimation {
     from {
-        transform: rotate(0deg);
+        transform: rotate(0deg) scale(1);
     }
-    50% {
-        transform: rotate(-127deg);
+    40% {
+        transform: rotate(-180deg) scale(0.4);
     }
     to {
-        transform: rotate(360deg);
+        transform: rotate(360deg) scale(1.2);
     }
 }
 
@@ -370,6 +472,12 @@ img {
     }
 }
 
+.big-button {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+}
+
 .tabcontent {
     display: block;
     position: fixed;
@@ -379,7 +487,7 @@ img {
     border: none;
     border-left: none;
     transition: opacity 0.1s;
-    height: 90%;
+    height: calc(100% - 50px);
     width: calc(100% - 110px);
     overflow-y: scroll;
     opacity: 0;
@@ -409,6 +517,9 @@ img {
 .typeoutput {
     font-size: smaller;
     user-select: text;
+    white-space: pre-wrap;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
 }
 
 .modal {
@@ -770,13 +881,14 @@ p.icon {
     transition: background-color 0.3s;
     content: "";
     inset: 1px;
+    opacity: 1;
     position: absolute;
     animation: pulse 3s infinite;
     animation-delay: calc(var(--delay) * 1s);
 }
 
 @keyframes pulse {
-    from {
+    0% {
         inset: 1px;
     }
 
@@ -784,7 +896,7 @@ p.icon {
         inset: 5px;
     }
 
-    to {
+    100% {
         inset: 1px;
     }
 }
@@ -1009,13 +1121,15 @@ td {
     border-style: solid;
     border-color: var(--color);
     border-radius: 10px;
-    z-index: 5;
 
     &-wrapper {
         position: relative;
         user-select: none;
         width: 100%;
-        z-index: 5;
+    }
+
+    &-wrapper:has(.select.open) {
+        z-index: 999;
     }
 
     &__trigger {
@@ -1032,7 +1146,6 @@ td {
         background: var(--background);
         cursor: pointer;
         border-radius: 10px;
-        z-index: 5;
     }
 }
 
@@ -1049,7 +1162,6 @@ td {
     transition: all 0.5s;
     visibility: hidden;
     pointer-events: none;
-    z-index: 7;
 }
 
 .select.open .custom-options {
@@ -1070,7 +1182,6 @@ td {
     transition: all 0.5s;
     align-items: center;
     justify-content: center;
-    z-index: 7;
     border: 0px solid var(--color);
 
     &:hover {
@@ -1175,4 +1286,25 @@ td {
     & > * {
         margin-left: 5px;
     }
+}
+
+.prevImg {
+    border: var(--color) 2px solid;
+    border-radius: 50%;
+}
+
+.inline {
+    display: inline;
+}
+
+.role-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--rcolor);   
+    border: 2px solid var(--color);
 }
