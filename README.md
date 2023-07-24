@@ -1,5 +1,5 @@
-<a href="https://skyoproductions.github.io/wiki/crimson">
-<img align="right" width="300" alt="image" src="https://cdn.discordapp.com/attachments/957344047494725672/1099675663172108331/crimsonLogoHiRes.png">
+<a href="https://crimson-creative-studios.github.io/">
+<img align="right" width="300" alt="image" src="https://avatars.githubusercontent.com/u/135461091?s=200&v=4">
 </a>
 
 # Crimson
