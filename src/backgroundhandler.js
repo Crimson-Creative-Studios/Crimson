@@ -4,21 +4,23 @@ window.addEventListener("load", (event) => {
     let columns = 0,
         rows = 0
 
-    const createTile = (index) => {
+    const createTile = (index, col, row) => {
         const tile = document.createElement("div")
 
-        var delay = Math.floor(Math.random() * 5)
+        const delay = Math.floor(Math.random() * index)
 
         tile.style.setProperty('--delay', delay)
+        //! Cool ass design
+        //tile.style.setProperty('--delay', (index % col) + (index / col))
 
         tile.classList.add("tile")
 
         return tile
     }
 
-    const createTiles = quantity => {
+    const createTiles = (quantity, col, row) => {
         Array.from(Array(quantity)).map(async (tile, index) => {
-            wrapper.appendChild(createTile(index))
+            wrapper.appendChild(createTile(index, col, row))
         })
     }
 
@@ -31,7 +33,7 @@ window.addEventListener("load", (event) => {
         wrapper.style.setProperty("--columns", columns)
         wrapper.style.setProperty("--rows", rows)
 
-        createTiles(columns * rows)
+        createTiles(columns * rows, columns, rows)
     }
 
     createGrid()
@@ -41,6 +43,13 @@ window.addEventListener("load", (event) => {
     window.onresize = () => createGrid()
 })
 
+var tilesShowen = true
+
 function toggleBG() {
     document.getElementById("tiles").classList.toggle("hiddentiles")
+    if (tilesShowen) {
+        tilesShowen = false
+    } else {
+        tilesShowen = true
+    }
 }

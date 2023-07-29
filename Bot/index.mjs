@@ -39,7 +39,7 @@ const tagsList = []
 //*
 
 //? New client for Discord.JS and main storage
-var client = new Client({
+global.client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
@@ -115,13 +115,7 @@ function resolvePath(extension, file) {
 }
 
 //! Read and run extension
-//? Run extensions and get tag commands
-var commandFiles = null
-try {
-    commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".js"))
-} catch (err) {
-    commandFiles = []
-}
+//? Run extensions
 var extensions = null
 try {
     extensions = fs.readdirSync("../Extensions/")
@@ -157,13 +151,18 @@ extensions.forEach((extension) => {
     if (extensionstate === "enabled") {
         console.start(`Loading ${metadata.name} by ${metadata.authors}...`)
         try {
-            var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
+            if (fs.existsSync(`../Extensions/${extension}/index.js`)){
+                var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
+            } else {
+                var code = ""
+            }
             const sandbox = {
                 client,
                 console,
                 fetch,
                 fs,
                 path,
+                global,
                 require,
                 __dirname,
                 extension,
@@ -206,8 +205,10 @@ function sendDataToExtension(extension, data) {
     }))
 }`+ code, sandbox)
         } catch (err) {
-            console.warn(`${metadata.name} ran into an error running the index.js file, it may not exist`)
-            console.err(err)
+            if (fs.existsSync(`../Extensions/${extension}/index.js`)) {
+                console.warn(`${metadata.name} ran into an error running the index.js file`)
+                console.err(err)
+            }
         }
         var commandFilesExtension = null
         var workflows = null
@@ -353,16 +354,6 @@ function sendDataToExtension(extension, data) {
         }
     }
 })
-
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`)
-    if ("data" in command && "execute" in command) {
-        client.commands.set(command.data.name, command)
-    } else {
-        console.warn(`The command at ./commands/${file} is missing a required "data" or "execute" property.`)
-    }
-}
-
 //*
 //* Command execution
 //*
@@ -380,11 +371,31 @@ client.on(Events.InteractionCreate, async (interaction) => {
             await command.execute(interaction, client)
         } catch (error) {
             console.err(error)
-            await interaction.reply({
-                content:
-                    "Uh oh, something went wrong! Contact the owner of the bot.",
-                ephemeral: true,
-            })
+            try {
+                await interaction.reply({
+                    content:
+                        "Uh oh, something went wrong! Contact the owner of the bot.",
+                    ephemeral: true,
+                })
+            } catch (err) {
+                try {
+                    await interaction.editReply({
+                        content:
+                            "Uh oh, something went wrong! Contact the owner of the bot.",
+                        ephemeral: true,
+                    })
+                } catch (e) {
+                    try {
+                        await interaction.followUp({
+                            content:
+                                "Uh oh, something went wrong! Contact the owner of the bot.",
+                            ephemeral: true,
+                        })
+                    } catch (errr) {
+                        console.err(errr)
+                    }
+                }
+            }
         }
     } else return
 })

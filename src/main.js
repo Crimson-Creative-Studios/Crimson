@@ -215,19 +215,17 @@ function createWindow() {
                     })
 
                     guild.roles.cache.forEach((role) => {
-                        if (role instanceof Role) {
-                            if (role.name !== "@everyone") {
-                                if (!role.hexColor || role.hexColor === "#000000") {
-                                    var color = "transparent"
-                                } else {
-                                    var color = role.hexColor
-                                }
-                                data[guild.id].roles.push({
-                                    id: role.id,
-                                    name: role.name,
-                                    color: color
-                                })
+                        if (role.name !== "@everyone") {
+                            if (!role.hexColor || role.hexColor === "#000000") {
+                                var color = "transparent"
+                            } else {
+                                var color = role.hexColor
                             }
+                            data[guild.id].roles.push({
+                                id: role.id,
+                                name: role.name,
+                                color: color
+                            })
                         }
                     })
                 })
@@ -507,10 +505,9 @@ function removeColorCode(text) {
         txt = txt.replaceAll(color, "")
     }
     return txt
-} 
+}
 
 ipcMain.handle('BotStart', (event, arg) => {
-    console.log("Bot Started")
     globalBot = spawn('node', [__dirname + '\\..\\Bot\\index.mjs', "--gui"], { cwd: '..\\Bot', shell: true, stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
     globalBot.stdout.setEncoding('utf8')
     globalBot.stdout.on('data', (data) => {
@@ -525,11 +522,13 @@ ipcMain.handle('BotStart', (event, arg) => {
         consolewin.webContents.send('botstdout', data)
     })
     globalBot.stdin.setEncoding('utf-8')
+    globalBot.on("exit", () => {
+        consolewin.webContents.send('STP')
+    })
 })
 
 ipcMain.handle('BotStop', (event, arg) => {
     globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
-    consolewin.webContents.send('STP')
 })
 
 ipcMain.handle('BotRC', (event, arg) => {

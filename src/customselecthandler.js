@@ -1,5 +1,5 @@
 window.addEventListener('click', function(e) {
-    if (e.target.classList.contains("select-wrapper") || e.target.classList.contains("select__trigger") || e.target.classList.contains("select") || e.target.classList.contains("force-open")) return
+    if (e.target.classList.contains("select-wrapper") || e.target.classList.contains("select__trigger") || e.target.classList.contains("select") || e.target.classList.contains("force-open") || e.target.classList.contains("disabled-option")) return
     if (e.target.classList.contains("custom-option")) {
         if (!e.target.classList.contains("disabled-option")) {
             e.target.parentElement.parentElement.parentElement.dataset.currentval = e.target.dataset.value

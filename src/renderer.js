@@ -51,28 +51,28 @@ crimAPI.handleAdd((event, arg) => {
     document.getElementById(id).insertAdjacentHTML("beforeend", content)
 })
 
-codeAdditions.mainAdd.forEach(addition => {
+crimAPI.codeAdditions.mainAdd.forEach(addition => {
     document.getElementById("main").innerHTML += addition
 })
 
-codeAdditions.extensions.forEach(extension => {
+crimAPI.codeAdditions.extensions.forEach(extension => {
     var extensionList = [...extension]
     var name = extensionList[0]
     extensionList.shift()
     for (const item of extensionList) {
-        document.getElementById(name).insertAdjacentHTML("beforeend", item)
+        document.getElementById(name+"EXsettings").insertAdjacentHTML("beforeend", item)
     }
-    document.getElementById(name).insertAdjacentHTML("beforeend", '<button id="' + name + 'save" class="button savebtn"><i class="fa-solid fa-floppy-disk"></i> Save settings</button><br>')
-    if (codeAdditions.islib[extension]) {
-        document.getElementById(name).insertAdjacentHTML("beforeend", `<p>${codeAdditions.libtext[extension].text}</p><button class="button" onclick="crimAPI.openSite('${codeAdditions.libtext[extension].buttonlink}')">${codeAdditions.libtext[extension].buttontext}</button>`)
+    document.getElementById(name+"EXsettings").insertAdjacentHTML("beforeend", '<button id="' + name + 'save" class="button savebtn"><i class="fa-solid fa-floppy-disk"></i> Save settings</button><br>')
+    if (crimAPI.codeAdditions.islib[extension]) {
+        document.getElementById(name+"EXsettings").insertAdjacentHTML("beforeend", `<p>${crimAPI.codeAdditions.libtext[extension].text}</p><button class="button" onclick="crimAPI.openSite('${crimAPI.codeAdditions.libtext[extension].buttonlink}')">${crimAPI.codeAdditions.libtext[extension].buttontext}</button>`)
     }
-    document.getElementById(name).insertAdjacentHTML("beforeend", '<br><br><br><br>')
+    document.getElementById(name+"EXsettings").insertAdjacentHTML("beforeend", '<br><br><br><br>')
     document.getElementById(name + "save").addEventListener('click', () => {
         var value = String(document.getElementById(name + "input").checked)
         var item = "enabled"
         crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/config.json`, [item], [value]])
-        for (const uuid of Object.keys(codeAdditions.userCFGS)) {
-            var information = codeAdditions.userCFGS[uuid]
+        for (const uuid of Object.keys(crimAPI.codeAdditions.userCFGS)) {
+            var information = crimAPI.codeAdditions.userCFGS[uuid]
             if (information.type === "CHNSEL" || information.type === "ROLESEL") {
                 if (information.extension === name) {
                     var value = document.getElementById(uuid).dataset.currentval
@@ -90,22 +90,22 @@ codeAdditions.extensions.forEach(extension => {
     })
 })
 
-codeAdditions.configs.forEach(config => {
+crimAPI.codeAdditions.configs.forEach(config => {
     document.getElementById('Configuration').insertAdjacentHTML("beforeend", config)
 })
 
-codeAdditions.errs.forEach(err => {
+crimAPI.codeAdditions.errs.forEach(err => {
     console.log(err)
 })
 
-for (const uuid of Object.keys(codeAdditions.userCFGS)) {
+for (const uuid of Object.keys(crimAPI.codeAdditions.userCFGS)) {
     if (document.getElementById(uuid).dataset.currentval === undefined) {
-        document.getElementById(uuid).defaultValue = codeAdditions.defaults[uuid]
+        document.getElementById(uuid).defaultValue = crimAPI.codeAdditions.defaults[uuid]
     } else {
-        document.getElementById(uuid).dataset.currentval = codeAdditions.defaults[uuid]
+        document.getElementById(uuid).dataset.currentval = crimAPI.codeAdditions.defaults[uuid]
         var channelFound = false
         for (const option of document.getElementById(uuid).querySelector(".select").querySelector(".custom-options").children) {
-            if (option.dataset.value === codeAdditions.defaults[uuid]) {
+            if (option.dataset.value === crimAPI.codeAdditions.defaults[uuid]) {
                 const val = option.dataset.value
                 const guild = option.dataset.guildname
                 option.parentElement.parentElement.parentElement.dataset.currentval = val

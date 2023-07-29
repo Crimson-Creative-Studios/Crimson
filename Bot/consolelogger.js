@@ -91,6 +91,7 @@ function raw(...infos) {
 }
 
 module.exports = {
+    log: info,
     info,
     warn,
     error,

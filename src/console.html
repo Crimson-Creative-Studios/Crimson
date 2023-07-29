@@ -135,12 +135,12 @@
             }
 
             async function checkRestart() {
-                if (online === false) {
+                if (!online) {
                     crimAPI.BotStart()
                     online = true
                 } else {
                     crimAPI.BotStop()
-                    await new Promise(resolve => setTimeout(resolve, 100))
+                    await new Promise(resolve => setTimeout(resolve, 200))
                     crimAPI.BotStart()
                 }
             }
@@ -150,7 +150,7 @@
             }
 
             function checkStart() {
-                if (online === true) {
+                if (online) {
                     document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is online, cannot start.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {
@@ -160,7 +160,7 @@
             }
 
             function checkEnd() {
-                if (online === false) {
+                if (!online) {
                     document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is offline, cannot stop.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {
@@ -170,7 +170,7 @@
             }
 
             function checkRC() {
-                if (online === false) {
+                if (!online) {
                     document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is offline, cannot refresh.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {

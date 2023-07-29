@@ -1025,13 +1025,14 @@ td {
 .custom-options {
   position: absolute;
   display: none;
-  top: 0;
+  top: 60px;
   left: 0;
   right: 0;
   border: 1px solid var(--color);
   border-top: 0;
   border-radius: 10px;
   background: var(--background);
+  background-size: 100% 100%;
   transition: all 0.5s;
   visibility: hidden;
   pointer-events: none;
@@ -1070,9 +1071,6 @@ td {
 .custom-option * {
   margin-right: 5px;
 }
-.custom-option img {
-  border-radius: 35%;
-}
 
 .disabled-option:hover {
   cursor: auto;
@@ -1087,6 +1085,15 @@ td {
   font-weight: bold;
   border: solid 2px var(--color);
   border-radius: 10px;
+  color: var(--buttontext);
+  background: var(--button);
+}
+.big-option:hover {
+  cursor: auto;
+  background: var(--button);
+}
+.big-option.selected {
+  background: var(--button);
 }
 
 .arrow {
@@ -1129,13 +1136,16 @@ td {
   text-align: center;
 }
 
+.guild-icon {
+  border-radius: 35%;
+  border: 1px solid var(--color);
+}
+
 .default-guild {
   color: var(--color);
   width: 32px;
   height: 32px;
-  border-radius: 35%;
   background: var(--background);
-  border: 1px solid var(--color);
   display: flex;
   justify-content: center;
   align-items: center;
