@@ -1,5 +1,21 @@
 
 const br = ""
+const colors = {
+    reset: "\x1b[0m",
+
+    fg: {
+        black: "\x1b[30m",
+        red: "\x1b[31m",
+        green: "\x1b[32m",
+        yellow: "\x1b[33m",
+        blue: "\x1b[34m",
+        magenta: "\x1b[35m",
+        cyan: "\x1b[36m",
+        white: "\x1b[37m",
+        gray: "\x1b[90m",
+        crimson: "\x1b[38m"
+    }
+}
 
 function formatDate() {
     var hour = new Date().getHours()
@@ -22,7 +38,16 @@ function info(...infos) {
     for (const info of infos) {
         prntStr += info.toString() + " "
     }
-    console.log(`\x1b[32m[ ${formatDate()} | Info ] ${prntStr}${br}\x1b[0m`)
+    console.log(`[ ${formatDate()} | Info ] ${prntStr}${br}`)
+    console.log(br)
+}
+
+function success(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`${colors.color.green}[ ${formatDate()} | Success ] ${prntStr}${br}${colors.reset}`)
     console.log(br)
 }
 
@@ -31,7 +56,7 @@ function warn(...infos) {
     for (const info of infos) {
         prntStr += info.toString() + " "
     }
-    console.log(`\x1b[33m[ ${formatDate()} | Warn ] ${prntStr}${br}\x1b[0m`)
+    console.log(`${colors.color.yellow}[ ${formatDate()} | Warn ] ${prntStr}${br}${colors.reset}`)
     console.log(br)
 }
 
@@ -40,7 +65,7 @@ function error(...infos) {
     for (const info of infos) {
         prntStr += info.toString() + " "
     }
-    console.log(`\x1b[31m[ ${formatDate()} | Error ] ${prntStr}${br}\x1b[0m`)
+    console.log(`${colors.color.red}[ ${formatDate()} | Error ] ${prntStr}${br}${colors.reset}`)
     console.log(br)
 }
 
@@ -49,7 +74,7 @@ function hint(...infos) {
     for (const info of infos) {
         prntStr += info.toString() + " "
     }
-    console.log(`\x1b[35m[ ${formatDate()} | Hint ] ${prntStr}${br}\x1b[0m`)
+    console.log(`${colors.color.magenta}[ ${formatDate()} | Hint ] ${prntStr}${br}${colors.reset}`)
     console.log(br)
 }
 
@@ -58,7 +83,7 @@ function action(...infos) {
     for (const info of infos) {
         prntStr += info.toString() + " "
     }
-    console.log(`\x1b[36m[ ${formatDate()} | User Action ] ${prntStr}${br}\x1b[0m`)
+    console.log(`${colors.color.cyan}[ ${formatDate()} | User Action ] ${prntStr}${br}${colors.reset}`)
     console.log(br)
 }
 
@@ -67,7 +92,7 @@ function logCmd(...infos) {
     for (const info of infos) {
         prntStr += info.toString() + " "
     }
-    console.log(`\x1b[36m[ ${formatDate()} | Log Command ] ${prntStr}${br}\x1b[0m`)
+    console.log(`\x1b[36m[ ${formatDate()} | Log Command ] ${prntStr}${br}${colors.reset}`)
     console.log(br)
 }
 
@@ -76,16 +101,39 @@ function start(...infos) {
     for (const info of infos) {
         prntStr += info.toString() + " "
     }
-    console.log(`\x1b[34m[ ${formatDate()} | Start ] ${prntStr}${br}\x1b[0m`)
+    console.log(`${colors.color.blue}[ ${formatDate()} | Start ] ${prntStr}${br}${colors.reset}`)
     console.log(br)
 }
 
 function raw(...infos) {
-    var prntStr = ""
-    for (const info of infos) {
-        prntStr += info.toString() + " "
+    console.log(...infos)
+    console.log(br)
+    console.log(br)
+}
+
+function custom(options) {
+    var str
+    if (!options.content) {
+        error("Invalid custom logger command found, missing content to log, passed in options:", options)
+        return
     }
-    console.log(prntStr)
+    if (options.color) {
+        if (colors.color[options.color]) {
+            str += colors.color[options.color]
+        }
+    }
+    if (options.name) {
+        str += `[ ${formatDate()} | ${options.name} ] `
+    } else {
+        str += `[ ${formatDate()} ] `
+    }
+    str += options.content
+    if (options.color) {
+        if (colors.color[options.color]) {
+            str += colors.reset
+        }
+    }
+    console.log(str)
     console.log(br)
     console.log(br)
 }
@@ -100,5 +148,7 @@ module.exports = {
     logCmd,
     start,
     raw,
-    err: error
+    err: error,
+    custom,
+    success
 }
