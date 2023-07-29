@@ -499,7 +499,11 @@ ipcMain.handle('OpenConsole', async (event, args) => {
 })
 
 function removeColorCode(text) {
-    const colors = ["[34m", "[32m", "[33m", "[31m", "[35m", "[36m", "[0m"]
+    const colors = ["[30m", "[31m", "[32m", "[33m", "[34m", "[35m", "[36m", "[37m", "[38m", "[90m", "[0m"]
+    const replacers = ['<span class="console-text-black">', '<span class="console-text-red">', '<span class="console-text-green">',
+                       '<span class="console-text-yellow">', '<span class="console-text-blue">', '<span class="console-text-magenta">',
+                       '<span class="console-text-cyan">', '<span class="console-text-white">', '<span class="console-text-crimson">',
+                       '<span class="console-text-grey">', '</span>']
     var txt = text
     for (const color of colors) {
         txt = txt.replaceAll(color, "")
@@ -508,7 +512,7 @@ function removeColorCode(text) {
 }
 
 ipcMain.handle('BotStart', (event, arg) => {
-    globalBot = spawn('node', [__dirname + '\\..\\Bot\\index.mjs', "--gui"], { cwd: '..\\Bot', shell: true, stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
+    globalBot = spawn('node', [path.resolve('..', 'Bot', 'index.mjs'), "--gui"], { cwd: '../Bot', shell: true, stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
     globalBot.stdout.setEncoding('utf8')
     globalBot.stdout.on('data', (data) => {
         if (data === 'STPSCD') {

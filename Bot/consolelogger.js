@@ -3,7 +3,7 @@ const br = ""
 const colors = {
     reset: "\x1b[0m",
 
-    fg: {
+    color: {
         black: "\x1b[30m",
         red: "\x1b[31m",
         green: "\x1b[32m",
