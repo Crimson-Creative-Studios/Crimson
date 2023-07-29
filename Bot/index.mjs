@@ -104,10 +104,11 @@ const server = net.createServer((socket) => {
 
 server.on('error', (err) => {
     console.error(`IPC Error for Extensions: ${err}`)
+    console.error(`Extensions cannot communicate, please consider closing all instances of Crimson and trying again`)
     console.hint("If the error message is 'Error: listen EADDRINUSE: address already in use :::3000' then that means there is another application using the port, this could be another process of Crimson!")
 })
-
-server.listen(3000, () => { })
+const port = 3000
+server.listen(port, () => { })
 
 //? Generate a valid path
 function resolvePath(extension, file) {
@@ -175,7 +176,7 @@ extensions.forEach((extension) => {
             vm.createContext(sandbox)
             vm.runInContext(`const net = require('net')
 
-const extensionHandler = net.createConnection({ port: 3000 }, () => {
+const extensionHandler = net.createConnection({ port: ${port} }, () => {
     console.start('Successfully loaded ${metadata.name}')
 })
 

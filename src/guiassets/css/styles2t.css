@@ -1175,35 +1175,53 @@ td {
   border: 2px solid var(--color);
 }
 
+:root {
+  --console-black: black;
+  --console-red: red;
+  --console-green: lime;
+  --console-yellow: yellow;
+  --console-blue: #72dcff;
+  --console-magenta: magenta;
+  --console-cyan: #00adad;
+  --console-white: white;
+  --console-crimson: #d63535;
+  --console-grey: grey;
+}
+
+.console-text {
+  font-family: "DM Mono", monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
 .console-text-black {
-  color: black;
+  color: var(--console-black);
 }
 .console-text-red {
-  color: red;
+  color: var(--console-red);
 }
 .console-text-green {
-  color: lime;
+  color: var(--console-green);
 }
 .console-text-yellow {
-  color: yellow;
+  color: var(--console-yellow);
 }
 .console-text-blue {
-  color: blue;
+  color: var(--console-blue);
 }
 .console-text-magenta {
-  color: magenta;
+  color: var(--console-magenta);
 }
 .console-text-cyan {
-  color: cyan;
+  color: var(--console-cyan);
 }
 .console-text-white {
-  color: white;
+  color: var(--console-white);
 }
 .console-text-crimson {
-  color: #bd0a0a;
+  color: var(--console-crimson);
 }
 .console-text-grey {
-  color: grey;
+  color: var(--console-grey);
 }
 
 /*# sourceMappingURL=styles2t.css.map */

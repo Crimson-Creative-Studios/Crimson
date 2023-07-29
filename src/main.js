@@ -111,6 +111,9 @@ function consoleWindow() {
         if (conIsMax) {
             console.webContents.send("wincontroler", "max")
         }
+        try {
+            globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
+        } catch(err) { }
     })
 
     console.on('maximize', () => {
@@ -416,33 +419,11 @@ function createWindow() {
     return win
 }
 
-function evalInContext(js, context) {
-    return function () {
-        return eval(js)
-    }.call(context)
-}
-
 app.whenReady().then(async () => {
     win = createWindow()
 
     win.loadFile(path.join(__dirname, 'loading.html'))
     setTimeout(() => win.loadFile(path.join(__dirname, 'index.html')), 4000)
-
-    const server = net.createServer((socket) => {
-        socket.on('data', (message) => {
-            const messagestr = message.toString()
-            const msgs = messagestr.split("ܛ")
-            for (const msg of msgs) {
-                if (msg !== "") {
-                    if (msg.startsWith(uuid)) {
-                        const info = msg.slice(uuid.length)
-                        evalInContext(info, { win })
-                    }
-                }
-            }
-        })
-    })
-    server.listen(2845, '127.0.0.1')
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow()
@@ -498,15 +479,15 @@ ipcMain.handle('OpenConsole', async (event, args) => {
     })
 })
 
-function removeColorCode(text) {
+function replaceColorCode(text) {
     const colors = ["[30m", "[31m", "[32m", "[33m", "[34m", "[35m", "[36m", "[37m", "[38m", "[90m", "[0m"]
-    const replacers = ['<span class="console-text-black">', '<span class="console-text-red">', '<span class="console-text-green">',
-                       '<span class="console-text-yellow">', '<span class="console-text-blue">', '<span class="console-text-magenta">',
-                       '<span class="console-text-cyan">', '<span class="console-text-white">', '<span class="console-text-crimson">',
-                       '<span class="console-text-grey">', '</span>']
+    const replacers = ['<span class="console-text console-text-black">', '<span class="console-text console-text-red">', '<span class="console-text console-text-green">',
+                       '<span class="console-text console-text-yellow">', '<span class="console-text console-text-blue">', '<span class="console-text console-text-magenta">',
+                       '<span class="console-text console-text-cyan">', '<span class="console-text console-text-white">', '<span class="console-text console-text-crimson">',
+                       '<span class="console-text console-text-grey">', '</span>']
     var txt = text
-    for (const color of colors) {
-        txt = txt.replaceAll(color, "")
+    for (const i in colors) {
+        txt = txt.replaceAll(colors[i], replacers[i])
     }
     return txt
 }
@@ -518,7 +499,7 @@ ipcMain.handle('BotStart', (event, arg) => {
         if (data === 'STPSCD') {
             consolewin.webContents.send('STP')
         } else if (data.startsWith("prompt:")) { } else {
-            consolewin.webContents.send('botstdout', removeColorCode(data.replaceAll("\n", "<br>")))
+            consolewin.webContents.send('botstdout', replaceColorCode(data.replaceAll("\n", "<br>")))
         }
     })
     globalBot.stderr.setEncoding('utf8')

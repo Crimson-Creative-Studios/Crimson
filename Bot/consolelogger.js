@@ -38,7 +38,7 @@ function info(...infos) {
     for (const info of infos) {
         prntStr += info.toString() + " "
     }
-    console.log(`[ ${formatDate()} | Info ] ${prntStr}${br}`)
+    console.log(`${colors.color.white}[ ${formatDate()} | Info ] ${prntStr}${br}${colors.reset}`)
     console.log(br)
 }
 
@@ -78,24 +78,6 @@ function hint(...infos) {
     console.log(br)
 }
 
-function action(...infos) {
-    var prntStr = ""
-    for (const info of infos) {
-        prntStr += info.toString() + " "
-    }
-    console.log(`${colors.color.cyan}[ ${formatDate()} | User Action ] ${prntStr}${br}${colors.reset}`)
-    console.log(br)
-}
-
-function logCmd(...infos) {
-    var prntStr = ""
-    for (const info of infos) {
-        prntStr += info.toString() + " "
-    }
-    console.log(`\x1b[36m[ ${formatDate()} | Log Command ] ${prntStr}${br}${colors.reset}`)
-    console.log(br)
-}
-
 function start(...infos) {
     var prntStr = ""
     for (const info of infos) {
@@ -108,11 +90,10 @@ function start(...infos) {
 function raw(...infos) {
     console.log(...infos)
     console.log(br)
-    console.log(br)
 }
 
 function custom(options) {
-    var str
+    var str = ""
     if (!options.content) {
         error("Invalid custom logger command found, missing content to log, passed in options:", options)
         return
@@ -135,7 +116,6 @@ function custom(options) {
     }
     console.log(str)
     console.log(br)
-    console.log(br)
 }
 
 module.exports = {
@@ -144,8 +124,6 @@ module.exports = {
     warn,
     error,
     hint,
-    action,
-    logCmd,
     start,
     raw,
     err: error,

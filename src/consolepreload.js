@@ -1,10 +1,15 @@
 const { contextBridge, ipcRenderer } = require('electron')
 const {onlineVersion, themes} = ipcRenderer.sendSync("infoGrab")
 const version = ipcRenderer.sendSync("getFile", "version.txt")
-var guicfg = {
-    theme: "",
-    darkness: "0",
-    override: false
+var guicfg
+try {
+    guicfg = JSON.parse(ipcRenderer.sendSync("getFile", "guicfg.json"))
+} catch(err) {
+    guicfg = {
+        theme: "",
+        darkness: "0",
+        override: false
+    }
 }
 
 contextBridge.exposeInMainWorld('crimAPI', {
