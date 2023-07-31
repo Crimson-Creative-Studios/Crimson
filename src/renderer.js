@@ -60,13 +60,13 @@ crimAPI.codeAdditions.extensions.forEach(extension => {
     var name = extensionList[0]
     extensionList.shift()
     for (const item of extensionList) {
-        document.getElementById(name+"EXsettings").insertAdjacentHTML("beforeend", item)
+        document.getElementById(name + "EXsettings").insertAdjacentHTML("beforeend", item)
     }
-    document.getElementById(name+"EXsettings").insertAdjacentHTML("beforeend", '<button id="' + name + 'save" class="button savebtn"><i class="fa-solid fa-floppy-disk"></i> Save settings</button><br>')
+    document.getElementById(name + "EXsettings").insertAdjacentHTML("beforeend", '<button id="' + name + 'save" class="button savebtn"><i class="fa-solid fa-floppy-disk"></i> Save settings</button><br>')
     if (crimAPI.codeAdditions.islib[extension]) {
-        document.getElementById(name+"EXsettings").insertAdjacentHTML("beforeend", `<p>${crimAPI.codeAdditions.libtext[extension].text}</p><button class="button" onclick="crimAPI.openSite('${crimAPI.codeAdditions.libtext[extension].buttonlink}')">${crimAPI.codeAdditions.libtext[extension].buttontext}</button>`)
+        document.getElementById(name + "EXsettings").insertAdjacentHTML("beforeend", `<p>${crimAPI.codeAdditions.libtext[extension].text}</p><button class="button" onclick="crimAPI.openSite('${crimAPI.codeAdditions.libtext[extension].buttonlink}')">${crimAPI.codeAdditions.libtext[extension].buttontext}</button>`)
     }
-    document.getElementById(name+"EXsettings").insertAdjacentHTML("beforeend", '<br><br><br><br>')
+    document.getElementById(name + "EXsettings").insertAdjacentHTML("beforeend", '<br><br><br><br>')
     document.getElementById(name + "save").addEventListener('click', () => {
         var value = String(document.getElementById(name + "input").checked)
         var item = "enabled"
@@ -79,12 +79,24 @@ crimAPI.codeAdditions.extensions.forEach(extension => {
                     var item = information.item
                 }
                 crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, [item], [value]])
+            } else if (information.type === "MULCHNSEL" || information.type === "MULROLESEL") {
+                if (information.extension === name) {
+                    const values = []
+                    const items = []
+                    for (const i in information.item) {
+                        values.push(document.getElementById(information.guildKeys[i] + uuid).dataset.currentval)
+                        items.push(information.item[i])
+                    }
+                    crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, items, values])
+                }
             } else {
                 if (information.extension === name) {
-                    var value = document.getElementById(uuid).value
-                    var item = information.item
+                    if (information.extension === name) {
+                        var value = document.getElementById(uuid).value
+                        var item = information.item
+                    }
+                    crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, [item], [value]])
                 }
-                crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, [item], [value]])
             }
         }
     })
@@ -99,28 +111,57 @@ crimAPI.codeAdditions.errs.forEach(err => {
 })
 
 for (const uuid of Object.keys(crimAPI.codeAdditions.userCFGS)) {
-    if (document.getElementById(uuid).dataset.currentval === undefined) {
-        document.getElementById(uuid).defaultValue = crimAPI.codeAdditions.defaults[uuid]
-    } else {
-        document.getElementById(uuid).dataset.currentval = crimAPI.codeAdditions.defaults[uuid]
-        var channelFound = false
-        for (const option of document.getElementById(uuid).querySelector(".select").querySelector(".custom-options").children) {
-            if (option.dataset.value === crimAPI.codeAdditions.defaults[uuid]) {
-                const val = option.dataset.value
-                const guild = option.dataset.guildname
-                option.parentElement.parentElement.parentElement.dataset.currentval = val
-                option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML + " - " + guild
-                for (const child of option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").childNodes) {
-                    if (child.nodeName === "DIV") {
-                        child.remove()
+    if (crimAPI.codeAdditions.userCFGS[uuid].item instanceof Array) {
+        for (const guildKey of crimAPI.codeAdditions.userCFGS[uuid].guildKeys) {
+            if (document.getElementById(guildKey+uuid).dataset.currentval === undefined) {
+                document.getElementById(guildKey+uuid).defaultValue = crimAPI.codeAdditions.defaults[guildKey+uuid]
+            } else {
+                document.getElementById(guildKey+uuid).dataset.currentval = crimAPI.codeAdditions.defaults[guildKey+uuid]
+                var channelFound = false
+                for (const option of document.getElementById(guildKey+uuid).querySelector(".select").querySelector(".custom-options").children) {
+                    if (option.dataset.value === crimAPI.codeAdditions.defaults[guildKey+uuid]) {
+                        const val = option.dataset.value
+                        const guild = option.dataset.guildname
+                        option.parentElement.parentElement.parentElement.dataset.currentval = val
+                        option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML
+                        for (const child of option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").childNodes) {
+                            if (child.nodeName === "DIV") {
+                                child.remove()
+                            }
+                        }
+                        option.classList.add("selected")
+                        channelFound = true
                     }
                 }
-                option.classList.add("selected")
-                channelFound = true
+                if (!channelFound) {
+                    document.getElementById(guildKey+uuid).querySelector(".select").querySelector(".select__trigger").querySelector("span").innerHTML = "Data not found."
+                }
             }
         }
-        if (!channelFound) {
-            document.getElementById(uuid).querySelector(".select").querySelector(".select__trigger").querySelector("span").innerHTML = "Data not found."
+    } else {
+        if (document.getElementById(uuid).dataset.currentval === undefined) {
+            document.getElementById(uuid).defaultValue = crimAPI.codeAdditions.defaults[uuid]
+        } else {
+            document.getElementById(uuid).dataset.currentval = crimAPI.codeAdditions.defaults[uuid]
+            var channelFound = false
+            for (const option of document.getElementById(uuid).querySelector(".select").querySelector(".custom-options").children) {
+                if (option.dataset.value === crimAPI.codeAdditions.defaults[uuid]) {
+                    const val = option.dataset.value
+                    const guild = option.dataset.guildname
+                    option.parentElement.parentElement.parentElement.dataset.currentval = val
+                    option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML + " - " + guild
+                    for (const child of option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").childNodes) {
+                        if (child.nodeName === "DIV") {
+                            child.remove()
+                        }
+                    }
+                    option.classList.add("selected")
+                    channelFound = true
+                }
+            }
+            if (!channelFound) {
+                document.getElementById(uuid).querySelector(".select").querySelector(".select__trigger").querySelector("span").innerHTML = "Data not found."
+            }
         }
     }
 }
