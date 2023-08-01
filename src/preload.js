@@ -5,7 +5,7 @@ function requirePro(thing) {
     return ipcRenderer.sendSync("require", thing)
 }
 
-const {onlineVersion, uuid, themes} = ipcRenderer.sendSync("infoGrab")
+const {onlineVersion, uuid, themes, themeEffects} = ipcRenderer.sendSync("infoGrab")
 const cfg = requirePro('../config.json')
 const version = ipcRenderer.sendSync("getFile", "version.txt")
 const botInfoCollect = ipcRenderer.sendSync("botInfoCollect", null)
@@ -277,6 +277,7 @@ contextBridge.exposeInMainWorld('crimAPI', {
     guicfg: () => requirePro("./guicfg.json"),
     uuid: () => uuid,
     themes: () => themes,
+    themeEffects: () => themeEffects,
     handleThemeData: (callback) => ipcRenderer.on('grabThemeData', callback),
     sendThemeData: (arg) => ipcRenderer.invoke('sendThemeData', arg),
     show: () => ipcRenderer.invoke('showWin', 'main'),

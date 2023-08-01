@@ -1,11 +1,19 @@
 clearColor()
-document.getElementById("element").value = ""
-document.getElementById("backgroundmainchange").value = 'url("../backgrounds/gradienthevimg.png")'
-document.getElementById("backgroundaltchange").value = 'transparent'
-document.getElementById("textmainchange").value = "white"
-document.getElementById("textaltchange").value = "#c4c4c4"
-document.getElementById("buttonmainchange").value = "black"
-document.getElementById("buttonhovchange").value = "#222"
-document.getElementById("buttonactchange").value = "#444"
-document.getElementById("buttonhovactchange").value = "#666"
+
+resetEl()
+
+setBackgroundColor({
+    main: 'url("../backgrounds/gradienthevimg.png")',
+    alt: "rgba(0,0,0,0)",
+    console: ""
+})
+
+setButtonColor({
+    main: "#000000",
+    hover: "#222222",
+    active: "#444444",
+    hoveractive: "#666666",
+    text: ""
+})
+
 loadColors()

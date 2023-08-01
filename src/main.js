@@ -253,10 +253,12 @@ function createWindow() {
     ipcMain.on('infoGrab', async (event, arg) => {
         const onlineVersion = await axios.get("https://github.com/Crimson-Creative-Studios/Crimson/raw/main/src/version.txt")
         const themes = await fs.promises.readdir("./themes")
+        const themeEffects = await fs.promises.readdir("./themeEffects")
         event.returnValue = {
             onlineVersion: onlineVersion.data,
             uuid: uuid,
-            themes: themes
+            themes: themes,
+            themeEffects: themeEffects
         }
     })
 

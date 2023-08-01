@@ -1,5 +1,6 @@
-var themeNow = ""
+var themeNow = "", themeEffectNow = ""
 var animations = []
+var animationFunctions = []
 var guicfg = crimAPI.guicfg()
 
 function applyColor(el, options) {
@@ -52,12 +53,19 @@ function loadColors(options) {
 function clearColor() {
     window.onmousemove = undefined
     window.onmousedown = undefined
-    animations.forEach( clearInterval )
+    animations.forEach(clearInterval)
+    animationFunctions.forEach((func) => {
+        func = function () { }
+    })
     animations = []
+    animationFunctions = []
     try {
         script.remove()
-    } catch(err) {}
+        effectScript.remove()
+        effectScript = undefined
+    } catch (err) { }
     themeNow = ""
+    themeEffectNow = ""
     if (iscrinsom) {
         document.getElementById("texttitle").innerHTML = "CrinsomGUI"
     } else {
@@ -100,12 +108,53 @@ function clearColor() {
 
     var guioptions = {
         theme: themeNow,
+        themeEffect: themeEffectNow,
         darkness: document.getElementById("darknessControl").value,
         override: document.getElementById("extensionThemeOverride").checked
     }
     try {
         crimAPI.sendThemeData(guioptions)
-    } catch(err) {}
+    } catch (err) { }
+}
+
+function resetEl() {
+    document.getElementById("element").value = ""
+}
+
+function setBackgroundColor(colors) {
+    document.getElementById("backgroundmainchange").value = colors.main ?? ""
+    document.getElementById("backgroundaltchange").value = colors.alt ?? ""
+    document.documentElement.style.setProperty("--cnslbg", colors.console ?? "")
+}
+
+function setTextColor(colors) {
+    document.getElementById("textmainchange").value = colors.main ?? ""
+    document.getElementById("textaltchange").value = colors.alt ?? ""
+}
+
+function setButtonColor(colors) {
+    document.getElementById("buttonmainchange").value = colors.main ?? ""
+    document.getElementById("buttonhovchange").value = colors.hover ?? ""
+    document.getElementById("buttonactchange").value = colors.active ?? ""
+    document.getElementById("buttonhovactchange").value = colors.hoveractive ?? ""
+    document.documentElement.style.setProperty("--buttontext", colors.text ?? "")
+}
+
+function setConsoleColors(colors) {
+    document.documentElement.style.setProperty("--console-black", colors.black ?? "")
+    document.documentElement.style.setProperty("--console-red", colors.red ?? "")
+    document.documentElement.style.setProperty("--console-green", colors.green ?? "")
+    document.documentElement.style.setProperty("--console-yellow", colors.yellow ?? "")
+    document.documentElement.style.setProperty("--console-blue", colors.blue ?? "")
+    document.documentElement.style.setProperty("--console-magenta", colors.magenta ?? "")
+    document.documentElement.style.setProperty("--console-cyan", colors.cyan ?? "")
+    document.documentElement.style.setProperty("--console-white", colors.white ?? "")
+    document.documentElement.style.setProperty("--console-crimson", colors.crimson ?? "")
+    document.documentElement.style.setProperty("--console-grey", colors.grey ?? "")
+}
+
+function setTitle(text) {
+    document.getElementById("texttitle").innerHTML = text
 }
 
 window.loadColors = loadColors
@@ -122,28 +171,56 @@ function changeWinText() {
     }, 200)
 }
 
-var script
+var script, effectScript
 
-function addTheme(name) {
-    script = document.createElement("script")
-    script.setAttribute("src", "./themes/"+name)
-    script.onload = () => {
-        themeNow = name
-        var guioptions = {
-            theme: themeNow,
-            darkness: document.getElementById("darknessControl").value,
-            override: document.getElementById("extensionThemeOverride").checked
+function addTheme(name, type = "theme") {
+    if (type === "effect") {
+        if (name !== themeEffectNow) {
+            if (effectScript) {
+                addTheme(themeNow)
+            }
+            effectScript = document.createElement("script")
+            effectScript.setAttribute("src", "./themeEffects/" + name)
+            effectScript.onload = () => {
+                themeEffectNow = name
+                var guioptions = {
+                    theme: themeNow,
+                    themeEffect: themeEffectNow,
+                    darkness: document.getElementById("darknessControl").value,
+                    override: document.getElementById("extensionThemeOverride").checked
+                }
+                try {
+                    crimAPI.sendThemeData(guioptions)
+                } catch (err) { }
+            }
+            document.head.appendChild(effectScript)
         }
-        try {
-            crimAPI.sendThemeData(guioptions)
-        } catch(err) {}
+    } else {
+        script = document.createElement("script")
+        script.setAttribute("src", "./themes/" + name)
+        script.onload = () => {
+            themeNow = name
+            var guioptions = {
+                theme: themeNow,
+                themeEffect: themeEffectNow,
+                darkness: document.getElementById("darknessControl").value,
+                override: document.getElementById("extensionThemeOverride").checked
+            }
+            try {
+                crimAPI.sendThemeData(guioptions)
+            } catch (err) { }
+        }
+        document.head.appendChild(script)
     }
-    document.head.appendChild(script)
 }
 
-window.onload = () => {
+window.onload = async () => {
     if (guicfg.theme) {
         addTheme(guicfg.theme)
+    }
+    await new Promise(resolve => setTimeout(resolve, 10))
+    if (guicfg.themeEffect) {
+        addTheme(guicfg.themeEffect, "effect")
     }
     if (guicfg.darkness) {
         document.documentElement.style.setProperty('--darkness', String(Number(guicfg.darkness) / 1000))
@@ -160,17 +237,26 @@ window.onload = () => {
         document.getElementById("themesBTNHolder").insertAdjacentHTML("beforeend", button.outerHTML)
     }
 
+    for (const themeEffect of crimAPI.themeEffects()) {
+        const button = document.createElement("button")
+        button.classList.add("button")
+        button.setAttribute("onclick", `addTheme("${themeEffect}", "effect")`)
+        button.innerHTML = themeEffect.slice(0, -3)
+        document.getElementById("themeEffectsBTNHolder").insertAdjacentHTML("beforeend", button.outerHTML)
+    }
+
     crimAPI.show()
 }
 
 function saveGUISettings() {
     const options = {
         theme: themeNow,
+        themeEffect: themeEffectNow,
         darkness: document.getElementById("darknessControl").value,
         override: document.getElementById("extensionThemeOverride").checked
     }
     handleNotification("savingModal", 3000)
     try {
         crimAPI.jsonRequest(["setJSONNotStyle", "guicfg.json", JSON.stringify(options)])
-    } catch(err) {}
+    } catch (err) { }
 }
