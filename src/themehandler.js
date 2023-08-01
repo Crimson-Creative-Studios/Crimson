@@ -177,7 +177,7 @@ function addTheme(name, type = "theme") {
     if (type === "effect") {
         if (name !== themeEffectNow) {
             if (effectScript) {
-                addTheme(themeNow)
+                effectScript.remove()
             }
             effectScript = document.createElement("script")
             effectScript.setAttribute("src", "./themeEffects/" + name)

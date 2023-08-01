@@ -1,15 +1,24 @@
+function indexToPosition(index, columns) {
+    const x = index % columns
+    const y = Math.floor(index / columns)
+    return { x, y }
+  }
+
 window.addEventListener("load", (event) => {
     const wrapper = document.getElementById("tiles")
 
     let columns = 0,
         rows = 0
 
-    const createTile = (index, col, row) => {
+    const createTile = (index, x, y) => {
         const tile = document.createElement("div")
 
         const delay = Math.floor(Math.random() * index)
 
         tile.style.setProperty('--delay', delay)
+        tile.dataset.col = x
+        tile.dataset.row = y
+        tile.dataset.index = index
         //! Cool ass design
         //tile.style.setProperty('--delay', (index % col) + (index / col))
 
@@ -18,9 +27,10 @@ window.addEventListener("load", (event) => {
         return tile
     }
 
-    const createTiles = (quantity, col, row) => {
+    const createTiles = (quantity, col) => {
         Array.from(Array(quantity)).map(async (tile, index) => {
-            wrapper.appendChild(createTile(index, col, row))
+            const {x,y} = indexToPosition(index, col)
+            wrapper.appendChild(createTile(index, x, y))
         })
     }
 
@@ -33,7 +43,7 @@ window.addEventListener("load", (event) => {
         wrapper.style.setProperty("--columns", columns)
         wrapper.style.setProperty("--rows", rows)
 
-        createTiles(columns * rows, columns, rows)
+        createTiles(columns * rows, columns)
     }
 
     createGrid()
