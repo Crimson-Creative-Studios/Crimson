@@ -590,16 +590,21 @@ textarea:focus {
   padding-right: 15px;
   pointer-events: all;
   width: 10px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
   padding-right: 15px;
   background: rgba(0, 0, 0, 0);
+  width: 5px;
+  pointer-events: all;
 }
 ::-webkit-scrollbar-thumb {
   padding-right: 15px;
+  pointer-events: all;
   background: var(--coloralt);
   border-radius: 5px;
   transition: 0.3s;
+  width: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color);
@@ -997,6 +1002,7 @@ td {
   border-style: solid;
   border-color: var(--color);
   border-radius: 10px;
+  margin-bottom: 15px;
 }
 .select-wrapper {
   position: relative;
@@ -1014,10 +1020,10 @@ td {
   padding: 0 22px;
   font-size: 20px;
   font-weight: 300;
-  color: var(--color);
+  color: var(--buttontext);
   height: 60px;
   line-height: 60px;
-  background: var(--background);
+  background: var(--buttonacthov);
   cursor: pointer;
   border-radius: 10px;
 }
@@ -1031,8 +1037,9 @@ td {
   border: 1px solid var(--color);
   border-top: 0;
   border-radius: 10px;
-  background: var(--background);
+  background: var(--button);
   background-size: 100% 100%;
+  color: var(--buttontext);
   transition: all 0.5s;
   visibility: hidden;
   pointer-events: none;
@@ -1050,7 +1057,7 @@ td {
   padding: 0 22px 0 22px;
   font-size: 22px;
   font-weight: 300;
-  color: var(--color);
+  color: var(--buttontext);
   line-height: 60px;
   cursor: pointer;
   transition: all 0.5s;
@@ -1086,7 +1093,7 @@ td {
   border: solid 2px var(--color);
   border-radius: 10px;
   color: var(--buttontext);
-  background: var(--button);
+  background: var(--buttonacthov);
 }
 .big-option:hover {
   cursor: auto;
