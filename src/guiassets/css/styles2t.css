@@ -205,7 +205,7 @@ img {
   transition: opacity 0.3s, background-color 0.3s, color 0.3s !important;
 }
 .tabBottom button > * {
-  transform: rotate(0deg) scale(1);
+  transform: scale(1);
   transition: transform 0.3s;
 }
 .tabBottom button:hover {
@@ -220,6 +220,7 @@ img {
   transform: scale(1.2);
   animation: slowSpin 15s infinite linear;
   animation-delay: 0.3s;
+  animation-fill-mode: forwards;
 }
 .tabBottom button.active:hover {
   background: var(--buttonacthov);

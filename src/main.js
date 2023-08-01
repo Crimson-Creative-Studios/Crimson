@@ -455,20 +455,23 @@ app.on('will-quit', () => {
     globalShortcut.unregisterAll()
 })
 
-ipcMain.handle('sendThemeData', (event, arg) => {
+var newLoad = false
+
+ipcMain.handle('sendThemeData', async (event, arg) => {
     try {
+        if (newLoad) {
+            await new Promise(resolve => setTimeout(resolve, 750))
+            newLoad = false
+        }
         consolewin.webContents.send("winguicfg", arg)
-        consolewin.webContents.on('did-finish-load', () => {
-            consolewin.webContents.send("winguicfg", arg)
-        })
     } catch (err) { }
 })
 
 ipcMain.handle('OpenConsole', async (event, args) => {
     consolewin = consoleWindow()
-    win.webContents.send("grabThemeData", null)
 
     consolewin.webContents.on('did-start-loading', async () => {
+        newLoad = true
         win.webContents.send("grabThemeData", null)
     })
 

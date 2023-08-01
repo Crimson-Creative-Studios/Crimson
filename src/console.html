@@ -181,8 +181,8 @@
             }
 
             crimAPI.botstdout((event, arg) => {
-                var element = document.querySelectorAll(".typeoutput")
-                element = element[element.length - 1]
+                const elements = document.querySelectorAll(".typeoutput")
+                const element = elements[elements.length - 1]
                 element.insertAdjacentHTML("beforeend", arg)
                 scrollDown()
             })
