@@ -1,26 +1,19 @@
 var themeNow = "", themeEffectNow = ""
 var animations = []
-var animationFunctions = []
 var guicfg = crimAPI.guicfg()
 
 function applyColor(el, options) {
     if (options && !document.getElementById("extensionThemeOverride").checked) {
         try {
-            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                el.style.setProperty('--background', options.dark.background.main)
-                el.style.setProperty('--backgroundalt', options.dark.background.alt)
-                el.style.setProperty('--button', options.dark.button.main)
-                el.style.setProperty('--buttonhov', options.dark.button.hov)
-                el.style.setProperty('--buttonact', options.dark.button.act)
-                el.style.setProperty('--buttonacthov', options.dark.button.hovact)
-            } else {
-                el.style.setProperty('--background', options.light.background.main)
-                el.style.setProperty('--backgroundalt', options.light.background.alt)
-                el.style.setProperty('--button', options.light.button.main)
-                el.style.setProperty('--buttonhov', options.light.button.hov)
-                el.style.setProperty('--buttonact', options.light.button.act)
-                el.style.setProperty('--buttonacthov', options.light.button.hovact)
-            }
+            el.style.setProperty('--background', options.background.main ?? "")
+            el.style.setProperty('--backgroundalt', options.background.alt ?? "")
+            el.style.setProperty('--button', options.button.main ?? "")
+            el.style.setProperty('--buttonhov', options.button.hov ?? "")
+            el.style.setProperty('--buttonact', options.button.act ?? "")
+            el.style.setProperty('--buttonacthov', options.button.hovact ?? "")
+            el.style.setProperty('--buttontext', options.button.text ?? "")
+            el.style.setProperty('--color', options.text.main ?? "")
+            el.style.setProperty('--coloralt', options.text.alt ?? "")
             return
         } catch (err) {
             loadColors()
@@ -34,6 +27,7 @@ function applyColor(el, options) {
         el.style.setProperty('--buttonhov', document.getElementById("buttonhovchange").value)
         el.style.setProperty('--buttonact', document.getElementById("buttonactchange").value)
         el.style.setProperty('--buttonacthov', document.getElementById("buttonhovactchange").value)
+        el.style.setProperty('--buttontext', document.getElementById("buttontextchange").value)
     }
 }
 
@@ -51,14 +45,11 @@ function loadColors(options) {
 }
 
 function clearColor() {
+    createGrid()
     window.onmousemove = undefined
     window.onmousedown = undefined
     animations.forEach(clearInterval)
-    animationFunctions.forEach((func) => {
-        func = function () { }
-    })
     animations = []
-    animationFunctions = []
     try {
         script.remove()
         effectScript.remove()
@@ -137,7 +128,7 @@ function setButtonColor(colors) {
     document.getElementById("buttonhovchange").value = colors.hover ?? ""
     document.getElementById("buttonactchange").value = colors.active ?? ""
     document.getElementById("buttonhovactchange").value = colors.hoveractive ?? ""
-    document.documentElement.style.setProperty("--buttontext", colors.text ?? "")
+    document.getElementById("buttontextchange").value = colors.text ?? ""
 }
 
 function setConsoleColors(colors) {

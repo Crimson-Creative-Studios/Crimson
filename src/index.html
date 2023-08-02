@@ -141,7 +141,7 @@
             <p id="guiver">GUI Version - Loading...</p>
             <p id="funfact">Fun Fact: Not loaded...</p>
             <h4>Credits:</h4>
-            <div id="credits">
+            <div id="credits" class="credits">
                 <div onclick="openTab('Nova')">
                     <img src="guiassets/icons/nova.png" width="100" height="100">
                     <p>Nova - Creator</p>
@@ -167,6 +167,14 @@
                     <p>Font Awesome - Icons</p>
                 </div>
                 <br>
+            </div>
+            <br>
+            <h4 title="Yes this entire section is a joke, don't take it seriously">Funni Credits:</h4>
+            <div class="credits">
+                <div onclick="openTab('JaffaJace')">
+                    <img src="https://cdn.discordapp.com/attachments/850932589325189131/1135647797773869096/Screenshot_2021-06-26-20-20-50-1.jpg" width="100" height="100">
+                    <p>JaffaJace - Penis Snipper</p>
+                </div>
             </div>
             <br>
             <br>
@@ -212,6 +220,15 @@
             <button class="button" onclick="openTab('Information')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
             <p>Font Awesome, a great way to get many many icons, thank you so much for existing guys!</p>
             <button class="button big-button" onclick="crimAPI.openSite('https://fontawesome.com/')"><i class="fa-solid fa-font-awesome"></i></button>
+        </div>
+
+        <div id="JaffaJace" class="tabcontent">
+            <h3>JaffaJace - Penis Snipper</h3>
+            <img class="prevImg" src="https://cdn.discordapp.com/attachments/850932589325189131/1135647797773869096/Screenshot_2021-06-26-20-20-50-1.jpg" width="75" height="75"><br><br>
+            <button class="button" onclick="openTab('Information')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
+            <p>Our local in-house penis snipper, would be careful around him if I were you</p>
+            <button class="button big-button" onclick="crimAPI.openSite('https://github.com/JaffaJace')"><i class="fa-brands fa-github"></i></button>
+            <button class="button big-button" onclick="copy('Username: jaffajace')"><i class="fa-brands fa-discord"></i></button>
         </div>
 
         <div id="Ultra" class="tabcontent">
@@ -281,6 +298,10 @@
                         <label for="buttonhovactchange">Button hover active:</label><br>
                         <input type="text" id="buttonhovactchange" name="buttonhovactchange"
                             placeholder="#8f0828" /><br><br>
+
+                        <label for="buttontextchange">Button text:</label><br>
+                        <input type="text" id="buttontextchange" name="buttontextchange"
+                            placeholder="#ffffff" /><br><br>
                     </div>
                     <label for="element">Element: <span class="click" onclick="openTab('InfoElement')"><i
                                 class="fa-solid fa-circle-info"></i></span></label>

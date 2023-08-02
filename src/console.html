@@ -109,11 +109,15 @@
             <p class="typeoutput"></p>
         </div>
         <script>
-            crimAPI.handleThemeData((event, arg) => {
+            crimAPI.handleThemeData(async (event, arg) => {
                 guicfg = arg
                 clearColor()
                 if (guicfg.theme) {
                     addTheme(guicfg.theme)
+                }
+                await new Promise(resolve => setTimeout(resolve, 10))
+                if (guicfg.themeEffect) {
+                    addTheme(guicfg.themeEffect, "effect")
                 }
                 if (guicfg.darkness) {
                     document.documentElement.style.setProperty('--darkness', String(Number(guicfg.darkness) / 1000))

@@ -25,5 +25,3 @@ async function animationDisappear() {
 }
 
 animationDisappear()
-
-animationFunctions.push(animationDisappear)

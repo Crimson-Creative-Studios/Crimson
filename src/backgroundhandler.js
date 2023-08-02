@@ -2,13 +2,12 @@ function indexToPosition(index, columns) {
     const x = index % columns
     const y = Math.floor(index / columns)
     return { x, y }
-  }
+}
+
+let columns = 0, rows = 0
 
 window.addEventListener("load", (event) => {
     const wrapper = document.getElementById("tiles")
-
-    let columns = 0,
-        rows = 0
 
     const createTile = (index, x, y) => {
         const tile = document.createElement("div")

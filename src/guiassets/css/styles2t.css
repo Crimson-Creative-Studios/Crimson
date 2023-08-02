@@ -897,13 +897,13 @@ div#tiles.hiddentiles > .tile {
   padding-bottom: 5px;
 }
 
-#credits img {
+.credits img {
   border-radius: 15px;
   border: var(--color) 3px solid;
   margin-top: 15px;
 }
 
-#credits div {
+.credits div {
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.25);
   border-radius: 15px;
@@ -915,7 +915,7 @@ div#tiles.hiddentiles > .tile {
   text-align: center;
   flex-direction: column;
 }
-#credits div:hover {
+.credits div:hover {
   transform: scale(1.01);
 }
 

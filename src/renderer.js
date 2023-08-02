@@ -113,13 +113,13 @@ crimAPI.codeAdditions.errs.forEach(err => {
 for (const uuid of Object.keys(crimAPI.codeAdditions.userCFGS)) {
     if (crimAPI.codeAdditions.userCFGS[uuid].item instanceof Array) {
         for (const guildKey of crimAPI.codeAdditions.userCFGS[uuid].guildKeys) {
-            if (document.getElementById(guildKey+uuid).dataset.currentval === undefined) {
-                document.getElementById(guildKey+uuid).defaultValue = crimAPI.codeAdditions.defaults[guildKey+uuid]
+            if (document.getElementById(guildKey + uuid).dataset.currentval === undefined) {
+                document.getElementById(guildKey + uuid).defaultValue = crimAPI.codeAdditions.defaults[guildKey + uuid]
             } else {
-                document.getElementById(guildKey+uuid).dataset.currentval = crimAPI.codeAdditions.defaults[guildKey+uuid]
+                document.getElementById(guildKey + uuid).dataset.currentval = crimAPI.codeAdditions.defaults[guildKey + uuid]
                 var channelFound = false
-                for (const option of document.getElementById(guildKey+uuid).querySelector(".select").querySelector(".custom-options").children) {
-                    if (option.dataset.value === crimAPI.codeAdditions.defaults[guildKey+uuid]) {
+                for (const option of document.getElementById(guildKey + uuid).querySelector(".select").querySelector(".custom-options").children) {
+                    if (option.dataset.value === crimAPI.codeAdditions.defaults[guildKey + uuid]) {
                         const val = option.dataset.value
                         const guild = option.dataset.guildname
                         option.parentElement.parentElement.parentElement.dataset.currentval = val
@@ -134,7 +134,7 @@ for (const uuid of Object.keys(crimAPI.codeAdditions.userCFGS)) {
                     }
                 }
                 if (!channelFound) {
-                    document.getElementById(guildKey+uuid).querySelector(".select").querySelector(".select__trigger").querySelector("span").innerHTML = "Data not found."
+                    document.getElementById(guildKey + uuid).querySelector(".select").querySelector(".select__trigger").querySelector("span").innerHTML = "Data not found."
                 }
             }
         }
@@ -249,7 +249,19 @@ async function handleExtensionData(key, data) {
             var id = info.folder
             var file = info.zip
             var ui = info.ui
-            var logo = await axios.get(`https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${ui.logo}`, { responseType: "arraybuffer" })
+            var logo
+            try {
+                logo = await axios.get(`https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${ui.logo}`, { responseType: "arraybuffer" })
+            } catch(err) {
+                logo = await axios.get("https://avatars.githubusercontent.com/u/135461091?s=200&v=4", { responseType: "arraybuffer" })
+            }
+            var npmPackages
+            try {
+                var npm = await axios.get(`https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/requirednpm.json`, { responseType: "text" })
+                var npmPackages = npm.required.join(" ")
+            } catch(err) {
+                npmPackages = ""
+            }
 
             const blob = new Blob([logo.data])
             const url = URL.createObjectURL(blob)
@@ -267,30 +279,30 @@ async function handleExtensionData(key, data) {
                     reader.onload = function () {
                         const resizedArrayBuffer = reader.result
                         const base64 = bytesArrToBase64(new Uint8Array(resizedArrayBuffer))
+                        if (!ui.background) {
+                            ui.background = {}
+                        }
+                        if (!ui.button) {
+                            ui.button = {}
+                        }
+                        if (!ui.text) {
+                            ui.text = {}
+                        }
                         var optionsobj = {
-                            light: {
-                                background: {
-                                    main: ui.light.background.main.replace("default", ""),
-                                    alt: ui.light.background.alt.replace("default", "")
-                                },
-                                button: {
-                                    main: ui.light.button.main.replace("default", ""),
-                                    hov: ui.light.button.hov.replace("default", ""),
-                                    act: ui.light.button.act.replace("default", ""),
-                                    hovact: ui.light.button.hovact.replace("default", "")
-                                }
+                            background: {
+                                main: ui.background.main ?? "",
+                                alt: ui.background.alt ?? ""
                             },
-                            dark: {
-                                background: {
-                                    main: ui.dark.background.main.replace("default", ""),
-                                    alt: ui.dark.background.alt.replace("default", "")
-                                },
-                                button: {
-                                    main: ui.dark.button.main.replace("default", ""),
-                                    hov: ui.dark.button.hov.replace("default", ""),
-                                    act: ui.dark.button.act.replace("default", ""),
-                                    hovact: ui.dark.button.hovact.replace("default", "")
-                                }
+                            button: {
+                                main: ui.button.main ?? "",
+                                hov: ui.button.hov ?? "",
+                                act: ui.button.act ?? "",
+                                hovact: ui.button.hovact ?? "",
+                                text: ui.button.text ?? ""
+                            },
+                            text: {
+                                main: ui.text.main ?? "",
+                                alt: ui.text.alt ?? ""
                             }
                         }
                         var options = JSON.stringify(optionsobj).replaceAll('"', '&quot;')
@@ -301,7 +313,7 @@ async function handleExtensionData(key, data) {
                             var namething = name
                             exsitent.push(namething)
                         }
-                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img class="eximgbtn" style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
+                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img class="eximgbtn" style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload(['https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${file}', '${npmPackages}']); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
                     }
                     reader.readAsArrayBuffer(blob)
                 })
