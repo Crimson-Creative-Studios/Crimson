@@ -8,13 +8,13 @@
 </head>
 
 <body>
-    <div id="ColorChanger" class="tabcontent" style="display: none;">
+    <div id="ColorChanger" class="tabcontent">
         <h3>Theme</h3>
-        <button class="button" onclick="openTab('Options')">Go back</button>
+        <button class="button" onclick="openTab('Options')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
         <button class="button" onclick="toggleBG()">Toggle background</button>
         <button class="button" onclick="clearColor()">Reset to default</button>
         <button class="button" onclick="openTab('PreviewColors')">Preview theme</button>
-        <button class="button" onclick="saveGUISettings()">Save</button>
+        <button class="button" onclick="saveGUISettings()"><i class="fa-solid fa-floppy-disk"></i> Save settings</button>
         <h4>Options</h4>
         <input class="styled-checkbox inputcolorcheck" type="checkbox" id="extensionThemeOverride"
             name="extensionThemeOverride" value="true">
@@ -27,6 +27,9 @@
         <h4>Themes</h4>
         <div id="themesBTNHolder">
         </div>
+        <h4>Theme Effects</h4>
+        <div id="themeEffectsBTNHolder">
+        </div>
         <br><br>
         <form onsubmit="return false;">
             <div id="changeColorsDev" style="display: none;">
@@ -36,7 +39,8 @@
                         placeholder="#2f3136" /><br>
 
                     <label for="backgroundaltchange">Background alt:</label><br>
-                    <input type="text" id="backgroundaltchange" name="backgroundaltchange" placeholder="#2c2e32" /><br>
+                    <input type="text" id="backgroundaltchange" name="backgroundaltchange"
+                        placeholder="#2c2e32" /><br>
 
                     <label for="textmainchange">Text color main:</label><br>
                     <input type="text" id="textmainchange" name="textmainchange" placeholder="#ffffff" /><br>
@@ -56,6 +60,10 @@
                     <label for="buttonhovactchange">Button hover active:</label><br>
                     <input type="text" id="buttonhovactchange" name="buttonhovactchange"
                         placeholder="#8f0828" /><br><br>
+
+                    <label for="buttontextchange">Button text:</label><br>
+                    <input type="text" id="buttontextchange" name="buttontextchange"
+                        placeholder="#ffffff" /><br><br>
                 </div>
                 <label for="element">Element: <span class="click" onclick="openTab('InfoElement')"><i
                             class="fa-solid fa-circle-info"></i></span></label>

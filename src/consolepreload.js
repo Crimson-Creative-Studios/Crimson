@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron')
-const {onlineVersion, themes} = ipcRenderer.sendSync("infoGrab")
+const {onlineVersion, themes, themeEffects} = ipcRenderer.sendSync("infoGrab")
 const version = ipcRenderer.sendSync("getFile", "version.txt")
 var guicfg
 try {
@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld('crimAPI', {
     winrestart: () => ipcRenderer.send('wincontrol', "conrestart"),
     handleWinControl: (callback) => ipcRenderer.on("wincontroler", callback),
     themes: () => themes,
+    themeEffects: () => themeEffects,
     handleThemeData: (callback) => ipcRenderer.on('winguicfg', callback),
     show: () => ipcRenderer.invoke('showWin', 'cnsl'),
     versions: {

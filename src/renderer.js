@@ -257,7 +257,7 @@ async function handleExtensionData(key, data) {
             }
             var npmPackages
             try {
-                var npm = await axios.get(`https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/requirednpm.json`, { responseType: "text" })
+                var npm = await axios.get(`https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/requirednpm.json`, { responseType: "json" })
                 var npmPackages = npm.required.join(" ")
             } catch(err) {
                 npmPackages = ""
@@ -313,7 +313,12 @@ async function handleExtensionData(key, data) {
                             var namething = name
                             exsitent.push(namething)
                         }
-                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img class="eximgbtn" style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload(['https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${file}', '${npmPackages}']); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
+                        resolve([
+                            `<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img class="eximgbtn" style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`,
+                            `${namething}market`,
+                            `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload(['https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${file}', '${npmPackages}']); handleNotification('downloadingModal')">Download</button></div>`,
+                            ui.type
+                        ])
                     }
                     reader.readAsArrayBuffer(blob)
                 })
