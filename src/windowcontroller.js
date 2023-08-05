@@ -1,6 +1,6 @@
 var maximised = false
 
-crimAPI.handleWinControl((event, arg) => {
+crimAPI.handleWinControl(async (event, arg) => {
     if (arg === "max") {
         maximised = true
     } else if (arg === "unmax") {
@@ -11,5 +11,8 @@ crimAPI.handleWinControl((event, arg) => {
     } else {
         document.body.classList.remove('maximized')
     }
+
+    await new Promise(resolve => setTimeout(resolve, 180))
+
     createGrid()
 })

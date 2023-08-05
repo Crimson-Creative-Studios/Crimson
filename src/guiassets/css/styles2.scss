@@ -11,6 +11,7 @@
     --buttonhov: #b80b33;
     --buttonact: #a30a2e;
     --buttonacthov: #8f0828;
+    --cnslbg: #202225;
     user-select: none;
 }
 
@@ -112,7 +113,7 @@ body {
 }
 
 img {
-    pointer-events: none
+    pointer-events: none;
 }
 
 .hidden {
@@ -122,7 +123,7 @@ img {
 
 ::selection {
     color: var(--color);
-    background: var(--button);
+    background: var(--buttonact);
 }
 
 .tab {
@@ -146,10 +147,17 @@ img {
         outline: none;
         cursor: pointer;
         padding: 14px 16px;
-        width: 100%;
+        width: 69px;
+        max-width: 69px;
+        height: 69px;
+        max-height: 69px; //nice
         display: block;
         margin: 5px;
-        transition: opacity 0.3s, background-color 0.3s !important;
+        transition: opacity 0.3s, background-color 0.3s, margin-left 0.3s, color 0.3s !important;
+
+        & > * {
+            font-size: 2rem;
+        }
 
         &:hover {
             background: var(--buttonhov);
@@ -159,6 +167,7 @@ img {
         &.active {
             background: var(--buttonact);
             background-size: 100% 100%;
+            margin-left: 20px;
         }
 
         &.active:hover {
@@ -168,7 +177,7 @@ img {
     }
 
     i {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
     }
 }
 
@@ -176,15 +185,18 @@ img {
     border: none;
     width: 80px;
     border-radius: 15px;
-    overflow: hidden;
     position: fixed;
     left: 8px;
     bottom: 8px;
 
     button {
         display: block;
+        position: relative;
         color: var(--buttontext);
-        width: 100%;
+        width: 69px;
+        max-width: 69px;
+        height: 69px;
+        max-height: 69px;
         border-radius: 15px;
         background: var(--button);
         background-size: 100% 100%;
@@ -196,6 +208,12 @@ img {
         transition: 0.3s;
         text-align: center;
         margin: 5px;
+        transition: opacity 0.3s, background-color 0.3s, color 0.3s !important;
+
+        & > * {
+            transform: scale(1);
+            transition: transform 0.3s;
+        }
 
         &:hover {
             background: var(--buttonhov);
@@ -205,6 +223,13 @@ img {
         &.active {
             background: var(--buttonact);
             background-size: 100% 100%;
+
+            & > * {
+                transform: scale(1.2);
+                animation: slowSpin 15s infinite linear;
+                animation-delay: 0.3s;
+                animation-fill-mode: forwards;
+            }
         }
 
         &.active:hover {
@@ -214,12 +239,189 @@ img {
     }
 
     i {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
+        display: inline-block;
     }
 }
 
-#OptionsButton {
-    width: 75px;
+@keyframes slowSpin {
+    0% {
+       transform: rotate(0deg) scale(1.2);
+    }
+    100% {
+        transform: rotate(360deg) scale(1.2);
+    }
+}
+
+#ConfigurationButton {
+    & {
+        & > * {
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.2s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: rotate(360deg) scale(1.2);
+            animation: wrenchButtonAnimation 0.5s;
+        }
+    }
+}
+
+@keyframes wrenchButtonAnimation {
+    from {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(-45deg) scale(0.8);
+    }
+    to {
+        transform: rotate(360deg) scale(1.2);
+    }
+}
+
+#MarketButton {
+    & {
+        & > * {
+            transform: scale(1);
+            transition: transform 0.2s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: scale(1.2);
+            animation: marketButtonAnimation 0.3s;
+        }
+    }
+}
+
+@keyframes marketButtonAnimation {
+    from {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.8);
+    }
+    to {
+        transform: scale(1.2);
+    }
+}
+
+#UltraButton {
+    & {
+        & > div {
+            transform: scale(1) translate(0, 0);
+            transition: transform 0.2s;
+
+            & > .rocket-fire {
+                opacity: 0;
+                position: absolute;
+                left: 2px;
+                top: 3px;
+                transition: opacity 0.3s;
+                font-size: 13px;
+                transform: rotate(235deg) scale(1) translate(0, 0);
+                transition: transform 0.2s, opacity 0.2s;
+            }
+
+            & > .rocket {
+                position: absolute;
+                top: -14px;
+                left: 4px;
+            }
+        }
+    }
+    &.active {
+        & > div {
+            transform: scale(1.2) translate(0, 0);
+            animation: ultraButtonAnimation 0.5s;
+
+            & > .rocket-fire {
+                transform: rotate(235deg) scale(1.2) translate(0, 0);
+                opacity: 1;
+            }
+        }
+    }
+}
+
+@keyframes ultraButtonAnimation {
+    0% {
+        transform: scale(1) translate(-10px, 10px);
+    }
+    50% {
+        transform: scale(1) translate(5px, -15px);
+    }
+    100% {
+        transform: scale(1.2) translate(0, 0);
+    }
+}
+
+#BotButton {
+    & {
+        & > * {
+            transform: scale(1);
+            transition: transform 0.2s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: scale(-1.2, 1.2);
+            animation: botButtonAnimation 0.5s;
+        }
+    }
+}
+
+@keyframes botButtonAnimation {
+    0% {
+        transform: scale(1, 1);
+    }
+    50% {
+        transform: scale(-1, 1);
+    }
+    100% {
+        transform: scale(-1.2, 1.2);
+    }
+}
+
+#InformationButton {
+    & {
+        & > * {
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.5s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: rotate(180deg) scale(-1.2);
+        }
+    }
+}
+
+#DEBUGButton {
+    & {
+        & > * {
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.2s;
+        }
+    }
+    &.active {
+        & > * {
+            transform: rotate(360deg) scale(1.2);
+            animation: debugButtonAnimation 1s;
+        }
+    }
+}
+
+@keyframes debugButtonAnimation {
+    from {
+        transform: rotate(0deg) scale(1);
+    }
+    40% {
+        transform: rotate(-180deg) scale(0.4);
+    }
+    to {
+        transform: rotate(360deg) scale(1.2);
+    }
 }
 
 .button {
@@ -230,15 +432,16 @@ img {
     padding: 5px 5px 5px 5px;
     border-radius: 5px;
     margin-bottom: 5px;
-    transition: transform 0.05s, background-color 0.3s;
+    transition: transform 0.05s, background-color 0.3s, color 0.3s;
+    font-weight: bold;
 
     &:hover {
         cursor: pointer;
         border: none;
         background: var(--buttonhov);
         background-size: 100% 100%;
-        transform: scale(1.05);
-        transition: transform 0.1s, background-color 0.3s;
+        transform: scale(1.025);
+        transition: transform 0.1s, background-color 0.3s, color 0.3s;
     }
 
     &:active {
@@ -246,7 +449,7 @@ img {
         background: var(--buttonact);
         background-size: 100% 100%;
         animation: bouce 0.2s ease forwards;
-        transition: transform 0.05s, background-color 0.3s;
+        transition: transform 0.05s, background-color 0.3s, color 0.3s;
     }
 
     &:active:hover {
@@ -258,11 +461,11 @@ img {
 
 @keyframes bouce {
     0% {
-        transform: scale(1.05);
+        transform: scale(1.025);
     }
 
     50% {
-        transform: scale(0.95);
+        transform: scale(0.975);
     }
 
     100% {
@@ -270,16 +473,22 @@ img {
     }
 }
 
+.big-button {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+}
+
 .tabcontent {
     display: block;
     position: fixed;
     top: 50px;
-    right: 10px;
+    right: 5px;
     padding: 0px 12px;
     border: none;
     border-left: none;
     transition: opacity 0.1s;
-    height: 90%;
+    height: calc(100% - 50px);
     width: calc(100% - 110px);
     overflow-y: scroll;
     opacity: 0;
@@ -288,7 +497,7 @@ img {
 
 .console {
     margin-top: 5px;
-    background: #202225;
+    background: var(--cnslbg);
     border-radius: 15px;
     display: block;
     width: 100%;
@@ -297,20 +506,21 @@ img {
     min-height: 94.5%;
     overflow-y: scroll;
     pointer-events: auto;
+    transition: background-color 0.3s, border 0.3s;
 
     h4,
     p {
         margin-left: 10px;
+        color: inherit;
     }
 }
 
 .typeoutput {
     font-size: smaller;
     user-select: text;
-}
-
-.white {
-    color: #fff;
+    white-space: pre-wrap;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
 }
 
 .modal {
@@ -365,6 +575,8 @@ img {
     width: 50px;
     height: 50px;
     background: rgba(0, 0, 0, 0);
+    color: var(--color);
+    font-weight: bold;
 
     &:hover {
         background: rgba(0, 0, 0, 0.2);
@@ -457,17 +669,22 @@ textarea {
     padding-right: 15px;
     pointer-events: all;
     width: 10px;
+    width: 5px;
 
     &-track {
         padding-right: 15px;
         background: rgba(0, 0, 0, 0);
+        width: 5px;
+        pointer-events: all;
     }
 
     &-thumb {
         padding-right: 15px;
+        pointer-events: all;
         background: var(--coloralt);
         border-radius: 5px;
         transition: 0.3s;
+        width: 5px;
 
         &:hover {
             background: var(--color);
@@ -573,12 +790,12 @@ label {
 }
 
 #close-button:hover {
-    background: var(--button) !important;
+    background: var(--buttonhov) !important;
     background-size: 100% 100% !important;
 }
 
 #close-button:active {
-    background: var(--buttonact) !important;
+    background: var(--buttonacthov) !important;
     background-size: 100% 100% !important;
 }
 
@@ -670,13 +887,14 @@ p.icon {
     transition: background-color 0.3s;
     content: "";
     inset: 1px;
+    opacity: 1;
     position: absolute;
     animation: pulse 3s infinite;
     animation-delay: calc(var(--delay) * 1s);
 }
 
 @keyframes pulse {
-    from {
+    0% {
         inset: 1px;
     }
 
@@ -684,7 +902,7 @@ p.icon {
         inset: 5px;
     }
 
-    to {
+    100% {
         inset: 1px;
     }
 }
@@ -790,13 +1008,13 @@ div#tiles.hiddentiles>.tile {
     padding-bottom: 5px;
 }
 
-#credits img {
+.credits img {
     border-radius: 15px;
     border: var(--color) 3px solid;
     margin-top: 15px;
 }
 
-#credits div {
+.credits div {
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.25);
     border-radius: 15px;
@@ -869,4 +1087,309 @@ td {
     100% {
         transform: rotate(.5turn)
     }
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    opacity: 0;
+    position: absolute;
+    background-color: var(--backgroundalt);
+    min-width: 160px;
+    z-index: 1;
+    transition: opacity 0.1s;
+}
+
+.dropdown-content a {
+    color: var(--color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.show {
+    opacity: 1;
+}
+
+//Custom select menus
+.select {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color);
+    border-radius: 10px;
+    margin-bottom: 15px;
+
+    &-wrapper {
+        position: relative;
+        user-select: none;
+        width: 100%;
+    }
+
+    &-wrapper:has(.select.open) {
+        z-index: 999;
+    }
+
+    &__trigger {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 22px;
+        font-size: 20px;
+        font-weight: 300;
+        color: var(--buttontext);
+        height: 60px;
+        line-height: 60px;
+        background: var(--buttonacthov);
+        cursor: pointer;
+        border-radius: 10px;
+    }
+}
+
+.custom-options {
+    position: absolute;
+    display: none;
+    top: 60px;
+    left: 0;
+    right: 0;
+    border: 1px solid var(--color);
+    border-top: 0;
+    border-radius: 10px;
+    background: var(--button);
+    background-size: 100% 100%;
+    color: var(--buttontext);
+    transition: all 0.5s;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.select.open .custom-options {
+    display: block;
+    visibility: visible;
+    pointer-events: all;
+}
+
+.custom-option {
+    position: relative;
+    display: flex;
+    padding: 0 22px 0 22px;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--buttontext);
+    line-height: 60px;
+    cursor: pointer;
+    transition: all 0.5s;
+    align-items: center;
+    justify-content: center;
+    border: 0px solid var(--color);
+
+    &:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    &.selected {
+        background-color: rgba(0, 0, 0, 0.25);
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+
+        }
+    }
+
+    * {
+        margin-right: 5px;
+    }
+}
+
+.disabled-option {
+    &:hover {
+        cursor: auto;
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    &.selected {
+        background-color: rgba(0, 0, 0, 0);
+    }
+}
+
+.big-option {
+    font-size: 2rem;
+    font-weight: bold;
+    border: solid 2px var(--color);
+    border-radius: 10px;
+    color: var(--buttontext);
+    background: var(--buttonacthov);
+
+    &:hover {
+        cursor: auto;
+        background: var(--button);
+    }
+
+    &.selected {
+        background: var(--button);
+    }
+}
+
+.arrow {
+    position: relative;
+    height: 15px;
+    width: 15px;
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0px;
+        width: 0.15rem;
+        height: 100%;
+        transition: all 0.5s;
+    }
+
+    &::before {
+        left: -5px;
+        transform: rotate(45deg);
+        background-color: var(--color);
+    }
+
+    &::after {
+        left: 5px;
+        transform: rotate(-45deg);
+        background-color: var(--color);
+    }
+}
+
+.open {
+    .arrow::before {
+        left: -5px;
+        transform: rotate(-45deg);
+    }
+
+    .arrow::after {
+        left: 5px;
+        transform: rotate(45deg);
+    }
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.guild-icon {
+    border-radius: 35%;
+    border: 1px solid var(--color);
+}
+
+.default-guild {
+    color: var(--color);
+    width: 32px;
+    height: 32px;
+    background: var(--background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & > * {
+        margin-left: 5px;
+    }
+}
+
+.prevImg {
+    border: var(--color) 2px solid;
+    border-radius: 50%;
+}
+
+.inline {
+    display: inline;
+}
+
+.role-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--rcolor);   
+    border: 2px solid var(--color);
+}
+
+:root {
+    --console-black: black;
+    --console-red: red;
+    --console-green: lime;
+    --console-yellow: yellow;
+    --console-blue: #72dcff;
+    --console-magenta: magenta;
+    --console-cyan: #00adad;
+    --console-white: white;
+    --console-crimson: #d63535;
+    --console-grey: grey;
+}
+
+.console-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: bold;
+
+    &-black {
+        color: var(--console-black);
+    }
+
+    &-red {
+        color: var(--console-red);
+    }
+
+    &-green {
+        color: var(--console-green);
+    }
+
+    &-yellow {
+        color: var(--console-yellow);
+    }
+
+    &-blue {
+        color: var(--console-blue);
+    }
+
+    &-magenta {
+        color: var(--console-magenta);
+    }
+
+    &-cyan {
+        color: var(--console-cyan);
+    }
+
+    &-white {
+        color: var(--console-white);
+    }
+
+    &-crimson {
+        color: var(--console-crimson);
+    }
+
+    &-grey {
+        color: var(--console-grey);
+    }
+}
+
+.guild-icon-title {
+    border-radius: 35%;
+    border: 1px solid var(--color);
+    width: 18px;
+    height: 18px;
 }

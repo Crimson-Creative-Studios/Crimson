@@ -1,18 +1,12 @@
 window.gradon = false
 
-document.getElementById('debugCHROME').innerText = versions.chrome()
+document.getElementById('debugCHROME').innerText = crimAPI.versions.chrome()
 
-document.getElementById('debugELECTRON').innerText = versions.electron()
+document.getElementById('debugELECTRON').innerText = crimAPI.versions.electron()
 
-document.getElementById('debugNODE').innerText = versions.node()
+document.getElementById('debugNODE').innerText = crimAPI.versions.node()
 
-document.getElementById('guiver').innerText = "Version - " + versions.crimson()
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === "Tab") {
-        e.preventDefault()
-    }
-})
+document.getElementById('guiver').innerText = "Version - " + crimAPI.versions.crimson()
 
 function toggleVis(thing) {
     document.getElementById(thing).classList.toggle("hidden")
@@ -41,61 +35,135 @@ function copy(thing) {
 window.copy = copy
 
 function copyDebug() {
-    copy(`Debug information:\n    Chrome version: ${versions.chrome()}\n    Electron version: ${versions.electron()}\n    Node version: ${versions.node()}\n    GUI version: ${versions.crimson()}\n    UUID: ${crimAPI.uuid()}`)
+    copy(`Debug information:
+    Chrome version: ${crimAPI.versions.chrome()}
+    Electron version: ${crimAPI.versions.electron()}
+    Node version: ${crimAPI.versions.node()}
+    GUI version: ${crimAPI.versions.crimson()}
+    UUID: ${crimAPI.uuid()}`)
 }
 
 window.copyDebug = copyDebug
 
-ipc.handleAdd((event, arg) => {
+crimAPI.handleAdd((event, arg) => {
     var id = arg[0]
     var content = arg[1]
     document.getElementById(id).insertAdjacentHTML("beforeend", content)
 })
 
-codeAdditions.mainAdd.forEach(addition => {
+crimAPI.codeAdditions.mainAdd.forEach(addition => {
     document.getElementById("main").innerHTML += addition
 })
 
-codeAdditions.extensions.forEach(extension => {
+crimAPI.codeAdditions.extensions.forEach(extension => {
     var extensionList = [...extension]
     var name = extensionList[0]
     extensionList.shift()
     for (const item of extensionList) {
-        document.getElementById(name).insertAdjacentHTML("beforeend", item)
+        document.getElementById(name + "EXsettings").insertAdjacentHTML("beforeend", item)
     }
-    document.getElementById(name).insertAdjacentHTML("beforeend", '<button id="' + name + 'save" class="button savebtn">Save Settings</button><br>')
-    if (codeAdditions.islib[extension]) {
-        document.getElementById(name).insertAdjacentHTML("beforeend", `<p>${codeAdditions.libtext[extension].text}</p><button class="button" onclick="crimAPI.openSite('${codeAdditions.libtext[extension].buttonlink}')">${codeAdditions.libtext[extension].buttontext}</button>`)
+    document.getElementById(name + "EXsettings").insertAdjacentHTML("beforeend", '<button id="' + name + 'save" class="button savebtn"><i class="fa-solid fa-floppy-disk"></i> Save settings</button><br>')
+    if (crimAPI.codeAdditions.islib[extension]) {
+        document.getElementById(name + "EXsettings").insertAdjacentHTML("beforeend", `<p>${crimAPI.codeAdditions.libtext[extension].text}</p><button class="button" onclick="crimAPI.openSite('${crimAPI.codeAdditions.libtext[extension].buttonlink}')">${crimAPI.codeAdditions.libtext[extension].buttontext}</button>`)
     }
-    document.getElementById(name).insertAdjacentHTML("beforeend", '<br><br><br><br>')
+    document.getElementById(name + "EXsettings").insertAdjacentHTML("beforeend", '<br><br><br><br>')
     document.getElementById(name + "save").addEventListener('click', () => {
-        var items = []
-        var vals = []
-        var value = document.getElementById(name + "input").checked
-        items.push("enabled")
-        vals.push(String(value))
-        for (const uuid of Object.keys(codeAdditions.userCFGS)) {
-            var information = codeAdditions.userCFGS[uuid]
-            if (information.extension === name) {
-                var value = document.getElementById(uuid).value
-                items.push(information.item)
-                vals.push(value)
+        var value = String(document.getElementById(name + "input").checked)
+        var item = "enabled"
+        crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/config.json`, [item], [value]])
+        for (const uuid of Object.keys(crimAPI.codeAdditions.userCFGS)) {
+            var information = crimAPI.codeAdditions.userCFGS[uuid]
+            if (information.type === "CHNSEL" || information.type === "ROLESEL") {
+                if (information.extension === name) {
+                    var value = document.getElementById(uuid).dataset.currentval
+                    var item = information.item
+                }
+                crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, [item], [value]])
+            } else if (information.type === "MULCHNSEL" || information.type === "MULROLESEL") {
+                if (information.extension === name) {
+                    const values = []
+                    const items = []
+                    for (const i in information.item) {
+                        values.push(document.getElementById(information.guildKeys[i] + uuid).dataset.currentval)
+                        items.push(information.item[i])
+                    }
+                    crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, items, values])
+                }
+            } else {
+                if (information.extension === name) {
+                    if (information.extension === name) {
+                        var value = document.getElementById(uuid).value
+                        var item = information.item
+                    }
+                    crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, [item], [value]])
+                }
             }
         }
-        crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, items, vals])
     })
 })
 
-codeAdditions.configs.forEach(config => {
+crimAPI.codeAdditions.configs.forEach(config => {
     document.getElementById('Configuration').insertAdjacentHTML("beforeend", config)
 })
 
-codeAdditions.errs.forEach(err => {
+crimAPI.codeAdditions.errs.forEach(err => {
     console.log(err)
 })
 
-for (var uuid of Object.keys(codeAdditions.userCFGS)) {
-    document.getElementById(uuid).defaultValue = codeAdditions.defaults[uuid]
+for (const uuid of Object.keys(crimAPI.codeAdditions.userCFGS)) {
+    if (crimAPI.codeAdditions.userCFGS[uuid].item instanceof Array) {
+        for (const guildKey of crimAPI.codeAdditions.userCFGS[uuid].guildKeys) {
+            if (document.getElementById(guildKey + uuid).dataset.currentval === undefined) {
+                document.getElementById(guildKey + uuid).defaultValue = crimAPI.codeAdditions.defaults[guildKey + uuid]
+            } else {
+                document.getElementById(guildKey + uuid).dataset.currentval = crimAPI.codeAdditions.defaults[guildKey + uuid]
+                var channelFound = false
+                for (const option of document.getElementById(guildKey + uuid).querySelector(".select").querySelector(".custom-options").children) {
+                    if (option.dataset.value === crimAPI.codeAdditions.defaults[guildKey + uuid]) {
+                        const val = option.dataset.value
+                        const guild = option.dataset.guildname
+                        option.parentElement.parentElement.parentElement.dataset.currentval = val
+                        option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML
+                        for (const child of option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").childNodes) {
+                            if (child.nodeName === "DIV") {
+                                child.remove()
+                            }
+                        }
+                        option.classList.add("selected")
+                        channelFound = true
+                    }
+                }
+                if (!channelFound) {
+                    document.getElementById(guildKey + uuid).querySelector(".select").querySelector(".select__trigger").querySelector("span").innerHTML = "Data not found."
+                }
+            }
+        }
+    } else {
+        if (document.getElementById(uuid).dataset.currentval === undefined) {
+            document.getElementById(uuid).defaultValue = crimAPI.codeAdditions.defaults[uuid]
+        } else {
+            document.getElementById(uuid).dataset.currentval = crimAPI.codeAdditions.defaults[uuid]
+            var channelFound = false
+            for (const option of document.getElementById(uuid).querySelector(".select").querySelector(".custom-options").children) {
+                if (option.dataset.value === crimAPI.codeAdditions.defaults[uuid]) {
+                    const val = option.dataset.value
+                    const guild = option.dataset.guildname
+                    option.parentElement.parentElement.parentElement.dataset.currentval = val
+                    option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML + " - " + guild
+                    for (const child of option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").childNodes) {
+                        if (child.nodeName === "DIV") {
+                            child.remove()
+                        }
+                    }
+                    option.classList.add("selected")
+                    channelFound = true
+                }
+            }
+            if (!channelFound) {
+                document.getElementById(uuid).querySelector(".select").querySelector(".select__trigger").querySelector("span").innerHTML = "Data not found."
+            }
+        }
+    }
 }
 
 const funfacts = ["CrimsonGUI is written in Electron", "CrimsonGUI had 2 open beta 1s, odd isn't it?", "Crimson can completely kill your computer if an extension is malicous :D", "<b>There will be no beans theme</b>"]
@@ -138,18 +206,18 @@ crimAPI.handleNotificationMain((event, arg) => {
     }, arg[2]))
 })
 
-const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2", "Version 1"]
-if (!versionHistory.includes(versions.crimson())) {
-    document.getElementById('versionut').innerHTML = `Invalid version found! Local version ${versions.crimson()} is not known. You may want to update to the current latest version (${versions.crimOnline()})`
+const versionHistory = ["Open Beta 1", "Open Beta 2", "Open Beta 3", "Open Beta 4", "V1 Pre-release 1", "V1 Pre-release 2", "Version 1", "Version 1.1"]
+if (!versionHistory.includes(crimAPI.versions.crimson())) {
+    document.getElementById('versionut').innerHTML = `Invalid version found! Local version ${crimAPI.versions.crimson()} is not known. You may want to update to the current latest version (${crimAPIversions.crimOnline()})`
 } else {
-    if (versionHistory.includes(versions.crimOnline().replace("\n", ""))) {
-        if (versionHistory.indexOf(versions.crimOnline().replace("\n", "")) <= versionHistory.indexOf(versions.crimson())) {
+    if (versionHistory.includes(crimAPI.versions.crimOnline().replace("\n", ""))) {
+        if (versionHistory.indexOf(crimAPI.versions.crimOnline().replace("\n", "")) <= versionHistory.indexOf(crimAPI.versions.crimson())) {
             document.getElementById('versionut').innerHTML = "No new versions found."
         } else {
-            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${versions.crimOnline()}`
+            document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${crimAPI.versions.crimson()}<br>Found version: ${crimAPI.versions.crimOnline()}`
         }
     } else {
-        document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${versions.crimson()}<br>Found version: ${versions.crimOnline()}`
+        document.getElementById('versionut').innerHTML = `New version found!<br>Current version: ${crimAPI.versions.crimson()}<br>Found version: ${crimAPI.versions.crimOnline()}`
     }
 }
 
@@ -181,7 +249,19 @@ async function handleExtensionData(key, data) {
             var id = info.folder
             var file = info.zip
             var ui = info.ui
-            var logo = await axios.get(`https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${ui.logo}`, { responseType: "arraybuffer" })
+            var logo
+            try {
+                logo = await axios.get(`https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${ui.logo}`, { responseType: "arraybuffer" })
+            } catch(err) {
+                logo = await axios.get("https://avatars.githubusercontent.com/u/135461091?s=200&v=4", { responseType: "arraybuffer" })
+            }
+            var npmPackages
+            try {
+                var npm = await axios.get(`https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/requirednpm.json`, { responseType: "json" })
+                var npmPackages = npm.required.join(" ")
+            } catch(err) {
+                npmPackages = ""
+            }
 
             const blob = new Blob([logo.data])
             const url = URL.createObjectURL(blob)
@@ -199,30 +279,30 @@ async function handleExtensionData(key, data) {
                     reader.onload = function () {
                         const resizedArrayBuffer = reader.result
                         const base64 = bytesArrToBase64(new Uint8Array(resizedArrayBuffer))
+                        if (!ui.background) {
+                            ui.background = {}
+                        }
+                        if (!ui.button) {
+                            ui.button = {}
+                        }
+                        if (!ui.text) {
+                            ui.text = {}
+                        }
                         var optionsobj = {
-                            light: {
-                                background: {
-                                    main: ui.light.background.main.replace("default", ""),
-                                    alt: ui.light.background.alt.replace("default", "")
-                                },
-                                button: {
-                                    main: ui.light.button.main.replace("default", ""),
-                                    hov: ui.light.button.hov.replace("default", ""),
-                                    act: ui.light.button.act.replace("default", ""),
-                                    hovact: ui.light.button.hovact.replace("default", "")
-                                }
+                            background: {
+                                main: ui.background.main ?? "",
+                                alt: ui.background.alt ?? ""
                             },
-                            dark: {
-                                background: {
-                                    main: ui.dark.background.main.replace("default", ""),
-                                    alt: ui.dark.background.alt.replace("default", "")
-                                },
-                                button: {
-                                    main: ui.dark.button.main.replace("default", ""),
-                                    hov: ui.dark.button.hov.replace("default", ""),
-                                    act: ui.dark.button.act.replace("default", ""),
-                                    hovact: ui.dark.button.hovact.replace("default", "")
-                                }
+                            button: {
+                                main: ui.button.main ?? "",
+                                hov: ui.button.hov ?? "",
+                                act: ui.button.act ?? "",
+                                hovact: ui.button.hovact ?? "",
+                                text: ui.button.text ?? ""
+                            },
+                            text: {
+                                main: ui.text.main ?? "",
+                                alt: ui.text.alt ?? ""
                             }
                         }
                         var options = JSON.stringify(optionsobj).replaceAll('"', '&quot;')
@@ -233,7 +313,12 @@ async function handleExtensionData(key, data) {
                             var namething = name
                             exsitent.push(namething)
                         }
-                        resolve([`<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img class="eximgbtn" style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`, `${namething}market`, `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload('https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${file}'); handleNotification('downloadingModal')">Download</button></div>`, ui.type])
+                        resolve([
+                            `<button id="${namething}market" class="button appearbtn exbtnid" onClick="openTab('${namething}markettab', 'MarketButton', '${options}')" style="width: 120px; height: 135px; display: none;" data-search="${name}">${name}<img class="eximgbtn" style="border-radius: 10px; border-style: solid; border-width: 2px; border-color: white;" src="data:image/png;base64,${base64}" /></button>`,
+                            `${namething}market`,
+                            `<div id="${namething}markettab" class="tabcontent"><h3>${name}</h3><button class="button" onclick="openTab('Market', 'MarketButton')">Go back</button><p>Made by: ${authors.join(", ")}</p><p>${ui.description}</p><button class="button" onclick="crimAPI.extensionDownload(['https://github.com/Crimson-Creative-Studios/OfficialCrimsonRepo/raw/main/${id}/${file}', '${npmPackages}']); handleNotification('downloadingModal')">Download</button></div>`,
+                            ui.type
+                        ])
                     }
                     reader.readAsArrayBuffer(blob)
                 })

@@ -4,10 +4,74 @@
 <head>
     <meta charset="UTF-8">
     <title>CrimsonGUI</title>
-    <link rel="stylesheet" href="guiassets/css/styles.css">
+    <link rel="stylesheet" href="guiassets/css/styles2t.css">
 </head>
 
 <body>
+    <div id="ColorChanger" class="tabcontent">
+        <h3>Theme</h3>
+        <button class="button" onclick="openTab('Options')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
+        <button class="button" onclick="toggleBG()">Toggle background</button>
+        <button class="button" onclick="clearColor()">Reset to default</button>
+        <button class="button" onclick="openTab('PreviewColors')">Preview theme</button>
+        <button class="button" onclick="saveGUISettings()"><i class="fa-solid fa-floppy-disk"></i> Save settings</button>
+        <h4>Options</h4>
+        <input class="styled-checkbox inputcolorcheck" type="checkbox" id="extensionThemeOverride"
+            name="extensionThemeOverride" value="true">
+        <label for="extensionThemeOverride">Always use this theme</label>
+        <br>
+        <br>
+        <input type="range" min="0" max="1000" value="0" class="slider inputcolorcheck" id="darknessControl"
+            name="darknessControl" oninput="loadColors()">
+        <label for="darknessControl">Background darkness</label>
+        <h4>Themes</h4>
+        <div id="themesBTNHolder">
+        </div>
+        <h4>Theme Effects</h4>
+        <div id="themeEffectsBTNHolder">
+        </div>
+        <br><br>
+        <form onsubmit="return false;">
+            <div id="changeColorsDev" style="display: none;">
+                <div>
+                    <label for="backgroundmainchange">Background main:</label><br>
+                    <input type="text" id="backgroundmainchange" name="backgroundmainchange"
+                        placeholder="#2f3136" /><br>
+
+                    <label for="backgroundaltchange">Background alt:</label><br>
+                    <input type="text" id="backgroundaltchange" name="backgroundaltchange"
+                        placeholder="#2c2e32" /><br>
+
+                    <label for="textmainchange">Text color main:</label><br>
+                    <input type="text" id="textmainchange" name="textmainchange" placeholder="#ffffff" /><br>
+
+                    <label for="textaltchange">Text color alt:</label><br>
+                    <input type="text" id="textaltchange" name="textaltchange" placeholder="#c4c4c4" /><br>
+
+                    <label for="buttonmainchange">Button main:</label><br>
+                    <input type="text" id="buttonmainchange" name="buttonmainchange" placeholder="#cc0c39" /><br>
+
+                    <label for="buttonhovchange">Button hover:</label><br>
+                    <input type="text" id="buttonhovchange" name="buttonhovchange" placeholder="#b80b33" /><br>
+
+                    <label for="buttonactchange">Button active:</label><br>
+                    <input type="text" id="buttonactchange" name="buttonactchange" placeholder="#a30a2e" /><br>
+
+                    <label for="buttonhovactchange">Button hover active:</label><br>
+                    <input type="text" id="buttonhovactchange" name="buttonhovactchange"
+                        placeholder="#8f0828" /><br><br>
+
+                    <label for="buttontextchange">Button text:</label><br>
+                    <input type="text" id="buttontextchange" name="buttontextchange"
+                        placeholder="#ffffff" /><br><br>
+                </div>
+                <label for="element">Element: <span class="click" onclick="openTab('InfoElement')"><i
+                            class="fa-solid fa-circle-info"></i></span></label>
+                <input type="text" id="element" name="element" placeholder="Everything" />
+                <button class="button" onclick="loadColors()">Load colors for element</button>
+            </div>
+        </form><br><br>
+    </div>
     <header id="titlebar">
         <div id="drag-region">
             <div id="window-controls">
@@ -41,7 +105,7 @@
     </header>
     <div id="main">
         <div class="top">
-            <h1>CrimsonGUI</h1>
+            <h1 id="texttitle">CrimsonGUI</h1>
         </div>
         <button class="startBot button" onclick="checkStart()" style="display: inline-block">Start Bot</button>
         <button class="startBot button" onclick="checkEnd()" style="display: inline-block">Stop Bot</button>
@@ -49,11 +113,27 @@
         <button class="startBot button" onclick="checkRC()" style="display: inline-block">Refresh Commands</button>
         <button class="startBot button" onclick="resetCNSL()" style="display: inline-block">Clear Output</button>
         <div class="console" id="cnsl">
-            <h4 class="white">Output Window</h4>
-            <p class="typeoutput white"></p>
+            <h4>Output Window</h4>
+            <p class="typeoutput"></p>
         </div>
         <script>
-
+            crimAPI.handleThemeData(async (event, arg) => {
+                guicfg = arg
+                clearColor()
+                if (guicfg.theme) {
+                    addTheme(guicfg.theme)
+                }
+                await new Promise(resolve => setTimeout(resolve, 10))
+                if (guicfg.themeEffect) {
+                    addTheme(guicfg.themeEffect, "effect")
+                }
+                if (guicfg.darkness) {
+                    document.documentElement.style.setProperty('--darkness', String(Number(guicfg.darkness) / 1000))
+                }
+                if (guicfg.override) {
+                    document.getElementById("extensionThemeOverride").checked = true
+                }
+            })
             var online = false
             var element = document.getElementById("cnsl")
             var lastHeight = element.scrollHeight
@@ -67,23 +147,25 @@
             }
 
             async function checkRestart() {
-                if (online === false) {
+                if (!online) {
                     crimAPI.BotStart()
                     online = true
                 } else {
                     crimAPI.BotStop()
-                    await new Promise(resolve => setTimeout(resolve, 100))
+                    online = false
+                    await new Promise(resolve => setTimeout(resolve, 200))
                     crimAPI.BotStart()
+                    online = true
                 }
             }
 
             function resetCNSL() {
-                document.getElementById("cnsl").innerHTML = '<h4 class="white">Output Window</h4><p class="typeoutput white"></p>'
+                document.getElementById("cnsl").innerHTML = '<h4>Output Window</h4><p class="typeoutput"></p>'
             }
 
             function checkStart() {
-                if (online === true) {
-                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is online, cannot start.</h4><p class="typeoutput white"></p>')
+                if (online) {
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is online, cannot start.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {
                     crimAPI.BotStart()
@@ -92,8 +174,8 @@
             }
 
             function checkEnd() {
-                if (online === false) {
-                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot stop.</h4><p class="typeoutput white"></p>')
+                if (!online) {
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is offline, cannot stop.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {
                     crimAPI.BotStop()
@@ -102,8 +184,8 @@
             }
 
             function checkRC() {
-                if (online === false) {
-                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot is offline, cannot refresh.</h4><p class="typeoutput white"></p>')
+                if (!online) {
+                    document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot is offline, cannot refresh.</h4><p class="typeoutput"></p>')
                     scrollDown()
                 } else {
                     crimAPI.BotRC()
@@ -111,14 +193,14 @@
             }
 
             crimAPI.botstdout((event, arg) => {
-                var element = document.querySelectorAll(".typeoutput")
-                element = element[element.length - 1]
+                const elements = document.querySelectorAll(".typeoutput")
+                const element = elements[elements.length - 1]
                 element.insertAdjacentHTML("beforeend", arg)
                 scrollDown()
             })
 
             crimAPI.term((event, arg) => {
-                document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4 class="white">Bot Process Stopped</h4><p class="typeoutput white"></p>')
+                document.getElementById('cnsl').insertAdjacentHTML("beforeend", '<h4>Bot Process Stopped</h4><p class="typeoutput"></p>')
                 scrollDown()
                 online = false
             })
@@ -173,7 +255,11 @@
                 }
             }
         </script>
+        <script src="themehandler.js"></script>
+        <script src="backgroundhandler.js"></script>
     </div>
+    <div id="tiles"></div>
+    <div id="darkness"></div>
 </body>
 
 </html>

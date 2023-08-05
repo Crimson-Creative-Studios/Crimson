@@ -26,7 +26,6 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const clients = {}
 const vm = require("vm")
-const { Player } = require('discord-player')
 
 //*
 //* Global vars/consts
@@ -40,7 +39,7 @@ const tagsList = []
 //*
 
 //? New client for Discord.JS and main storage
-var client = new Client({
+global.client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
@@ -50,31 +49,11 @@ var client = new Client({
     ],
 })
 
-var player = new Player(client)
-
-player.on('connectionCreate', (queue) => {
-    queue.connection.voiceConnection.on('stateChange', (oldState, newState) => {
-        const oldNetworking = Reflect.get(oldState, 'networking')
-        const newNetworking = Reflect.get(newState, 'networking')
-
-        const networkStateChangeHandler = (oldNetworkState, newNetworkState) => {
-            const newUdp = Reflect.get(newNetworkState, 'udp')
-            clearInterval(newUdp?.keepAliveInterval)
-        }
-
-        oldNetworking?.off('stateChange', networkStateChangeHandler)
-        newNetworking?.on('stateChange', networkStateChangeHandler)
-    })
-})
-
 //? When client is ready do some logging and cleaning and setup users
 client.once(Events.ClientReady, async (c) => {
     client.user.setActivity(`over the server`, { type: ActivityType.Watching })
     client.user.setStatus("online")
-    console.logger(
-        `The bot is now online! Running bot as ${c.user.tag}`,
-        "start"
-    )
+    console.start(`The bot is now online! Running bot as ${c.user.tag}`)
     command.deploy(client.guilds.cache)
 })
 
@@ -115,7 +94,7 @@ const server = net.createServer((socket) => {
                     }
                 } catch (err) {
                     if (data !== "") {
-                        console.logger("Data was found that was invalid", "warn")
+                        console.warn("Data was found that was invalid")
                     }
                 }
             }
@@ -124,10 +103,12 @@ const server = net.createServer((socket) => {
 })
 
 server.on('error', (err) => {
-    console.logger(`IPC Error for Extensions: ${err}`, "error")
+    console.error(`IPC Error for Extensions: ${err}`)
+    console.error(`Extensions cannot communicate, please consider closing all instances of Crimson and trying again`)
+    console.hint("If the error message is 'Error: listen EADDRINUSE: address already in use :::3000' then that means there is another application using the port, this could be another process of Crimson!")
 })
-
-server.listen(3000, () => { })
+const port = 3000
+server.listen(port, () => { })
 
 //? Generate a valid path
 function resolvePath(extension, file) {
@@ -135,13 +116,7 @@ function resolvePath(extension, file) {
 }
 
 //! Read and run extension
-//? Run extensions and get tag commands
-var commandFiles = null
-try {
-    commandFiles = fs.readdirSync("./commands/").filter((file) => file.endsWith(".js"))
-} catch (err) {
-    commandFiles = []
-}
+//? Run extensions
 var extensions = null
 try {
     extensions = fs.readdirSync("../Extensions/")
@@ -175,30 +150,34 @@ extensions.forEach((extension) => {
         }
     }
     if (extensionstate === "enabled") {
-        console.logger(
-            `Loading ${metadata.name} by ${metadata.authors}...`,
-            "start"
-        )
+        console.start(`Loading ${metadata.name} by ${metadata.authors}...`)
         try {
-            var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
+            if (fs.existsSync(`../Extensions/${extension}/index.js`)){
+                var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
+            } else {
+                var code = ""
+            }
             const sandbox = {
                 client,
                 console,
                 fetch,
                 fs,
                 path,
+                global,
                 require,
                 __dirname,
                 extension,
                 extensions,
+                guilds: client.guilds.cache,
                 resolvePath: (thing, ext = extension) =>
                     resolvePath(ext, thing),
+                setInterval: setInterval
             }
             vm.createContext(sandbox)
             vm.runInContext(`const net = require('net')
 
-const extensionHandler = net.createConnection({ port: 3000 }, () => {
-    console.logger('Successfully loaded ${metadata.name}', "start")
+const extensionHandler = net.createConnection({ port: ${port} }, () => {
+    console.start('Successfully loaded ${metadata.name}')
 })
 
 function sendData(data) {
@@ -227,7 +206,10 @@ function sendDataToExtension(extension, data) {
     }))
 }`+ code, sandbox)
         } catch (err) {
-            console.logger(`${metadata.name} ran into an error running the index.js file, it may not exist`, "warn")
+            if (fs.existsSync(`../Extensions/${extension}/index.js`)) {
+                console.warn(`${metadata.name} ran into an error running the index.js file`)
+                console.err(err)
+            }
         }
         var commandFilesExtension = null
         var workflows = null
@@ -254,10 +236,7 @@ function sendDataToExtension(extension, data) {
                     client.commands.set(command.name, command)
                 }
             } else {
-                console.logger(
-                    `The command at ${filePath} is missing a required "execute" property.`,
-                    "warn"
-                )
+                console.warn(`The command at ${filePath} is missing a required "execute" property.`)
             }
         }
 
@@ -370,25 +349,12 @@ function sendDataToExtension(extension, data) {
             try {
                 vm.runInContext(filebuilder, context)
             } catch (err) {
-                console.logger(`Failed to run workflow from ${extension}, file "${workflow}" may have errors!`, "error")
-                console.logger(err, "error")
+                console.err(`Failed to run workflow from ${extension}, file "${workflow}" may have errors!`)
+                console.err(err)
             }
         }
     }
 })
-
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`)
-    if ("data" in command && "execute" in command) {
-        client.commands.set(command.data.name, command)
-    } else {
-        console.logger(
-            `The command at ./commands/${file} is missing a required "data" or "execute" property.`,
-            "warn"
-        )
-    }
-}
-
 //*
 //* Command execution
 //*
@@ -399,21 +365,38 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const command = interaction.client.commands.get(interaction.commandName)
 
         if (!command) {
-            console.logger(
-                `No command matching ${interaction.commandName} was found.`,
-                "error"
-            )
+            console.err(`No command matching ${interaction.commandName} was found.`)
             return
         }
         try {
             await command.execute(interaction, client)
         } catch (error) {
-            console.logger(error, "error")
-            await interaction.reply({
-                content:
-                    "Uh oh, something went wrong! See the console for more information.",
-                ephemeral: true,
-            })
+            console.err(error)
+            try {
+                await interaction.reply({
+                    content:
+                        "Uh oh, something went wrong! Contact the owner of the bot.",
+                    ephemeral: true,
+                })
+            } catch (err) {
+                try {
+                    await interaction.editReply({
+                        content:
+                            "Uh oh, something went wrong! Contact the owner of the bot.",
+                        ephemeral: true,
+                    })
+                } catch (e) {
+                    try {
+                        await interaction.followUp({
+                            content:
+                                "Uh oh, something went wrong! Contact the owner of the bot.",
+                            ephemeral: true,
+                        })
+                    } catch (errr) {
+                        console.err(errr)
+                    }
+                }
+            }
         }
     } else return
 })
@@ -423,12 +406,12 @@ client.on(Events.MessageCreate, async message => {
     for (const i of tagsList) {
         if (i.tag instanceof Array) {
             for (const j of i.tag) {
-                if (message.toString().startsWith(j + " ")) {
+                if (message.toString().startsWith(j)) {
                     i.function(message, i.tag.indexOf(j))
                 }
             }
         }
-        if (message.toString().startsWith(i.tag + " ")) {
+        if (message.toString().startsWith(i.tag)) {
             i.function(message)
         }
     }

@@ -1,26 +1,32 @@
 clearColor()
-document.getElementById("element").value = ""
-document.getElementById("backgroundmainchange").value = "#000000"
-document.getElementById("backgroundaltchange").value = "transparent"
-document.getElementById("textmainchange").value = "white"
-document.getElementById("textaltchange").value = "#c4c4c4"
-document.getElementById("buttonmainchange").value = "#ffffff"
-document.getElementById("buttonhovchange").value = "#dddddd"
-document.getElementById("buttonactchange").value = "#bbbbbb"
-document.getElementById("buttonhovactchange").value = "#999999"
 
-document.getElementById("buttonhovactchange").style.setProperty
+resetEl()
 
-function hightlight(el) {
-    el.style.setProperty("--buttontext", "#000000")
-}
+setBackgroundColor({
+    main: "#000000",
+    alt: "rgba(0,0,0,0)",
+    console: "var(--button)"
+})
 
-for (const thing of document.querySelectorAll(".button")) {
-    hightlight(thing)
-}
+setButtonColor({
+    main: "#ffffff",
+    hover: "#dddddd",
+    active: "#bbbbbb",
+    hoveractive: "#999999",
+    text: "#000000"
+})
 
-for (const thing of document.querySelectorAll(".tablinks")) {
-    hightlight(thing)
-}
+setConsoleColors({
+    black: "#000000",
+    red: "#800000",
+    green: "#008000",
+    yellow: "#808000",
+    blue: "#000080",
+    magenta: "#800080",
+    cyan: "#008080",
+    white: "#000000",
+    crimson: "#941515",
+    grey: "#808080"
+})
 
 loadColors()

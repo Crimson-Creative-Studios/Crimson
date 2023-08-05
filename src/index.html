@@ -5,9 +5,9 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'" />
     <link href="guiassets/css/styles2t.css" rel="stylesheet">
-    <link href="guiassets/fontawesome/css/fontawesome.css" rel="stylesheet">
-    <link href="guiassets/fontawesome/css/brands.css" rel="stylesheet">
-    <link href="guiassets/fontawesome/css/solid.css" rel="stylesheet">
+    <link href="guiassets/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="guiassets/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="guiassets/fontawesome/css/solid.min.css" rel="stylesheet">
     <script src="./axios.min.js"></script>
 </head>
 
@@ -16,25 +16,25 @@
         <div id="drag-region">
             <div id="window-controls">
 
-                <div class="winbutton" id="min-button" onclick="crimAPI.winmin()">
+                <div class="winbutton" id="min-button" onclick="crimAPI.winmin()" title="Minimise">
                     <img class="icon"
                         srcset="icons/min-w-10.png 1x, icons/min-w-12.png 1.25x, icons/min-w-15.png 1.5x, icons/min-w-15.png 1.75x, icons/min-w-20.png 2x, icons/min-w-20.png 2.25x, icons/min-w-24.png 2.5x, icons/min-w-30.png 3x, icons/min-w-30.png 3.5x"
                         draggable="false" />
                 </div>
 
-                <div class="winbutton" id="max-button" onclick="crimAPI.winmax()">
+                <div class="winbutton" id="max-button" onclick="crimAPI.winmax()" title="Maximise">
                     <img class="icon"
                         srcset="icons/max-w-10.png 1x, icons/max-w-12.png 1.25x, icons/max-w-15.png 1.5x, icons/max-w-15.png 1.75x, icons/max-w-20.png 2x, icons/max-w-20.png 2.25x, icons/max-w-24.png 2.5x, icons/max-w-30.png 3x, icons/max-w-30.png 3.5x"
                         draggable="false" />
                 </div>
 
-                <div class="winbutton" id="restore-button" onclick="crimAPI.winunmax()">
+                <div class="winbutton" id="restore-button" onclick="crimAPI.winunmax()" title="Restore">
                     <img class="icon"
                         srcset="icons/restore-w-10.png 1x, icons/restore-w-12.png 1.25x, icons/restore-w-15.png 1.5x, icons/restore-w-15.png 1.75x, icons/restore-w-20.png 2x, icons/restore-w-20.png 2.25x, icons/restore-w-24.png 2.5x, icons/restore-w-30.png 3x, icons/restore-w-30.png 3.5x"
                         draggable="false" />
                 </div>
 
-                <div class="winbutton" id="close-button" onclick="crimAPI.winclose()">
+                <div class="winbutton" id="close-button" onclick="crimAPI.winclose()" title="Close">
                     <img class="icon"
                         srcset="icons/close-w-10.png 1x, icons/close-w-12.png 1.25x, icons/close-w-15.png 1.5x, icons/close-w-15.png 1.75x, icons/close-w-20.png 2x, icons/close-w-20.png 2.25x, icons/close-w-24.png 2.5x, icons/close-w-30.png 3x, icons/close-w-30.png 3.5x"
                         draggable="false" />
@@ -66,6 +66,13 @@
                 <i class="fa-solid fa-circle-info"></i>
             </button>
 
+            <button id="UltraButton" class="tablinks" onclick="openTab('Ultra', 'UltraButton')">
+                <div>
+                <i class="fa-solid fa-rocket rocket"></i>
+                <i class="fa-solid fa-fire rocket-fire"></i>
+                </div>
+            </button>
+
             <button id="DEBUGButton" class="tablinks hidden" onclick="openTab('DEBUG', 'DEBUGButton')">
                 <i class="fa-solid fa-bug"></i>
             </button>
@@ -88,7 +95,7 @@
 
         <div id="CrimsonOptions" class="tabcontent">
             <h3>Crimson Options</h3>
-            <button class="button" onclick="openTab('Configuration', 'ConfigurationButton')">Go Back</button>
+            <button class="button" onclick="openTab('Configuration', 'ConfigurationButton')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
             <form onsubmit="return false;">
                 <label for="token">Token:</label><br>
                 <input type="password" id="token" name="token" style="width: 600px;" onfocus="this.type='text'"
@@ -98,7 +105,7 @@
                     onblur="this.type='password'"><br><br>
                 <label for="adprefix">Admin Role Prefix:</label><br>
                 <input type="text" id="adprefix" name="adprefix" style="width: 600px;"><br><br>
-                <button class="button" id="saveMainCFG">Save Settings</button><br><br>
+                <button class="button" id="saveMainCFG"><i class="fa-solid fa-floppy-disk"></i> Save settings</button><br><br>
             </form>
         </div>
 
@@ -121,6 +128,8 @@
                 <div class="custom-loader"></div>
                 <br>
             </div>
+            <h4 id="coretext">Core</h4>
+            <div id="corearea"></div>
             <h4 id="officialtext">Official</h4>
             <div id="officialarea"></div>
             <h4 id="unofficialtext">Unofficial</h4>
@@ -134,35 +143,100 @@
             <p id="guiver">GUI Version - Loading...</p>
             <p id="funfact">Fun Fact: Not loaded...</p>
             <h4>Credits:</h4>
-            <div id="credits">
-                <div onclick="crimAPI.openSite('https://github.com/DiveaLism')">
-                    <img src="guiassets/icons/divealism.png" width="100" height="100">
-                    <p>Divea - Creator</p>
+            <div id="credits" class="credits">
+                <div onclick="openTab('Nova')">
+                    <img src="guiassets/icons/nova.png" width="100" height="100">
+                    <p>Nova - Creator</p>
                 </div>
                 <br>
-                <div onclick="crimAPI.openSite('https://github.com/Crimson-Creative-Studios')">
+                <div onclick="openTab('CCS')">
                     <img src="guiassets/icons/ccs.png" width="100" height="100">
                     <p>Crimson Creative Studios - Parent company</p>
                 </div>
                 <br>
-                <div onclick="crimAPI.openSite('https://github.com/VanquishStudios')">
+                <div onclick="openTab('Vanquish')">
                     <img src="guiassets/icons/vanquish.png" width="100" height="100">
                     <p>Vanquish Studios - Partner company</p>
                 </div>
                 <br>
-                <div onclick="crimAPI.openSite('https://questcraft.org')">
-                    <img src="guiassets/icons/qc.png" width="100" height="100">
-                    <p>QuestCraft - Theme name (and awesome game)</p>
+                <div onclick="openTab('TSC')">
+                    <img src="guiassets/icons/tsc.png" width="100" height="100">
+                    <p>TSC - Epic people</p>
                 </div>
                 <br>
-                <div onclick="crimAPI.openSite('https://fontawesome.com')">
+                <div onclick="openTab('FA')">
                     <img src="guiassets/icons/fa.png" width="100" height="100">
                     <p>Font Awesome - Icons</p>
                 </div>
                 <br>
             </div>
             <br>
+            <h4 title="Yes this entire section is a joke, don't take it seriously">Funni Credits:</h4>
+            <div class="credits">
+                <div onclick="openTab('JaffaJace')">
+                    <img src="https://cdn.discordapp.com/attachments/850932589325189131/1135647797773869096/Screenshot_2021-06-26-20-20-50-1.jpg" width="100" height="100">
+                    <p>JaffaJace - Penis Snipper</p>
+                </div>
+            </div>
             <br>
+            <br>
+        </div>
+
+        <div id="Nova" class="tabcontent">
+            <h3>Nova - Creator</h3>
+            <img class="prevImg" src="guiassets/icons/nova.png" width="75" height="75"><br><br>
+            <button class="button" onclick="openTab('Information')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
+            <p>Hi there! I am the creator of Crimson and CrimsonGUI! Here are a few of my socials</p>
+            <button class="button big-button" onclick="crimAPI.openSite('https://github.com/CCSNova')"><i class="fa-brands fa-github"></i></button>
+            <button class="button big-button" onclick="copy('Username: ccsnova')"><i class="fa-brands fa-discord"></i></button>
+        </div>
+
+        <div id="CCS" class="tabcontent">
+            <h3>Crimson Creative Studios - Parent company</h3>
+            <img class="prevImg" src="guiassets/icons/ccs.png" width="75" height="75"><br><br>
+            <button class="button" onclick="openTab('Information')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
+            <p>Crimson Creative Studios aims to create high quality software and games! Check out more using the socials below!</p>
+            <button class="button big-button" onclick="crimAPI.openSite('https://github.com/Crimson-Creative-Studios')"><i class="fa-brands fa-github"></i></button>
+            <button class="button big-button" onclick="crimAPI.openSite('https://discord.gg/kbadwfx8V6')"><i class="fa-brands fa-discord"></i></button>
+        </div>
+
+        <div id="Vanquish" class="tabcontent">
+            <h3>Vanquish Studios - Partner company</h3>
+            <img class="prevImg" src="guiassets/icons/vanquish.png" width="75" height="75"><br><br>
+            <button class="button" onclick="openTab('Information')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
+            <!-- <p>Text here</p> --><br>
+            <button class="button big-button" onclick="crimAPI.openSite('https://github.com/VanquishStudios')"><i class="fa-brands fa-github"></i></button>
+        </div>
+
+        <div id="TSC" class="tabcontent">
+            <h3>TSC - Epic people</h3>
+            <img class="prevImg" src="guiassets/icons/tsc.png" width="75" height="75"><br><br>
+            <button class="button" onclick="openTab('Information')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
+            <!-- <p>Text here</p> --><br>
+            <button class="button big-button" onclick="crimAPI.openSite('https://discord.gg/b6Qx4Z8Drd')"><i class="fa-brands fa-discord"></i></button>
+        </div>
+
+        <div id="FA" class="tabcontent">
+            <h3>Font Awesome - Icons</h3>
+            <img class="prevImg" src="guiassets/icons/fa.png" width="75" height="75"><br><br>
+            <button class="button" onclick="openTab('Information')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
+            <p>Font Awesome, a great way to get many many icons, thank you so much for existing guys!</p>
+            <button class="button big-button" onclick="crimAPI.openSite('https://fontawesome.com/')"><i class="fa-solid fa-font-awesome"></i></button>
+        </div>
+
+        <div id="JaffaJace" class="tabcontent">
+            <h3>JaffaJace - Penis Snipper</h3>
+            <img class="prevImg" src="https://cdn.discordapp.com/attachments/850932589325189131/1135647797773869096/Screenshot_2021-06-26-20-20-50-1.jpg" width="75" height="75"><br><br>
+            <button class="button" onclick="openTab('Information')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
+            <p>Our local in-house penis snipper, would be careful around him if I were you</p>
+            <button class="button big-button" onclick="crimAPI.openSite('https://github.com/JaffaJace')"><i class="fa-brands fa-github"></i></button>
+            <button class="button big-button" onclick="copy('Username: jaffajace')"><i class="fa-brands fa-discord"></i></button>
+        </div>
+
+        <div id="Ultra" class="tabcontent">
+            <h3>Ultra</h3>
+            <p>The quick and easy way to get your extension, make a deal in the Discord server!</p>
+            <button class="button big-button" onclick="crimAPI.openSite('https://discord.gg/kbadwfx8V6')"><i class="fa-brands fa-discord"></i></button>
         </div>
 
         <div id="Options" class="tabcontent">
@@ -176,11 +250,11 @@
 
         <div id="ColorChanger" class="tabcontent">
             <h3>Theme</h3>
-            <button class="button" onclick="openTab('Options')">Go back</button>
+            <button class="button" onclick="openTab('Options')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
             <button class="button" onclick="toggleBG()">Toggle background</button>
             <button class="button" onclick="clearColor()">Reset to default</button>
             <button class="button" onclick="openTab('PreviewColors')">Preview theme</button>
-            <button class="button" onclick="saveGUISettings()">Save</button>
+            <button class="button" onclick="saveGUISettings()"><i class="fa-solid fa-floppy-disk"></i> Save settings</button>
             <h4>Options</h4>
             <input class="styled-checkbox inputcolorcheck" type="checkbox" id="extensionThemeOverride"
                 name="extensionThemeOverride" value="true">
@@ -192,6 +266,9 @@
             <label for="darknessControl">Background darkness</label>
             <h4>Themes</h4>
             <div id="themesBTNHolder">
+            </div>
+            <h4>Theme Effects</h4>
+            <div id="themeEffectsBTNHolder">
             </div>
             <br><br>
             <form onsubmit="return false;">
@@ -223,6 +300,10 @@
                         <label for="buttonhovactchange">Button hover active:</label><br>
                         <input type="text" id="buttonhovactchange" name="buttonhovactchange"
                             placeholder="#8f0828" /><br><br>
+
+                        <label for="buttontextchange">Button text:</label><br>
+                        <input type="text" id="buttontextchange" name="buttontextchange"
+                            placeholder="#ffffff" /><br><br>
                     </div>
                     <label for="element">Element: <span class="click" onclick="openTab('InfoElement')"><i
                                 class="fa-solid fa-circle-info"></i></span></label>
@@ -234,7 +315,7 @@
 
         <div id="InfoElement" class="tabcontent">
             <h3>What does this mean?</h3>
-            <button class="button" onclick="openTab('ColorChanger')">Go back</button>
+            <button class="button" onclick="openTab('ColorChanger')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
             <p>The element box can be used to select a certain element, for example if you wanted to modify the Options
                 Button, you would put in "#OptionsButton" as that's the ID for the element, here is a table of elements
                 below:</p>
@@ -284,7 +365,7 @@
 
         <div id="PreviewColors" class="tabcontent">
             <h3>Preview Colors</h3>
-            <button class="button" onclick="openTab('ColorChanger')">Go back</button>
+            <button class="button" onclick="openTab('ColorChanger')"><i class="fa-solid fa-square-caret-left"></i> Go back</button>
             <div class="previewColors">
                 <h4>Main background</h4>
                 <div class="background"></div>
@@ -333,12 +414,14 @@
 
         <script src="./renderer.js" type="module"></script>
         <script src="./themehandler.js"></script>
+        <script src="./themegrabber.js"></script>
         <script src="./tabhandler.js"></script>
         <script src="./extensionsearchhandler.js"></script>
         <script src="./windowcontroller.js"></script>
         <script src="./notificationhandler.js"></script>
         <script src="./backgroundhandler.js"></script>
         <script src="./ultragamermode.js"></script>
+        <script src="customselecthandler.js"></script>
     </div>
     <div id="tiles"></div>
     <div id="darkness"></div>
@@ -347,7 +430,7 @@
         <div class="modal-content3s modal-content">
             <div class="disappear3s"></div>
             <p>Saving settings...</p>
-            <button class="button close-button">𐌢</button>
+            <button class="button close-button">✕</button>
         </div>
 
     </div>
@@ -357,7 +440,7 @@
         <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Successfully saved settings...</p>
-            <button class="button close-button">𐌢</button>
+            <button class="button close-button">✕</button>
         </div>
 
     </div>
@@ -367,7 +450,7 @@
         <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Something went wrong while saving...</p>
-            <button class="button close-button">𐌢</button>
+            <button class="button close-button">✕</button>
         </div>
 
     </div>
@@ -377,7 +460,7 @@
         <div class="modal-content3s modal-content">
             <div class="disappear3s"></div>
             <p>Downloading extension...</p>
-            <button class="button close-button">𐌢</button>
+            <button class="button close-button">✕</button>
         </div>
 
     </div>
@@ -387,7 +470,7 @@
         <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Successfully downloaded extension...</p>
-            <button class="button close-button">𐌢</button>
+            <button class="button close-button">✕</button>
         </div>
 
     </div>
@@ -397,7 +480,7 @@
         <div class="modal-content5s modal-content">
             <div class="disappear5s"></div>
             <p>Something went wrong while downloading...</p>
-            <button class="button close-button">𐌢</button>
+            <button class="button close-button">✕</button>
         </div>
 
     </div>
@@ -407,7 +490,7 @@
         <div class="modal-content3s modal-content">
             <div class="disappear3s"></div>
             <p>Copied to clipboard...</p>
-            <button class="button close-button">𐌢</button>
+            <button class="button close-button">✕</button>
         </div>
 
     </div>

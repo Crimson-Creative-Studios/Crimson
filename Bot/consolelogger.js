@@ -1,7 +1,23 @@
-var logger = function logger(info, type) {
-    function log(info) {
-        console.log(info)
+
+const br = ""
+const colors = {
+    reset: "\x1b[0m",
+
+    color: {
+        black: "\x1b[30m",
+        red: "\x1b[31m",
+        green: "\x1b[32m",
+        yellow: "\x1b[33m",
+        blue: "\x1b[34m",
+        magenta: "\x1b[35m",
+        cyan: "\x1b[36m",
+        white: "\x1b[37m",
+        gray: "\x1b[90m",
+        crimson: "\x1b[38m"
     }
+}
+
+function formatDate() {
     var hour = new Date().getHours()
     var minutes = new Date().getMinutes()
     var seconds = new Date().getSeconds()
@@ -14,45 +30,103 @@ var logger = function logger(info, type) {
     var day = new Date().getDay()
     let dayWord = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     var dayOfWeek = dayWord[day]
-    var br = ""
-
-    if (type === "info") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Info ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "warn") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Warn ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "error") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Error ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "hint") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Hint ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "action") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | User Action ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "logCommand") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Logger Command ] ${info}${br}`)
-
-    } else if (type === "start") {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} | Start-Up ] ${info}${br}`)
-        log(br)
-
-    } else if (type === "raw") {
-        log(info)
-        log(br)
-        log(br)
-
-    } else {
-        log(`[ ${dayOfWeek} | ${hour}:${minutes}:${seconds} ] ${info}${br}`)
-        log(br)
-    }
-
+    return `${dayOfWeek} | ${hour}:${minutes}:${seconds}`
 }
 
-module.exports.logger = logger
+function info(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`${colors.color.white}[ ${formatDate()} | Info ] ${prntStr}${br}${colors.reset}`)
+    console.log(br)
+}
+
+function success(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`${colors.color.green}[ ${formatDate()} | Success ] ${prntStr}${br}${colors.reset}`)
+    console.log(br)
+}
+
+function warn(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`${colors.color.yellow}[ ${formatDate()} | Warn ] ${prntStr}${br}${colors.reset}`)
+    console.log(br)
+}
+
+function error(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`${colors.color.red}[ ${formatDate()} | Error ] ${prntStr}${br}${colors.reset}`)
+    console.log(br)
+}
+
+function hint(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`${colors.color.magenta}[ ${formatDate()} | Hint ] ${prntStr}${br}${colors.reset}`)
+    console.log(br)
+}
+
+function start(...infos) {
+    var prntStr = ""
+    for (const info of infos) {
+        prntStr += info.toString() + " "
+    }
+    console.log(`${colors.color.blue}[ ${formatDate()} | Start ] ${prntStr}${br}${colors.reset}`)
+    console.log(br)
+}
+
+function raw(...infos) {
+    console.log(...infos)
+    console.log(br)
+}
+
+function custom(options) {
+    var str = ""
+    if (!options.content) {
+        error("Invalid custom logger command found, missing content to log, passed in options:", options)
+        return
+    }
+    if (options.color) {
+        if (colors.color[options.color]) {
+            str += colors.color[options.color]
+        }
+    }
+    if (options.name) {
+        str += `[ ${formatDate()} | ${options.name} ] `
+    } else {
+        str += `[ ${formatDate()} ] `
+    }
+    str += options.content
+    if (options.color) {
+        if (colors.color[options.color]) {
+            str += colors.reset
+        }
+    }
+    console.log(str)
+    console.log(br)
+}
+
+module.exports = {
+    log: info,
+    info,
+    warn,
+    error,
+    hint,
+    start,
+    raw,
+    err: error,
+    custom,
+    success
+}

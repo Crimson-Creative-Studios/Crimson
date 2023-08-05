@@ -4,6 +4,19 @@ var currentOption = null
 var currentMode = null
 var custom = false
 
+function attemptColorLoad() {
+    try {
+        if (currentOption) {
+            loadColors(JSON.parse(currentOption))
+        } else {
+            loadColors()
+        }
+    } catch(err) {
+        console.error(err)
+        loadColors()
+    }
+}
+
 async function openTab(tabName, override = null, option = "") {
     loadColors()
     if (tabName.startsWith("falseErrorTest")) {
@@ -39,7 +52,7 @@ async function openTab(tabName, override = null, option = "") {
         document.getElementById("ErrorFound").classList.add("showentab")
     } else {
         if (currentTab === tabName) {
-            handleChange()
+            attemptColorLoad()
             return
         }
         currentTab = tabName
@@ -47,7 +60,7 @@ async function openTab(tabName, override = null, option = "") {
         currentOption = option
         var i, tabcontent, tablinks, presence
         var key = 'bigimg'
-        handleChange()
+        attemptColorLoad()
 
         try {
             if (!document.getElementById(override).classList.contains("active")) {
@@ -99,56 +112,55 @@ async function openTab(tabName, override = null, option = "") {
         }
 
         if (currentMenu === "Home" || currentMenu === "Configuration" || currentMenu === "Information" || currentMenu === "Market") {
-            presence = `Currently in the ${currentMenu} menu.`
+            presence = `${currentMenu} menu`
             if (currentMenu === "Configuration") {
+                presence = "Config menu ⚙️"
                 key = 'bigimgcog'
             } else {
                 key = 'bigimg'
+                if (currentMenu === "Home") {
+                    presence += " 🏠"
+                } else if (currentMenu === "Information") {
+                    presence = "Info ℹ️"
+                } else if (currentMenu === "Market") {
+                    presence += " 🏘️"
+                }
             }
         } else if (currentMenu === "DEBUG") {
-            presence = 'Currently DEBUGGING something...'
+            presence = 'Debugging 🪲'
             key = 'bigimg'
         } else if (currentMenu === "ErrorFound") {
-            presence = 'Currently in an error menu :('
+            presence = 'Error! 😵'
         } else if (currentMenu === "Options") {
-            presence = "Currently modifing CrimsonGUI's settings"
+            presence = "CrimsonGUI settings ⚙️"
             key = 'bigimgcog'
-        } else if (currentMenu.endsWith("markettab")) {
-            var name = currentMenu.slice(0, -9)
-            while (name.endsWith("¬")) {
-                name = name.slice(0, -1)
-            }
-            presence = `Currently checking ${name} out.`
-            if (currentMenu.slice(0, -9) === "PyRun") {
-                key = 'pyrunlogo'
-            }
-        } else if (currentMenu === "ColorChanger" || currentMenu === "PreviewColors") {
-            presence = "Customizing the theme!"
-        } else {
-            var metaname = codeAdditions.metanames[currentMenu]
-            presence = `Currently modifing ${metaname}'s settings.`
+        } else if (currentMenu === "ColorChanger" || currentMenu === "PreviewColors" || currentMenu === "InfoElement") {
+            presence = "Customizing the theme 🖌️"
+        } else if (currentMenu === "Nova" || currentMenu === "CCS" || currentMenu === "Vanquish" || currentMenu === "FA") {
+            presence = "Checking out the credits 📃"
+        } else if (currentMenu === "Ultra") {
+            presence = "Considering getting Ultra 🤔"
+        } else if (currentMenu.endsWith("EXsettings")) {
+            var metaname = crimAPI.codeAdditions.metanames[currentMenu.slice(0, -10)]
+            presence = `${metaname} settings ⚙️`
             if (metaname === "PyRun") {
                 key = 'pyrunlogo'
             } else {
                 key = 'bigimgcog'
             }
+        } else if (currentMenu.endsWith("markettab")) {
+            var name = currentMenu.slice(0, -9)
+            while (name.endsWith("¬")) {
+                name = name.slice(0, -1)
+            }
+            presence = `Looking at ${name} 👌`
+            if (currentMenu.slice(0, -9) === "PyRun") {
+                key = 'pyrunlogo'
+            }
         }
-        if (presence === null) {
-            presence = 'Something has really gone wrong'
+        if (!presence) {
+            presence = 'Something has really gone wrong 😭'
         }
         crimAPI.rcpChange([presence, key])
     }
 }
-
-function handleChange() {
-    try {
-        var options = JSON.parse(currentOption)
-        loadColors(options)
-    } catch (err) {
-        loadColors()
-    }
-}
-
-handleChange()
-
-window.matchMedia("(prefers-color-scheme: dark)").addListener(handleChange)

@@ -1,12 +1,19 @@
 clearColor()
 
-document.getElementById("element").value = ""
-document.getElementById("backgroundmainchange").value = "#0F64AC"
-document.getElementById("backgroundaltchange").value = "#0a5391"
-document.getElementById("textmainchange").value = "white"
-document.getElementById("textaltchange").value = "#c4c4c4"
-document.getElementById("buttonmainchange").value = "#000000"
-document.getElementById("buttonhovchange").value = "#303030"
-document.getElementById("buttonactchange").value = "#505050"
-document.getElementById("buttonhovactchange").value = "#707070"
+resetEl()
+
+setBackgroundColor({
+    main: "#0f64ac",
+    alt: "#0e5fa3",
+    console: ""
+})
+
+setButtonColor({
+    main: "#000000",
+    hover: "#303030",
+    active: "#505050",
+    hoveractive: "#707070",
+    text: ""
+})
+
 loadColors()

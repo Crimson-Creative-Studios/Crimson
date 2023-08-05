@@ -5,7 +5,7 @@ const config = require('../config.json')
 
 async function deploy(guilds) {
     try {
-        console.logger("Started refreshing all application commands.", "start")
+        console.start("Started refreshing all application commands.")
         const commands = []
         var commandFiles = null
         try {
@@ -30,19 +30,21 @@ async function deploy(guilds) {
             }
             if (state === "enabled") {
                 try {
-                    var commandFilesExtension = await fs.promises.readdir(`../Extensions/${extension}/triggers/commands/`)
-                    for (var file of commandFilesExtension) {
+                    const commandFilesExtension = await fs.promises.readdir(`../Extensions/${extension}/triggers/commands/`)
+                    for (const file of commandFilesExtension) {
                         if (file.endsWith(".js")) {
-                            var command = require(`../Extensions/${extension}/triggers/commands/${file}`)
+                            const command = require(`../Extensions/${extension}/triggers/commands/${file}`)
                             try {
                                 commands.push(command.data.toJSON())
                             } catch (err) {
-                                commands.push(command.data)
+                                if (command.name) {
+                                    commands.push(JSON.stringify(command))
+                                }
                             }
                         }
                     }
                 } catch (err) {
-                    console.logger(`${metadata.name} has no application commands.`, "start")
+                    console.start(`${metadata.name} has no application commands.`)
                 }
             }
         }
@@ -62,14 +64,14 @@ async function deploy(guilds) {
                     { body: commands },
                 )
             })
-            console.logger(`Successfully refreshed all application commands.`, "start")
+            console.start(`Successfully refreshed all application commands.`)
             return true
         } catch (err) {
-            console.logger(err, "error")
+            console.err(err)
             return false
         }
     } catch (err) {
-        console.logger(err, "error")
+        console.err(err)
     }
 }
 

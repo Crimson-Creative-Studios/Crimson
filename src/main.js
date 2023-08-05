@@ -1,4 +1,5 @@
-const { app, BrowserWindow, ipcMain, nativeTheme, globalShortcut } = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
+const { Client, GatewayIntentBits, Events, TextChannel, Role } = require("discord.js")
 const { spawn } = require('child_process')
 const client = require('discord-rich-presence')('1056199295168159814')
 client.updatePresence({
@@ -9,13 +10,14 @@ client.updatePresence({
 const path = require('path')
 const fs = require('fs')
 const axios = require('axios')
-const JSZip = require('jszip')
 const net = require('net')
+const { downloadAndUnzip } = require("../sharedResources/downloadExtension")
+const { token } = require("../config.json")
 
 function generateUUID() {
     var d = new Date().getTime()
     var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
         var r = Math.random() * 16
         if (d > 0) {
             r = (d + r) % 16 | 0
@@ -30,19 +32,8 @@ function generateUUID() {
 
 const uuid = generateUUID()
 
-var globalBot, consolewin
-var isMax = false
-
-const downloadAndUnzip = async (zipUrl, unzipPath) => {
-    const response = await axios.get(zipUrl, { responseType: 'arraybuffer' })
-    const zip = await JSZip.loadAsync(response.data)
-    await Promise.all(Object.keys(zip.files).map(async (fileName) => {
-        const content = await zip.files[fileName].async('nodebuffer')
-        const filePath = path.join(unzipPath, fileName)
-        fs.mkdirSync(path.dirname(filePath), { recursive: true })
-        fs.writeFileSync(filePath, content)
-    }))
-}
+var globalBot, consolewin, win
+var isMax = false, conIsMax = false
 
 async function getValueJSON(file, value) {
     var json = null
@@ -100,8 +91,8 @@ async function setValueJSONBulk(file, value, data) {
 
 function consoleWindow() {
     const console = new BrowserWindow({
-        width: 800,
-        height: 800,
+        width: 1000,
+        height: 1000,
         minWidth: 800,
         minHeight: 800,
         frame: false,
@@ -110,19 +101,29 @@ function consoleWindow() {
             preload: path.join(__dirname, 'consolepreload.js'),
         },
         show: false,
+        backgroundColor: "#2f3136"
     })
     console.once('ready-to-show', () => {
         console.show()
     })
 
+    console.webContents.on('did-start-loading', async () => {
+        if (conIsMax) {
+            console.webContents.send("wincontroler", "max")
+        }
+        try {
+            globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
+        } catch(err) { }
+    })
+
     console.on('maximize', () => {
         console.webContents.send("wincontroler", "max")
-        isMax = true
+        conIsMax = true
     })
 
     console.on('unmaximize', () => {
         console.webContents.send("wincontroler", "unmax")
-        isMax = false
+        conIsMax = false
     })
 
     console.loadFile(path.join(__dirname, 'console.html'))
@@ -132,23 +133,18 @@ function consoleWindow() {
 }
 
 function createWindow() {
-    if (nativeTheme.shouldUseDarkColors) {
-        var color = '#2f3136'
-    } else {
-        var color = '#FFFFFF'
-    }
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
-        minWidth: 800,
-        minHeight: 450,
+        width: 900,
+        height: 750,
+        minWidth: 900,
+        minHeight: 750,
         frame: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             devTools: true
         },
         icon: __dirname + '/guiassets/crimsonsimplelogolarge.ico',
-        backgroundColor: color,
+        backgroundColor: "#2f3136",
     })
 
     win.webContents.on('did-start-loading', async () => {
@@ -170,11 +166,83 @@ function createWindow() {
         }
     })
 
+    ipcMain.handle('showWin', (event, arg) => {
+        if (arg === "main") {
+            try {
+                win.show()
+            } catch (err) { }
+        } else if (arg === "cnsl") {
+            try {
+                consolewin.show()
+            } catch (err) { }
+        }
+    })
+
     ipcMain.on('getDir', (event, arg) => {
         try {
             event.returnValue = fs.readdirSync(arg)
-        } catch(err) {
+        } catch (err) {
             event.returnValue = []
+        }
+    })
+
+    ipcMain.on('botInfoCollect', (event, arg) => {
+        try {
+            const bot = new Client({
+                intents: [
+                    GatewayIntentBits.Guilds,
+                    GatewayIntentBits.GuildMessages,
+                    GatewayIntentBits.MessageContent,
+                    GatewayIntentBits.GuildMembers,
+                    GatewayIntentBits.GuildVoiceStates
+                ],
+            })
+            bot.once(Events.ClientReady, async (c) => {
+                const data = {}
+                c.guilds.cache.forEach((guild) => {
+                    if (data[guild.id] === undefined) {
+                        data[guild.id] = {
+                            channels: [],
+                            roles: [],
+                            icon: guild.iconURL({ size: 32 }),
+                            name: guild.name,
+                        }
+                    }
+                    guild.channels.cache.forEach((channel) => {
+                        if (channel instanceof TextChannel) {
+                            data[guild.id].channels.push({
+                                id: channel.id,
+                                name: channel.name
+                            })
+                        }
+                    })
+
+                    guild.roles.cache.forEach((role) => {
+                        if (role.name !== "@everyone") {
+                            if (!role.hexColor || role.hexColor === "#000000") {
+                                var color = "transparent"
+                            } else {
+                                var color = role.hexColor
+                            }
+                            data[guild.id].roles.push({
+                                id: role.id,
+                                name: role.name,
+                                color: color
+                            })
+                        }
+                    })
+                })
+                event.returnValue = data
+                bot.destroy()
+            })
+            bot.on(Events.InteractionCreate, async (interaction) => {
+                try {
+                    await interaction.reply("The bot is currently fetching channels and is not online")
+                } catch (err) { }
+            })
+            bot.login(token)
+        } catch (err) {
+            event.returnValue = {}
         }
     })
 
@@ -185,10 +253,12 @@ function createWindow() {
     ipcMain.on('infoGrab', async (event, arg) => {
         const onlineVersion = await axios.get("https://github.com/Crimson-Creative-Studios/Crimson/raw/main/src/version.txt")
         const themes = await fs.promises.readdir("./themes")
+        const themeEffects = await fs.promises.readdir("./themeEffects")
         event.returnValue = {
             onlineVersion: onlineVersion.data,
             uuid: uuid,
-            themes: themes
+            themes: themes,
+            themeEffects: themeEffects
         }
     })
 
@@ -328,7 +398,6 @@ function createWindow() {
         }
     })
 
-    win.loadFile(path.join(__dirname, 'index.html'))
     win.setMenuBarVisibility(false)
     win.webContents.setZoomFactor(1.0)
 
@@ -339,24 +408,6 @@ function createWindow() {
             instance: true
         }
         client.updatePresence(status)
-    })
-
-    ipcMain.handle('dark-mode:toggle', () => {
-        if (nativeTheme.shouldUseDarkColors) {
-            nativeTheme.themeSource = 'light'
-        } else {
-            nativeTheme.themeSource = 'dark'
-        }
-        return nativeTheme.shouldUseDarkColors
-    })
-
-    ipcMain.handle('dark-mode:get', () => {
-        return nativeTheme.shouldUseDarkColors
-    })
-
-    ipcMain.handle('dark-mode:system', () => {
-        nativeTheme.themeSource = 'system'
-        return nativeTheme.shouldUseDarkColors
     })
 
     ipcMain.on('message', (event, data) => {
@@ -370,34 +421,12 @@ function createWindow() {
     return win
 }
 
-function evalInContext(js, context) {
-    return function () {
-        return eval(js)
-    }.call(context)
-}
-
 app.whenReady().then(async () => {
-    globalShortcut.register('CommandOrControl+D+M', () => {
-        win.webContents.send("dark-mode:change", null)
-    })
-    var win = createWindow()
+    win = createWindow()
 
-    const server = net.createServer(function (socket) {
-        socket.on('data', (message) => {
-            const messagestr = message.toString()
-            const msgs = messagestr.split("ܛ")
-            for (const msg of msgs) {
-                if (msg !== "") {
-                    if (msg.startsWith(uuid)) {
-                        const info = msg.slice(uuid.length)
-                        evalInContext(info, { win })
-                    }
-                }
-            }
-        })
-    })
-    server.listen(2845, '127.0.0.1')
-    app.on('activate', function () {
+    win.loadFile(path.join(__dirname, 'loading.html'))
+    setTimeout(() => win.loadFile(path.join(__dirname, 'index.html')), 4000)
+    app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow()
         }
@@ -414,13 +443,13 @@ app.whenReady().then(async () => {
     })
 })
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
 })
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', (err) => {
     console.log(err)
 })
 
@@ -428,8 +457,25 @@ app.on('will-quit', () => {
     globalShortcut.unregisterAll()
 })
 
-ipcMain.handle('OpenConsole', (event, args) => {
+var newLoad = false
+
+ipcMain.handle('sendThemeData', async (event, arg) => {
+    try {
+        if (newLoad) {
+            await new Promise(resolve => setTimeout(resolve, 750))
+            newLoad = false
+        }
+        consolewin.webContents.send("winguicfg", arg)
+    } catch (err) { }
+})
+
+ipcMain.handle('OpenConsole', async (event, args) => {
     consolewin = consoleWindow()
+
+    consolewin.webContents.on('did-start-loading', async () => {
+        newLoad = true
+        win.webContents.send("grabThemeData", null)
+    })
 
     consolewin.on("closed", () => {
         try {
@@ -438,41 +484,48 @@ ipcMain.handle('OpenConsole', (event, args) => {
     })
 })
 
+function replaceColorCode(text) {
+    const colors = ["[30m", "[31m", "[32m", "[33m", "[34m", "[35m", "[36m", "[37m", "[38m", "[90m", "[0m"]
+    const replacers = ['<span class="console-text console-text-black">', '<span class="console-text console-text-red">', '<span class="console-text console-text-green">',
+                       '<span class="console-text console-text-yellow">', '<span class="console-text console-text-blue">', '<span class="console-text console-text-magenta">',
+                       '<span class="console-text console-text-cyan">', '<span class="console-text console-text-white">', '<span class="console-text console-text-crimson">',
+                       '<span class="console-text console-text-grey">', '</span>']
+    var txt = text
+    for (const i in colors) {
+        txt = txt.replaceAll(colors[i], replacers[i])
+    }
+    return txt
+}
+
 ipcMain.handle('BotStart', (event, arg) => {
-    console.log("Bot Started")
-    globalBot = spawn('node', [__dirname + '\\..\\Bot\\index.mjs', "--gui"], { cwd: '..\\Bot', shell: true, stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
+    globalBot = spawn('node', [path.resolve('..', 'Bot', 'index.mjs'), "--gui"], { cwd: '../Bot', shell: true, stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
     globalBot.stdout.setEncoding('utf8')
     globalBot.stdout.on('data', (data) => {
         if (data === 'STPSCD') {
             consolewin.webContents.send('STP')
         } else if (data.startsWith("prompt:")) { } else {
-            consolewin.webContents.send('botstdout', data.replaceAll("\n", "<br>"))
+            consolewin.webContents.send('botstdout', replaceColorCode(data.replaceAll("\n", "<br>")))
         }
     })
     globalBot.stderr.setEncoding('utf8')
     globalBot.stderr.on('data', (data) => {
         consolewin.webContents.send('botstdout', data)
-        try {
-            globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
-        } finally {
-            try {
-                consolewin.webContents.send('STP')
-            } catch (err) { }
-        }
     })
     globalBot.stdin.setEncoding('utf-8')
+    globalBot.on("exit", () => {
+        consolewin.webContents.send('STP')
+    })
 })
 
 ipcMain.handle('BotStop', (event, arg) => {
     globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
-    consolewin.webContents.send('STP')
 })
 
 ipcMain.handle('BotRC', (event, arg) => {
     globalBot.stdin.write(JSON.stringify({ type: 'RC' }) + '\n')
 })
 
-process.on('exit', function () {
+process.on('exit', () => {
     try {
         globalBot.stdin.write(JSON.stringify({ type: 'END' }) + '\n')
     } catch (err) { }
