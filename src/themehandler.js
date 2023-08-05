@@ -5,17 +5,34 @@ var guicfg = crimAPI.guicfg()
 function applyColor(el, options) {
     if (options && !document.getElementById("extensionThemeOverride").checked) {
         try {
-            el.style.setProperty('--background', options.background.main ?? "")
-            el.style.setProperty('--backgroundalt', options.background.alt ?? "")
-            el.style.setProperty('--button', options.button.main ?? "")
-            el.style.setProperty('--buttonhov', options.button.hov ?? "")
-            el.style.setProperty('--buttonact', options.button.act ?? "")
-            el.style.setProperty('--buttonacthov', options.button.hovact ?? "")
-            el.style.setProperty('--buttontext', options.button.text ?? "")
-            el.style.setProperty('--color', options.text.main ?? "")
-            el.style.setProperty('--coloralt', options.text.alt ?? "")
-            return
+            if (!options.background) {
+                options.background = {}
+            }
+            if (!options.button) {
+                options.button = {}
+            }
+            if (!options.text) {
+                options.text = {}
+            }
+            if (options.background.main !== "" || options.background.alt !== "" || options.button.main !== "" ||
+                options.button.hov !== "" || options.button.act !== "" || options.button.hovact !== "" ||
+                options.button.text !== "" || options.text.main !== "" || options.text.alt !== "") {
+                    el.style.setProperty('--background', options.background.main ?? "")
+                    el.style.setProperty('--backgroundalt', options.background.alt ?? "")
+                    el.style.setProperty('--button', options.button.main ?? "")
+                    el.style.setProperty('--buttonhov', options.button.hov ?? "")
+                    el.style.setProperty('--buttonact', options.button.act ?? "")
+                    el.style.setProperty('--buttonacthov', options.button.hovact ?? "")
+                    el.style.setProperty('--buttontext', options.button.text ?? "")
+                    el.style.setProperty('--color', options.text.main ?? "")
+                    el.style.setProperty('--coloralt', options.text.alt ?? "")
+                    return
+                } else {
+                    loadColors()
+                    return
+                }
         } catch (err) {
+            console.error(err)
             loadColors()
         }
     } else {

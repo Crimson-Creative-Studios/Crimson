@@ -6,8 +6,13 @@ var custom = false
 
 function attemptColorLoad() {
     try {
-        loadColors(JSON.parse(currentOption))
+        if (currentOption) {
+            loadColors(JSON.parse(currentOption))
+        } else {
+            loadColors()
+        }
     } catch(err) {
+        console.error(err)
         loadColors()
     }
 }
