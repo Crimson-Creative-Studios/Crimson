@@ -26,6 +26,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const clients = {}
 const vm = require("vm")
+global.config = config
 
 //*
 //* Global vars/consts
@@ -102,17 +103,17 @@ const server = net.createServer((socket) => {
     })
 })
 
+const port = 3000
 server.on('error', (err) => {
     console.error(`IPC Error for Extensions: ${err}`)
     console.error(`Extensions cannot communicate, please consider closing all instances of Crimson and trying again`)
-    console.hint("If the error message is 'Error: listen EADDRINUSE: address already in use :::3000' then that means there is another application using the port, this could be another process of Crimson!")
+    console.hint(`If the error message is 'Error: listen EADDRINUSE: address already in use :::${port}' then that means there is another application using the port, this could be another process of Crimson!`)
 })
-const port = 3000
 server.listen(port, () => { })
 
 //? Generate a valid path
 function resolvePath(extension, file) {
-    return `.\\..\\Extensions\\${extension}\\${file}`
+    return path.resolve("..", "Extensions", extension, file)
 }
 
 //! Read and run extension
@@ -124,28 +125,22 @@ try {
     extensions = []
 }
 
-const actsas = []
-
-for (const extension of extensions) {
-    for (const thing of require(`../Extensions/${extension}/extension.json`).actsas) {
-        actsas.push(thing)
-    }
-}
-
 extensions.forEach((extension) => {
     var cfg = require(`../Extensions/${extension}/config.json`)
     var enabled = cfg.enabled
+    var extensionstate
     if (enabled === "true") {
-        var extensionstate = "enabled"
+        extensionstate = "enabled"
     } else {
-        var extensionstate = "disabled"
+        extensionstate = "disabled"
     }
     var metadata = require(`../Extensions/${extension}/extension.json`)
     var dep = metadata.dependencies
     if (!extensionstate === "disabled") {
         for (const depe of dep) {
-            if (!extensions.includes(depe) && !actsas.includes(depe)) {
-                var extensionstate = "disabled"
+            if (!extensions.includes(depe)) {
+                extensionstate = "disabled"
+                console.warn(`${metadata.name} is missing dependencies! This extension will be disabled.`)
             }
         }
     }
@@ -424,6 +419,7 @@ client.on(Events.MessageCreate, async message => {
 //? Handle GUI calls
 if (process.argv.includes("--gui")) {
     process.stdin.on("data", (data) => {
+        try {
         var message = JSON.parse(data.toString().trim())
         if (message.type === "END") {
             client.user.setPresence({ activities: [{ name: 'the offline game' }], status: 'dnd' })
@@ -431,6 +427,9 @@ if (process.argv.includes("--gui")) {
         } else if (message.type === "RC") {
             command.deploy(client.guilds.cache)
         }
+    } catch {
+
+    }
     })
 }
 
