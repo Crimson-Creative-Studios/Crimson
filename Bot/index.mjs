@@ -2,12 +2,9 @@
 //* Imports
 //*
 
-//? ESM imports
 import { createRequire } from "module"
 import fetch from "node-fetch"
 import { fileURLToPath } from "url"
-
-//? CJS imports
 const require = createRequire(import.meta.url)
 const console = require("./consolelogger")
 const fs = require("fs")
@@ -20,13 +17,9 @@ const {
     ActivityType,
 } = require("discord.js")
 const net = require('net')
-const config = require("../config.json")
-const command = require("./deploy-commands")
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const clients = {}
 const vm = require("vm")
-global.config = config
 
 //*
 //* Global vars/consts
@@ -34,6 +27,10 @@ global.config = config
 
 //? Tag command list for ez tag commands
 const tagsList = []
+const config = require("../config.json")
+const command = require("./deploy-commands")
+const clients = {}
+global.config = config
 
 //*
 //* Bot set-up
@@ -125,6 +122,185 @@ try {
     extensions = []
 }
 
+function runExtension(extension) {
+    if (fs.existsSync(`../Extensions/${extension}/index.js`)){
+        var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
+    } else {
+        var code = ""
+    }
+    const sandbox = {
+        client,
+        console,
+        fetch,
+        fs,
+        path,
+        global,
+        require,
+        __dirname,
+        extension,
+        extensions,
+        guilds: client.guilds.cache,
+        resolvePath: (thing, ext = extension) =>
+            resolvePath(ext, thing),
+        setInterval: setInterval
+    }
+    vm.createContext(sandbox)
+    vm.runInContext(`const net = require('net')
+
+const extensionHandler = net.createConnection({ port: ${port} }, () => {
+console.start('Successfully loaded ${metadata.name}')
+})
+
+function sendData(data) {
+extensionHandler.write(data.replaceAll("ܛ", "\\u071B")+"ܛ")
+}
+
+sendData("SYSMSG ID=${metadata.id}")
+
+function addTagCommand(tags, callback) {
+sendData(JSON.stringify({
+type: "addTag",
+info: {
+    tag: tags,
+    function: callback.toString()
+}
+}))
+}
+
+function sendDataToExtension(extension, data) {
+sendData(JSON.stringify({
+type: "sendDataTo",
+info: {
+    extension: extension,
+    message: data
+}
+}))
+}`+ code, sandbox)
+}
+
+function runWorkflows(extension) {
+    var workflows
+    try {
+        workflows = fs.readdirSync(`../Extensions/${extension}/triggers/workflows/`).filter((file) => file.endsWith(".json"))
+    } catch (err) {
+        workflows = []
+    }
+
+    for (const workflow of workflows) {
+        const filePath = path.join(`../Extensions/${extension}/triggers/workflows/`, workflow)
+        const context = {
+            client,
+            require
+        }
+        const data = require(filePath)
+        var filebuilder = "const { Events, EmbedBuilder } = require('discord.js')\n"
+
+        if (data.type === "message") {
+            filebuilder += "client.on(Events.MessageCreate, async message => {\n"
+            var ifstring = []
+
+            if (data.requirements.startsWith) {
+                var thing = data.requirements.startsWith
+                var start = "!message.toString()"
+                if (data.requirements.caseSensitive === "false") {
+                    start += ".toLowerCase()"
+                    thing = thing.toLowerCase()
+                }
+                start += `.startsWith("${thing}")`
+                ifstring.push(start)
+            }
+
+            if (data.requirements.contains) {
+                for (var thing of data.requirements.contains) {
+                    var start = "!message.toString()"
+                    if (data.requirements.caseSensitive === "false") {
+                        start += ".toLowerCase()"
+                        thing = thing.toLowerCase()
+                    }
+                    start += `.includes("${thing}")`
+                    ifstring.push(start)
+                }
+            }
+
+            if (data.requirements.endsWith) {
+                var thing = data.requirements.endsWith
+                var start = "!message.toString()"
+                if (data.requirements.caseSensitive === "false") {
+                    start += ".toLowerCase()"
+                    thing = thing.toLowerCase()
+                }
+                start += `.endsWith("${thing}")`
+                ifstring.push(start)
+            }
+
+            filebuilder += `    if(${ifstring.join(" || ")}) {return false} else {\n`
+
+            if (data.actions.react) {
+                filebuilder += `        message.react('${data.actions.react}')\n`
+            }
+
+            if (data.actions.reply) {
+                filebuilder += `    message.reply(\`${data.actions.reply.content.replaceAll("${user}", "<@${member.user.id}>")}\`)\n`
+            }
+
+            if (data.actions.embed) {
+                filebuilder += `    const embed = new EmbedBuilder()`
+
+                if (data.actions.embed.title) {
+                    filebuilder += `.setTitle(\`${data.actions.embed.title.replaceAll("${user}", "<@${member.user.id}>")}\`)`
+                }
+
+                if (data.actions.embed.content) {
+                    filebuilder += `.setDescription(\`${data.actions.embed.content.replaceAll("${user}", "<@${member.user.id}>")}\`)`
+                }
+
+                if (data.actions.embed.color) {
+                    filebuilder += `.setColor('${data.actions.embed.color}')`
+                }
+
+                filebuilder += `\n    client.channels.cache.find(channel => channel.name === "${data.actions.embed.channel}" && member.guild.id === channel.guild.id).send({ embeds: [embed]})\n`
+            }
+
+            filebuilder += "    }\n})"
+        } else if (data.type === "memberAdd") {
+            filebuilder += "client.on(Events.GuildMemberAdd, async member => {\n"
+
+            if (data.actions.message) {
+                filebuilder += `    client.channels.cache.find(channel => channel.name === "${data.actions.message.channel}" && member.guild.id === channel.guild.id).send(\`${data.actions.message.content.replaceAll("${user}", "<@${member.user.id}>")}\`)\n`
+            }
+
+            if (data.actions.embed) {
+                filebuilder += `    const embed = new EmbedBuilder()`
+
+                if (data.actions.embed.title) {
+                    filebuilder += `.setTitle(\`${data.actions.embed.title.replaceAll("${user}", "<@${member.user.id}>")}\`)`
+                }
+
+                if (data.actions.embed.content) {
+                    filebuilder += `.setDescription(\`${data.actions.embed.content.replaceAll("${user}", "<@${member.user.id}>")}\`)`
+                }
+
+                if (data.actions.embed.color) {
+                    filebuilder += `.setColor('${data.actions.embed.color}')`
+                }
+
+                filebuilder += `\n    client.channels.cache.find(channel => channel.name === "${data.actions.embed.channel}" && member.guild.id === channel.guild.id).send({ embeds: [embed]})\n`
+            }
+
+            filebuilder += "})"
+        }
+
+        vm.createContext(context)
+
+        try {
+            vm.runInContext(filebuilder, context)
+        } catch (err) {
+            console.err(`Failed to run workflow from ${extension}, file "${workflow}" may have errors!`)
+            console.err(err)
+        }
+    }
+}
+
 extensions.forEach((extension) => {
     var cfg = require(`../Extensions/${extension}/config.json`)
     var enabled = cfg.enabled
@@ -147,78 +323,21 @@ extensions.forEach((extension) => {
     if (extensionstate === "enabled") {
         console.start(`Loading ${metadata.name} by ${metadata.authors}...`)
         try {
-            if (fs.existsSync(`../Extensions/${extension}/index.js`)){
-                var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
-            } else {
-                var code = ""
-            }
-            const sandbox = {
-                client,
-                console,
-                fetch,
-                fs,
-                path,
-                global,
-                require,
-                __dirname,
-                extension,
-                extensions,
-                guilds: client.guilds.cache,
-                resolvePath: (thing, ext = extension) =>
-                    resolvePath(ext, thing),
-                setInterval: setInterval
-            }
-            vm.createContext(sandbox)
-            vm.runInContext(`const net = require('net')
-
-const extensionHandler = net.createConnection({ port: ${port} }, () => {
-    console.start('Successfully loaded ${metadata.name}')
-})
-
-function sendData(data) {
-    extensionHandler.write(data.replaceAll("ܛ", "\\u071B")+"ܛ")
-}
-
-sendData("SYSMSG ID=${metadata.id}")
-
-function addTagCommand(tags, callback) {
-    sendData(JSON.stringify({
-        type: "addTag",
-        info: {
-            tag: tags,
-            function: callback.toString()
-        }
-    }))
-}
-
-function sendDataToExtension(extension, data) {
-    sendData(JSON.stringify({
-        type: "sendDataTo",
-        info: {
-            extension: extension,
-            message: data
-        }
-    }))
-}`+ code, sandbox)
+            runExtension(extension)
         } catch (err) {
             if (fs.existsSync(`../Extensions/${extension}/index.js`)) {
                 console.warn(`${metadata.name} ran into an error running the index.js file`)
                 console.err(err)
             }
         }
+
+        runWorkflows(extension)
         var commandFilesExtension = null
-        var workflows = null
         try {
             commandFilesExtension = fs.readdirSync(`../Extensions/${extension}/triggers/commands/`)
                 .filter((file) => file.endsWith(".js"))
         } catch (err) {
             commandFilesExtension = []
-        }
-
-        try {
-            workflows = fs.readdirSync(`../Extensions/${extension}/triggers/workflows/`).filter((file) => file.endsWith(".json"))
-        } catch (err) {
-            workflows = []
         }
 
         for (const file of commandFilesExtension) {
@@ -232,120 +351,6 @@ function sendDataToExtension(extension, data) {
                 }
             } else {
                 console.warn(`The command at ${filePath} is missing a required "execute" property.`)
-            }
-        }
-
-        for (const workflow of workflows) {
-            const filePath = path.join(`../Extensions/${extension}/triggers/workflows/`, workflow)
-            const context = {
-                client,
-                require
-            }
-            const data = require(filePath)
-            var filebuilder = "const { Events, EmbedBuilder } = require('discord.js')\n"
-
-            if (data.type === "message") {
-                filebuilder += "client.on(Events.MessageCreate, async message => {\n"
-                var ifstring = []
-
-                if (data.requirements.startsWith) {
-                    var thing = data.requirements.startsWith
-                    var start = "!message.toString()"
-                    if (data.requirements.caseSensitive === "false") {
-                        start += ".toLowerCase()"
-                        thing = thing.toLowerCase()
-                    }
-                    start += `.startsWith("${thing}")`
-                    ifstring.push(start)
-                }
-
-                if (data.requirements.contains) {
-                    for (var thing of data.requirements.contains) {
-                        var start = "!message.toString()"
-                        if (data.requirements.caseSensitive === "false") {
-                            start += ".toLowerCase()"
-                            thing = thing.toLowerCase()
-                        }
-                        start += `.includes("${thing}")`
-                        ifstring.push(start)
-                    }
-                }
-
-                if (data.requirements.endsWith) {
-                    var thing = data.requirements.endsWith
-                    var start = "!message.toString()"
-                    if (data.requirements.caseSensitive === "false") {
-                        start += ".toLowerCase()"
-                        thing = thing.toLowerCase()
-                    }
-                    start += `.endsWith("${thing}")`
-                    ifstring.push(start)
-                }
-
-                filebuilder += `    if(${ifstring.join(" || ")}) {return false} else {\n`
-
-                if (data.actions.react) {
-                    filebuilder += `        message.react('${data.actions.react}')\n`
-                }
-
-                if (data.actions.reply) {
-                    filebuilder += `    message.reply(\`${data.actions.reply.content.replaceAll("${user}", "<@${member.user.id}>")}\`)\n`
-                }
-
-                if (data.actions.embed) {
-                    filebuilder += `    const embed = new EmbedBuilder()`
-
-                    if (data.actions.embed.title) {
-                        filebuilder += `.setTitle(\`${data.actions.embed.title.replaceAll("${user}", "<@${member.user.id}>")}\`)`
-                    }
-
-                    if (data.actions.embed.content) {
-                        filebuilder += `.setDescription(\`${data.actions.embed.content.replaceAll("${user}", "<@${member.user.id}>")}\`)`
-                    }
-
-                    if (data.actions.embed.color) {
-                        filebuilder += `.setColor('${data.actions.embed.color}')`
-                    }
-
-                    filebuilder += `\n    client.channels.cache.find(channel => channel.name === "${data.actions.embed.channel}" && member.guild.id === channel.guild.id).send({ embeds: [embed]})\n`
-                }
-
-                filebuilder += "    }\n})"
-            } else if (data.type === "memberAdd") {
-                filebuilder += "client.on(Events.GuildMemberAdd, async member => {\n"
-
-                if (data.actions.message) {
-                    filebuilder += `    client.channels.cache.find(channel => channel.name === "${data.actions.message.channel}" && member.guild.id === channel.guild.id).send(\`${data.actions.message.content.replaceAll("${user}", "<@${member.user.id}>")}\`)\n`
-                }
-
-                if (data.actions.embed) {
-                    filebuilder += `    const embed = new EmbedBuilder()`
-
-                    if (data.actions.embed.title) {
-                        filebuilder += `.setTitle(\`${data.actions.embed.title.replaceAll("${user}", "<@${member.user.id}>")}\`)`
-                    }
-
-                    if (data.actions.embed.content) {
-                        filebuilder += `.setDescription(\`${data.actions.embed.content.replaceAll("${user}", "<@${member.user.id}>")}\`)`
-                    }
-
-                    if (data.actions.embed.color) {
-                        filebuilder += `.setColor('${data.actions.embed.color}')`
-                    }
-
-                    filebuilder += `\n    client.channels.cache.find(channel => channel.name === "${data.actions.embed.channel}" && member.guild.id === channel.guild.id).send({ embeds: [embed]})\n`
-                }
-
-                filebuilder += "})"
-            }
-
-            vm.createContext(context)
-
-            try {
-                vm.runInContext(filebuilder, context)
-            } catch (err) {
-                console.err(`Failed to run workflow from ${extension}, file "${workflow}" may have errors!`)
-                console.err(err)
             }
         }
     }
