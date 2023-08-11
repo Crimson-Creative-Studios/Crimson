@@ -144,7 +144,8 @@ function runExtension(extension) {
         guilds: client.guilds.cache,
         resolvePath: (thing, ext = extension) =>
             resolvePath(ext, thing),
-        setInterval: setInterval
+        setInterval: setInterval,
+        setTimeout: setTimeout
     }
     vm.createContext(sandbox)
     vm.runInContext(`const net = require('net')

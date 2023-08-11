@@ -131,6 +131,9 @@ async function openTab(tabName, override = null, option = "") {
             key = 'bigimg'
         } else if (currentMenu === "ErrorFound") {
             presence = 'Error! 😵'
+        } else if (currentMenu === "CrimsonOptions") {
+            presence = "Crimson settings ⚙️"
+            key = 'bigimgcog'
         } else if (currentMenu === "Options") {
             presence = "CrimsonGUI settings ⚙️"
             key = 'bigimgcog'
@@ -139,7 +142,7 @@ async function openTab(tabName, override = null, option = "") {
         } else if (currentMenu === "Nova" || currentMenu === "CCS" || currentMenu === "Vanquish" || currentMenu === "FA") {
             presence = "Checking out the credits 📃"
         } else if (currentMenu === "Ultra") {
-            presence = "Considering getting Ultra 🤔"
+            presence = "Ultra 🤔"
         } else if (currentMenu.endsWith("EXsettings")) {
             var metaname = crimAPI.codeAdditions.metanames[currentMenu.slice(0, -10)]
             presence = `${metaname} settings ⚙️`
