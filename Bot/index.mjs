@@ -49,8 +49,6 @@ global.client = new Client({
 
 //? When client is ready do some logging and cleaning and setup users
 client.once(Events.ClientReady, async (c) => {
-    client.user.setActivity(`over the server`, { type: ActivityType.Watching })
-    client.user.setStatus("online")
     console.start(`The bot is now online! Running bot as ${c.user.tag}`)
     command.deploy(client.guilds.cache)
 })
@@ -66,7 +64,7 @@ client.commands = new Collection()
 const server = net.createServer((socket) => {
     socket.on('data', (data) => {
         data = data.toString("utf-8")
-        const msgs = data.split("ܛ")
+        const msgs = data.split("ܛ") //! Get all messages as some may group
         for (data of msgs) {
             data = data.replaceAll("\\u071B", "ܛ")
             if (data.startsWith("SYSMSG")) {
@@ -76,12 +74,15 @@ const server = net.createServer((socket) => {
             } else if (data === undefined) { } else {
                 try {
                     var msg = JSON.parse(data)
-                    if (msg.type === "addTag") {
+                    if (msg.type === "addTag") { //! Easy tag command creation
                         tagsList.push({
                             tag: msg.info.tag,
                             function: eval(`(${msg.info.function})`)
                         })
                     } else if (msg.type === "sendDataTo") {
+                        /*
+                        ! REMOVED, kept as legacy code incase I want to bring this back
+                        ? You can use the more convient "global" object
                         try {
                             var msgdata = JSON.stringify(msg.info.message)
                         } catch (err) {
@@ -89,10 +90,11 @@ const server = net.createServer((socket) => {
                         } finally {
                             clients[msg.info.extension].write("EXMSG " + msgdata)
                         }
+                        */
                     }
                 } catch (err) {
                     if (data !== "") {
-                        console.warn("Data was found that was invalid")
+                        console.warn("Data was found that was invalid") //! Warn users of extension communication issues
                     }
                 }
             }
@@ -110,11 +112,10 @@ server.listen(port, () => { })
 
 //? Generate a valid path
 function resolvePath(extension, file) {
-    return path.resolve("..", "Extensions", extension, file)
+    return path.resolve("..", "Extensions", extension, file) //! "path.resolve" for OS compatibility
 }
 
-//! Read and run extension
-//? Run extensions
+//? Run extensions and workflows alongside registering commands
 var extensions = null
 try {
     extensions = fs.readdirSync("../Extensions/")
@@ -123,6 +124,7 @@ try {
 }
 
 function runExtension(extension) {
+    const metadata = require(`../Extensions/${extension}/extension.json`)
     if (fs.existsSync(`../Extensions/${extension}/index.js`)){
         var code = fs.readFileSync(`../Extensions/${extension}/index.js`, "utf8")
     } else {
@@ -163,16 +165,6 @@ type: "addTag",
 info: {
     tag: tags,
     function: callback.toString()
-}
-}))
-}
-
-function sendDataToExtension(extension, data) {
-sendData(JSON.stringify({
-type: "sendDataTo",
-info: {
-    extension: extension,
-    message: data
 }
 }))
 }`+ code, sandbox)
@@ -361,7 +353,7 @@ extensions.forEach((extension) => {
 
 //? Handle slash command execution
 client.on(Events.InteractionCreate, async (interaction) => {
-    if (interaction.isChatInputCommand()) {
+    if (interaction.isChatInputCommand()) { //! Core only handles chat input commands
         const command = interaction.client.commands.get(interaction.commandName)
 
         if (!command) {
@@ -370,15 +362,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
         }
         try {
             await command.execute(interaction, client)
-        } catch (error) {
-            console.err(error)
-            try {
+        } catch (err) {
+            console.err(err)
+            try { //! Handle every type of reply
                 await interaction.reply({
                     content:
                         "Uh oh, something went wrong! Contact the owner of the bot.",
                     ephemeral: true,
                 })
-            } catch (err) {
+            } catch (error) {
                 try {
                     await interaction.editReply({
                         content:
@@ -404,15 +396,14 @@ client.on(Events.InteractionCreate, async (interaction) => {
 //? Handle tag command execution
 client.on(Events.MessageCreate, async message => {
     for (const i of tagsList) {
-        if (i.tag instanceof Array) {
+        if (i.tag instanceof Array) { //! Check for Arrays
             for (const j of i.tag) {
                 if (message.toString().startsWith(j)) {
                     i.function(message, i.tag.indexOf(j))
                 }
             }
-        }
-        if (message.toString().startsWith(i.tag)) {
-            i.function(message)
+        } else if (message.toString().startsWith(i.tag)) {
+            i.function(message, 0)
         }
     }
 })
@@ -433,7 +424,7 @@ if (process.argv.includes("--gui")) {
             command.deploy(client.guilds.cache)
         }
     } catch {
-
+        //! Catch random input from developers trying to break something
     }
     })
 }

@@ -103,6 +103,8 @@
                 <label for="cid">Client ID:</label><br>
                 <input type="password" id="cid" name="cid" style="width: 600px;" onfocus="this.type='text'"
                     onblur="this.type='password'"><br><br>
+                <button class="button" onclick="crimAPI.openSite(`https://discord.com/api/oauth2/authorize?client_id=${document.getElementById('cid').value}&permissions=8&scope=bot`)">Invite Bot with ID</button>
+                <br>
                 <label for="adprefix">Admin Role Prefix:</label><br>
                 <input type="text" id="adprefix" name="adprefix" style="width: 600px;"><br><br>
                 <button class="button" id="saveMainCFG"><i class="fa-solid fa-floppy-disk"></i> Save settings</button><br><br>

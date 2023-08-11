@@ -89,6 +89,12 @@ crimAPI.codeAdditions.extensions.forEach(extension => {
                     }
                     crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, items, values])
                 }
+            } else if (information.type === "LIST") {
+                if (information.extension === name) {
+                    var value = document.getElementById(uuid).dataset.currentval
+                    var item = information.item
+                }
+                crimAPI.jsonRequest(["setValBulkNotStyle", `../Extensions/${name}/${information.file}`, [item], [value]])
             } else {
                 if (information.extension === name) {
                     if (information.extension === name) {
@@ -147,9 +153,14 @@ for (const uuid of Object.keys(crimAPI.codeAdditions.userCFGS)) {
             for (const option of document.getElementById(uuid).querySelector(".select").querySelector(".custom-options").children) {
                 if (option.dataset.value === crimAPI.codeAdditions.defaults[uuid]) {
                     const val = option.dataset.value
-                    const guild = option.dataset.guildname
                     option.parentElement.parentElement.parentElement.dataset.currentval = val
-                    option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML + " - " + guild
+                    var str
+                    if (option.dataset.guildname) {
+                        str = " - " + option.dataset.guildname 
+                    } else {
+                        str = ""
+                    }
+                    option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").innerHTML = option.innerHTML + str
                     for (const child of option.parentElement.parentElement.querySelector(".select__trigger").querySelector("span").childNodes) {
                         if (child.nodeName === "DIV") {
                             child.remove()

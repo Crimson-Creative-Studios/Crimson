@@ -5,7 +5,7 @@ function requirePro(thing) {
     return ipcRenderer.sendSync("require", thing)
 }
 
-const {onlineVersion, uuid, themes, themeEffects} = ipcRenderer.sendSync("infoGrab")
+const { onlineVersion, uuid, themes, themeEffects } = ipcRenderer.sendSync("infoGrab")
 const cfg = requirePro('../config.json')
 const version = ipcRenderer.sendSync("getFile", "version.txt")
 const botInfoCollect = ipcRenderer.sendSync("botInfoCollect", null)
@@ -63,25 +63,7 @@ extensionFiles.forEach((extension) => {
         try {
             for (const thing of Object.keys(uicfg)) {
                 const information = uicfg[thing]
-                if (thing !== "$LIBRARYMETA" && thing !== "$BUTTONS" && thing !== "$UI" && !thing.startsWith("CHNLSEL-") && !thing.startsWith("ROLESEL-") && !thing.startsWith("MULCHNLSEL-") && !thing.startsWith("MULROLESEL-")) {
-                    userCFGS[information.uuid] = {
-                        item: information.item,
-                        file: information.file,
-                        extension: extension
-                    }
-
-                    if (information.hidden === "true") {
-                        var type = "password"
-                        var events = ` onfocus="this.type='text'" onblur="this.type='password'"`
-                    } else {
-                        var type = "text"
-                        var events = ""
-                    }
-
-                    arr.push(`<label for="${information.uuid}" title="${information.hover}">${information.metaname}</label><br><input type="${type}" id="${information.uuid}" name="${information.uuid}" style="width: 100%;"${events}><br><br>`)
-                    var file = requirePro(`../Extensions/${extension}/${information.file}`)
-                    defaults[information.uuid] = file[information.item]
-                } else if (thing === "$LIBRARYMETA") {
+                if (thing === "$LIBRARYMETA") {
                     if (information.text) {
                         var text = information.text
                     } else {
@@ -197,7 +179,7 @@ extensionFiles.forEach((extension) => {
                         items.push(information.item.replaceAll("$G", guildKey))
                         guildKeys.push(guildKey)
                         var file = requirePro(`../Extensions/${extension}/${information.file}`)
-                        defaults[guildKey+information.uuid] = file[information.item.replaceAll("$G", guildKey)]
+                        defaults[guildKey + information.uuid] = file[information.item.replaceAll("$G", guildKey)]
                     }
                     userCFGS[information.uuid] = {
                         item: items,
@@ -235,7 +217,7 @@ extensionFiles.forEach((extension) => {
                         items.push(information.item.replaceAll("$G", guildKey))
                         guildKeys.push(guildKey)
                         var file = requirePro(`../Extensions/${extension}/${information.file}`)
-                        defaults[guildKey+information.uuid] = file[information.item.replaceAll("$G", guildKey)]
+                        defaults[guildKey + information.uuid] = file[information.item.replaceAll("$G", guildKey)]
                     }
                     userCFGS[information.uuid] = {
                         item: items,
@@ -244,6 +226,48 @@ extensionFiles.forEach((extension) => {
                         extension: extension,
                         type: "MULCHNSEL"
                     }
+                } else if (thing.startsWith("LIST-")) {
+                    var values = ""
+                    for (const itemKey of Object.keys(information.items)) {
+                        const item = information.items[itemKey]
+                        values += `<span class="custom-option" data-value="${itemKey}">${item}</span>`
+                    }
+                    arr.push(`<h3>${information.metaname}</h3><div id="${information.uuid}" class="select-wrapper" data-currentval="0">
+                    <div class="select">
+                    <div class="select__trigger no-guild" onclick="this.parentElement.classList.toggle('open')">
+                    <span class="force-open">~~Pick an option~~</span>
+                    <div class="arrow"></div></div>
+                    <div class="custom-options">
+                    ${values}
+                    </div>
+                    </div>
+                    </div><br><br>`)
+                    var file = requirePro(`../Extensions/${extension}/${information.file}`)
+                    defaults[information.uuid] = file[information.item]
+                    userCFGS[information.uuid] = {
+                        item: information.item,
+                        file: information.file,
+                        extension: extension,
+                        type: "LIST"
+                    }
+                } else {
+                    userCFGS[information.uuid] = {
+                        item: information.item,
+                        file: information.file,
+                        extension: extension
+                    }
+
+                    if (information.hidden === "true") {
+                        var type = "password"
+                        var events = ` onfocus="this.type='text'" onblur="this.type='password'"`
+                    } else {
+                        var type = "text"
+                        var events = ""
+                    }
+
+                    arr.push(`<label for="${information.uuid}" title="${information.hover}">${information.metaname}</label><br><input type="${type}" id="${information.uuid}" name="${information.uuid}" style="width: 100%;"${events}><br><br>`)
+                    var file = requirePro(`../Extensions/${extension}/${information.file}`)
+                    defaults[information.uuid] = file[information.item]
                 }
             }
         } catch (err) { errs.push(err) }
