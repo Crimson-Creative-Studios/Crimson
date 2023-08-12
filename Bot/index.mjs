@@ -364,7 +364,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         try {
             await command.execute(interaction, client)
         } catch (err) {
-            console.err(err)
+            console.raw(err)
             try { //! Handle every type of reply
                 await interaction.reply({
                     content:

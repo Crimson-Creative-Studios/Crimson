@@ -204,7 +204,6 @@ mainCfg.onclick = async function (e) {
     handleNotification("savingModal", 5000)
     var information = {
         token: document.getElementById('token').value,
-        clientid: document.getElementById('cid').value,
         adminname: document.getElementById('adprefix').value
     }
     crimAPI.saveENV(information)
@@ -383,8 +382,18 @@ function startBot() {
 window.addEventListener('load', function () {
     var information = crimAPI.cfg
     document.getElementById("token").defaultValue = information.token
-    document.getElementById("cid").defaultValue = information.clientid
     document.getElementById("adprefix").defaultValue = information.adminname
 })
 
 window.startBot = startBot
+
+function base64DecodeUnicode(str) {
+    const percentEncodedStr = atob(str).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join('')
+
+
+    return decodeURIComponent(percentEncodedStr)
+}
+
+window.base64DecodeUnicode = base64DecodeUnicode

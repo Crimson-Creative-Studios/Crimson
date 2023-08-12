@@ -111,59 +111,101 @@ async function openTab(tabName, override = null, option = "") {
             document.getElementById("ErrorFound").classList.add("showentab")
         }
 
-        if (currentMenu === "Home" || currentMenu === "Configuration" || currentMenu === "Information" || currentMenu === "Market") {
-            presence = `${currentMenu} menu`
-            if (currentMenu === "Configuration") {
-                presence = "Config menu ⚙️"
-                key = 'bigimgcog'
+        const presences = {
+            Home: {
+                menu: "Home",
+                presence: "Home menu 🏠"
+            },
+            Configuration: {
+                menu: "Configuration",
+                presence: "Config menu ⚙️",
+                logo: "bigimgcog"
+            },
+            Information: {
+                menu: "Information",
+                presence: "Info ℹ️"
+            },
+            Market: {
+                menu: "Market",
+                presence: "Market menu 🏘️"
+            },
+            DEBUG: {
+                menu: "DEBUG",
+                presence: "Debugging 🪲"
+            },
+            Error: {
+                menu: "ErrorFound",
+                presence: "Error! 😵"
+            },
+            CrimsonOptions: {
+                menu: "CrimsonOptions",
+                presence: "Crimson settings ⚙️",
+                logo: "bigimgcog"
+            },
+            Options: {
+                menu: "Options",
+                presence: "CrimsonGUI settings ⚙️",
+                logo: "bigimgcog"
+            },
+            Themes: {
+                menu: ["ColorChanger", "PreviewColors", "InfoElement"],
+                presence: "Customizing the theme 🖌️"
+            },
+            Ultra: {
+                menu: "Ultra",
+                presence: "Ultra 🤔"
+            },
+            Credits: {
+                endsWith: "Cr!",
+                presence: "Checking out the credits 📃"
+            },
+            EXSettings: {
+                endsWith: "EXsettings",
+                presence: "$NAME settings ⚙️",
+                logo: "bigimgcog",
+                type: "Local"
+            },
+            EXMarket: {
+                endsWith: "markettab",
+                presence: "Looking at $NAME 👌",
+                type: "Online"
+            }
+        }
+
+        var success = false
+
+        for (const tabType of Object.keys(presences)) {
+            const tab = presences[tabType]
+            if (tab.menu) {
+                if (tab.menu instanceof Array) {
+                    if (tab.menu.includes(currentMenu)) {
+                        crimAPI.rcpChange([tab.presence, tab.key ?? "bigimg"])
+                        success = true
+                    }
+                } else {
+                    if (tab.menu === currentMenu) {
+                        crimAPI.rcpChange([tab.presence, tab.key ?? "bigimg"])
+                        success = true
+                    }
+                }
             } else {
-                key = 'bigimg'
-                if (currentMenu === "Home") {
-                    presence += " 🏠"
-                } else if (currentMenu === "Information") {
-                    presence = "Info ℹ️"
-                } else if (currentMenu === "Market") {
-                    presence += " 🏘️"
+                if (tab.type === "Online") {
+                    var name = currentMenu.slice(0, -9)
+                    while (name.endsWith("¬")) {
+                        name = name.slice(0, -1)
+                    }
+                    crimAPI.rcpChange([tab.presence.replaceAll("$NAME", name), tab.key ?? "bigimg"])
+                    success = true
+                } else {
+                    var name = crimAPI.codeAdditions.metanames[currentMenu.slice(0, -10)]
+                    crimAPI.rcpChange([tab.presence.replaceAll("$NAME", name), tab.key ?? "bigimg"])
+                    success = true
                 }
             }
-        } else if (currentMenu === "DEBUG") {
-            presence = 'Debugging 🪲'
-            key = 'bigimg'
-        } else if (currentMenu === "ErrorFound") {
-            presence = 'Error! 😵'
-        } else if (currentMenu === "CrimsonOptions") {
-            presence = "Crimson settings ⚙️"
-            key = 'bigimgcog'
-        } else if (currentMenu === "Options") {
-            presence = "CrimsonGUI settings ⚙️"
-            key = 'bigimgcog'
-        } else if (currentMenu === "ColorChanger" || currentMenu === "PreviewColors" || currentMenu === "InfoElement") {
-            presence = "Customizing the theme 🖌️"
-        } else if (currentMenu === "Nova" || currentMenu === "CCS" || currentMenu === "Vanquish" || currentMenu === "FA") {
-            presence = "Checking out the credits 📃"
-        } else if (currentMenu === "Ultra") {
-            presence = "Ultra 🤔"
-        } else if (currentMenu.endsWith("EXsettings")) {
-            var metaname = crimAPI.codeAdditions.metanames[currentMenu.slice(0, -10)]
-            presence = `${metaname} settings ⚙️`
-            if (metaname === "PyRun") {
-                key = 'pyrunlogo'
-            } else {
-                key = 'bigimgcog'
-            }
-        } else if (currentMenu.endsWith("markettab")) {
-            var name = currentMenu.slice(0, -9)
-            while (name.endsWith("¬")) {
-                name = name.slice(0, -1)
-            }
-            presence = `Looking at ${name} 👌`
-            if (currentMenu.slice(0, -9) === "PyRun") {
-                key = 'pyrunlogo'
-            }
         }
-        if (!presence) {
-            presence = 'Something has really gone wrong 😭'
+
+        if (!success) {
+            crimAPI.rcpChange(["Something has really gone wrong 😭", "bigimg"])
         }
-        crimAPI.rcpChange([presence, key])
     }
 }

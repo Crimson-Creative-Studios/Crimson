@@ -57,10 +57,14 @@ async function deploy(guilds) {
 
         const rest = new REST({ version: '10' }).setToken(config.token)
 
+        const tokenparts = config.token.split(".")
+        const buffer = Buffer.from(tokenparts[0], "base64")
+        const clientid = buffer.toString()
+
         try {
             guilds.forEach(async guild => {
                 await rest.put(
-                    Routes.applicationGuildCommands(config.clientid, guild.id),
+                    Routes.applicationGuildCommands(clientid, guild.id),
                     { body: commands },
                 )
             })
