@@ -11,7 +11,7 @@ function attemptColorLoad() {
         } else {
             loadColors()
         }
-    } catch(err) {
+    } catch (err) {
         console.error(err)
         loadColors()
     }
@@ -188,18 +188,20 @@ async function openTab(tabName, override = null, option = "") {
                         success = true
                     }
                 }
-            } else {
-                if (tab.type === "Online") {
-                    var name = currentMenu.slice(0, -9)
-                    while (name.endsWith("¬")) {
-                        name = name.slice(0, -1)
+            } else if (tab.endsWith) {
+                if (currentMenu.endsWith(tab.endsWith)) {
+                    if (tab.type === "Online") {
+                        var name = currentMenu.slice(0, -9)
+                        while (name.endsWith("¬")) {
+                            name = name.slice(0, -1)
+                        }
+                        crimAPI.rcpChange([tab.presence.replaceAll("$NAME", name), tab.key ?? "bigimg"])
+                        success = true
+                    } else if (tab.type === "Local") {
+                        var name = crimAPI.codeAdditions.metanames[currentMenu.slice(0, -10)]
+                        crimAPI.rcpChange([tab.presence.replaceAll("$NAME", name), tab.key ?? "bigimg"])
+                        success = true
                     }
-                    crimAPI.rcpChange([tab.presence.replaceAll("$NAME", name), tab.key ?? "bigimg"])
-                    success = true
-                } else {
-                    var name = crimAPI.codeAdditions.metanames[currentMenu.slice(0, -10)]
-                    crimAPI.rcpChange([tab.presence.replaceAll("$NAME", name), tab.key ?? "bigimg"])
-                    success = true
                 }
             }
         }
