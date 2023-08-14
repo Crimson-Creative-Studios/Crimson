@@ -201,13 +201,16 @@ async function openTab(tabName, override = null, option = "") {
                         var name = crimAPI.codeAdditions.metanames[currentMenu.slice(0, -10)]
                         crimAPI.rcpChange([tab.presence.replaceAll("$NAME", name), tab.key ?? "bigimg"])
                         success = true
+                    } else {
+                        crimAPI.rcpChange([tab.presence, tab.key ?? "bigimg"])
+                        success = true
                     }
                 }
             }
         }
 
         if (!success) {
-            crimAPI.rcpChange(["Something has really gone wrong 😭", "bigimg"])
+            crimAPI.rcpChange(["Unknown menu 😭", "bigimg"])
         }
     }
 }
