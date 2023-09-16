@@ -34,6 +34,9 @@ async function deploy(guilds) {
                     for (const file of commandFilesExtension) {
                         if (file.endsWith(".js")) {
                             const command = require(`../Extensions/${extension}/triggers/commands/${file}`)
+                            if (command === null) {
+                                continue
+                            }
                             try {
                                 commands.push(command.data.toJSON())
                             } catch (err) {

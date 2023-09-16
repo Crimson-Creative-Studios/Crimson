@@ -336,6 +336,9 @@ extensions.forEach((extension) => {
         for (const file of commandFilesExtension) {
             const filePath = path.join(`../Extensions/${extension}/triggers/commands/`, file)
             const command = require(filePath)
+            if (command === null) {
+                continue
+            }
             if ("execute" in command) {
                 try {
                     client.commands.set(command.data.name, command)

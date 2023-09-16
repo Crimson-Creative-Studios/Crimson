@@ -250,7 +250,7 @@ extensionFiles.forEach((extension) => {
                         extension: extension,
                         type: "LIST"
                     }
-                } else {
+                } else if (thing !== "$UI") {
                     userCFGS[information.uuid] = {
                         item: information.item,
                         file: information.file,

@@ -237,7 +237,7 @@ function createWindow() {
             })
             bot.on(Events.InteractionCreate, async (interaction) => {
                 try {
-                    await interaction.reply("The bot is currently fetching channels and is not online")
+                    await interaction.reply({ content: "The bot is currently fetching channels and is not online, this is a Crimson system message, if you believe this a mistake [please visit here](https://github.com/Crimson-Creative-Studios/Crimson/issues) and make a bug report.", ephemeral: true })
                 } catch (err) { }
             })
             bot.login(token)
@@ -333,6 +333,7 @@ function createWindow() {
                 result = await setValueJSONBulk(arg[1], arg[2], arg[3])
                 win.webContents.send("notificationSend", ["savedModal", 5000, 3000])
             } catch (err) {
+                console.log(err)
                 win.webContents.send("notificationSend", ["saveFailModal", 5000, 3000])
             }
         } else if (arg[0] === "getVal") {
@@ -355,6 +356,7 @@ function createWindow() {
                 fs.writeFileSync(arg[1], arg[2])
                 win.webContents.send("notificationSend", ["savedModal", 5000, 3000])
             } catch (err) {
+                console.log(err)
                 win.webContents.send("notificationSend", ["saveFailModal", 5000, 3000])
             }
         }
